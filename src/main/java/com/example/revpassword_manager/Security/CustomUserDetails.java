@@ -1,5 +1,6 @@
 package com.example.revpassword_manager.Security;
 
+
 import com.example.revpassword_manager.Models.MasterUser;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,11 +16,49 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // No roles for now (can add ROLE_USER later)
         return Collections.emptyList();
     }
 
     @Override
     public String getPassword() {
         return user.getPasswordEncrypted();
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();   // or email if you want login by email
+    }
+
+    public Long getId() {
+        return user.getId();
+    }
+
+    public String getEmail() {
+        return user.getEmail();
+    }
+
+    public MasterUser getUser() {
+        return user;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

@@ -1,5 +1,8 @@
 package com.example.revpassword_manager.Controllers;
 
+import com.example.revpassword_manager.DTOs.AuthResponse;
+import com.example.revpassword_manager.DTOs.LoginRequest;
+import com.example.revpassword_manager.DTOs.RegisterRequest;
 import com.example.revpassword_manager.Security.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +18,17 @@ public class MasterController {
 
         private final AuthService service;
 
-        @PostMapping("/register")
-        public String register(@RequestBody RegisterRequest req) {
-            return service.register(req);
-        }
-
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+    public ResponseEntity<AuthResponse> login(
+            @RequestBody LoginRequest req) {
 
         String token = service.login(req);
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(
+                new AuthResponse(token, "Login Successful")
+        );
     }
-    }
+
+
+}
 

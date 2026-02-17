@@ -8,7 +8,5 @@ import java.util.Optional;
 
 public interface SecurityPassStrengthRepository extends JpaRepository<SecurityQuestions,Long> {
 
-    Optional<MasterUser> findByUsername(String username);
 
-    Optional<MasterUser> findByEmail(String email);
 }

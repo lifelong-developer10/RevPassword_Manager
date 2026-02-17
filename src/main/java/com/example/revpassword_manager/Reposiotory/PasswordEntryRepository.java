@@ -9,6 +9,5 @@ import java.util.Optional;
 public interface PasswordEntryRepository extends JpaRepository<AllPasswordEntry,Long> {
     Optional<MasterUser> findByUsername(String username);
 
-    Optional<MasterUser> findByEmail(String email);
 
 }
