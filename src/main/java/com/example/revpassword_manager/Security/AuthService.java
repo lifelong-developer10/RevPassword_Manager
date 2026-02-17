@@ -4,41 +4,31 @@ import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepo;
-    private final PasswordEncoder encoder;
+    private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
-
-    public String register(RegisterRequest request) {
-
-        MasterUser user = MasterUser.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .phone(request.getPhone())
-                .passwordEncrypted(encoder.encode(request.getPassword()))
-                .build();
-
-        userRepo.save(user);
-
-        return "User Registered Successfully";
-    }
 
     public String login(LoginRequest request) {
 
-        MasterUser user =
-                userRepo.findByUsername(request.getUsername())
-                        .orElseThrow();
+        Authentication auth =
+                authManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.getUsername(),
+                                request.getPassword()
+                        )
+                );
 
-        if (!encoder.matches(request.getPassword(),
-                user.getPasswordEncrypted()))
-            throw new RuntimeException("Invalid Password");
+        if (auth.isAuthenticated()) {
+            return jwtUtil.generateToken(request.getUsername());
+        }
 
-        return jwtUtil.generateToken(user.getUsername());
+        throw new RuntimeException("Invalid Credentials");
     }
 }
