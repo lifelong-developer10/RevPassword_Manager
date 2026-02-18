@@ -2,7 +2,7 @@ package com.example.revpassword_manager;
 
 import com.example.revpassword_manager.DTOs.RegisterRequest;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
-import com.example.revpassword_manager.Security.AuthService;
+import com.example.revpassword_manager.Services.AuthService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

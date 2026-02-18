@@ -3,7 +3,7 @@ package com.example.revpassword_manager.Controllers;
 import com.example.revpassword_manager.DTOs.AuthResponse;
 import com.example.revpassword_manager.DTOs.LoginRequest;
 import com.example.revpassword_manager.DTOs.RegisterRequest;
-import com.example.revpassword_manager.Security.AuthService;
+import com.example.revpassword_manager.Services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
