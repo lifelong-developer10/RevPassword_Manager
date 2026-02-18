@@ -4,10 +4,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
+
+import static javax.crypto.Cipher.SECRET_KEY;
 
 @Component
 public class JwtUtil {
@@ -18,18 +23,30 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expiration;
 
-    public String generateToken(String username) {
+    private SecretKey getSigningKey() {
+        // This will now work because 'secret' no longer has a '.'
+        byte[] keyBytes = Decoders.BASE64.decode(this.secret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 
+    public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // Use the helper
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey()) // Use the SAME helper
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
+    public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }
 
@@ -46,11 +63,7 @@ public class JwtUtil {
                 .before(new Date());
     }
 
-    private Claims getClaims(String token) {
 
-        return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
-    }
+
+
 }

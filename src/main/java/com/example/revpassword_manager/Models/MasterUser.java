@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -31,4 +32,36 @@ public class MasterUser {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<SecurityQuestions> securityQuestions;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setPasswordEncrypted(String passwordEncrypted) {
+        this.passwordEncrypted = passwordEncrypted;
+    }
+
+    public void setTwoFactorEnabled(boolean twoFactorEnabled) {
+        this.twoFactorEnabled = twoFactorEnabled;
+    }
+
+    public void setPasswordEntries(List<AllPasswordEntry> passwordEntries) {
+        this.passwordEntries = passwordEntries;
+    }
+
+    public void setSecurityQuestions(List<SecurityQuestions> securityQuestions) {
+        this.securityQuestions = securityQuestions;
+    }
 }

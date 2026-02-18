@@ -18,6 +18,11 @@ public class MasterController {
 
         private final AuthService service;
 
+    @PostMapping("/register")
+    public String register(@RequestBody RegisterRequest req) {
+        return service.register(req);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest req) {

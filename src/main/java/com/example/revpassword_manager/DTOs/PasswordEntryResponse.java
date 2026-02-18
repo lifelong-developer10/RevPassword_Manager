@@ -20,4 +20,4 @@ public class PasswordEntryResponse {
         private LocalDateTime updatedAt;
 
     }
-}
+
