@@ -1,5 +1,6 @@
-package com.example.revpassword_manager.Security;
+package com.example.revpassword_manager.Config;
 
+import com.example.revpassword_manager.Security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/forgot/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
