@@ -12,7 +12,5 @@ public class RegisterRequest {
     private String phone;
     private String password;
 
-
-    private List<SecurityQuestionDTO> securityQuestions;
-
+    private List<UserQuestionAnswer> securityAnswers;
 }

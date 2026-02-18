@@ -2,7 +2,12 @@ package com.example.revpassword_manager.Services;
 
 import com.example.revpassword_manager.DTOs.LoginRequest;
 import com.example.revpassword_manager.DTOs.RegisterRequest;
+import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
 import com.example.revpassword_manager.Models.MasterUser;
+import com.example.revpassword_manager.Models.SecurityQuestionMaster;
+import com.example.revpassword_manager.Models.SecurityQuestions;
+import com.example.revpassword_manager.Reposiotory.SecurityQuestionMasterRepository;
+import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
 
 import com.example.revpassword_manager.Security.JwtUtil;
@@ -23,28 +28,47 @@ public class AuthService {
     private final UserRepository userRepository; // Your JPA Repository
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;// Injected from SecurityConfig
+   private final SecurityQuestionRepository userQuestionRepo;
+    private final SecurityQuestionMasterRepository masterRepo;
+    public String register(RegisterRequest request) {
 
-    public String register(RegisterRequest req) {
-        // 1. Check if user already exists
-        if (userRepository.existsByUsername(req.getUsername())) {
-            return "Error: Username is already taken!";
-        }
+        if (request.getSecurityAnswers().size() != 3)
+            throw new RuntimeException("Select exactly 3 questions");
 
-        // 2. Create and map the new User entity
         MasterUser user = new MasterUser();
-        user.setUsername(req.getUsername());
-        user.setEmail(req.getEmail());
 
-        // 3. ENCODE the password before saving (CRITICAL for security)
-        user.setPasswordEncrypted(passwordEncoder.encode(req.getPassword()));
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
 
-        // 4. Save to database
+        user.setPasswordEncrypted(
+                passwordEncoder.encode(request.getPassword()));
+
         userRepository.save(user);
 
-        return "User registered successfully!";
+        for (UserQuestionAnswer dto :
+                request.getSecurityAnswers()) {
+
+            SecurityQuestionMaster master =
+                    masterRepo.findById(dto.getQuestionId())
+                            .orElseThrow();
+
+            SecurityQuestions uq =
+                    new SecurityQuestions();
+
+            uq.setUser(user);
+            uq.setQuestion(master);
+            uq.setAnswerHash(
+                    passwordEncoder.encode(dto.getAnswer()));
+
+            userQuestionRepo.save(uq);
+        }
+
+        return "User Registered Successfully";
     }
 
-        public String login(LoginRequest request) {
+
+    public String login(LoginRequest request) {
 
             Authentication auth =
                     authManager.authenticate(

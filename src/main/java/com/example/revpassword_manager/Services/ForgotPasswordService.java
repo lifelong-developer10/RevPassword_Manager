@@ -1,7 +1,9 @@
 package com.example.revpassword_manager.Services;
 
+import com.example.revpassword_manager.DTOs.ResetPasswordRequest;
 import com.example.revpassword_manager.DTOs.VerifySecurityAnswersRequest;
 import com.example.revpassword_manager.Models.MasterUser;
+import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Models.SecurityQuestions;
 import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
@@ -19,53 +21,53 @@ public class ForgotPasswordService {
     private final UserRepository userRepo;
     private final SecurityQuestionRepository questionRepo;
     private final PasswordEncoder encoder;
-
-    // STEP 1 — Get Questions
-    public List<String> getQuestions(String username) {
+   private final  SecurityQuestionRepository userQuestionRepo;
+    public List<SecurityQuestionMaster> getUserQuestions(
+            String username) {
 
         MasterUser user =
-                userRepo.findByUsername(username).orElseThrow();
+                userRepo.findByUsername(username)
+                        .orElseThrow();
 
-        return questionRepo.findByUser(user)
+        return userQuestionRepo.findByUser(user)
                 .stream()
                 .map(SecurityQuestions::getQuestion)
                 .toList();
     }
 
-    // STEP 2 — Verify Answers
-    public boolean verifyAnswers(
-            VerifySecurityAnswersRequest request) {
+    public boolean verifyAnswers(VerifySecurityAnswersRequest request) {
+
+        String username = request.getUsername();
+        Map<Long, String> answers = request.getAnswers();
 
         MasterUser user =
-                userRepo.findByUsername(
-                                request.getUsername())
-                        .orElseThrow();
+                userRepo.findByUsername(username)
+                        .orElseThrow(() ->
+                                new RuntimeException("User not found"));
 
-        List<SecurityQuestions> questions =
-                questionRepo.findByUser(user);
+        List<SecurityQuestions> list =
+                userQuestionRepo.findByUser(user);
 
-        Map<String, String> provided =
-                request.getAnswers();
+        int correct = 0;
 
-        int matchCount = 0;
+        for (SecurityQuestions uq : list) {
 
-        for (SecurityQuestions q : questions) {
+            Long questionId = uq.getQuestion().getId();
 
-            String providedAnswer =
-                    provided.get(q.getQuestion());
+            String provided = answers.get(questionId);
 
-            if (providedAnswer != null &&
+            if (provided != null &&
                     encoder.matches(
-                            providedAnswer,
-                            q.getAnswerHash())) {
+                            provided,
+                            uq.getAnswerHash())) {
 
-                matchCount++;
+                correct++;
             }
         }
 
-        // Require at least 3 correct
-        return matchCount >= 3;
+        return correct == list.size(); // all must match
     }
+
 
     // STEP 3 — Reset Password
     public String resetPassword(
@@ -84,4 +86,6 @@ public class ForgotPasswordService {
 
         return "Password Reset Successful";
     }
+
+
 }

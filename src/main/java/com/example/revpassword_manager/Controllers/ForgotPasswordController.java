@@ -4,6 +4,8 @@ package com.example.revpassword_manager.Controllers;
 import com.example.revpassword_manager.DTOs.ForgotPasswordRequest;
 import com.example.revpassword_manager.DTOs.ResetPasswordRequest;
 import com.example.revpassword_manager.DTOs.VerifySecurityAnswersRequest;
+import com.example.revpassword_manager.Models.SecurityQuestionMaster;
+import com.example.revpassword_manager.Reposiotory.SecurityQuestionMasterRepository;
 import com.example.revpassword_manager.Services.ForgotPasswordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +18,15 @@ import java.util.List;
 public class ForgotPasswordController {
 
     private final ForgotPasswordService service;
+    private final SecurityQuestionMasterRepository masterRepo;
 
-    // Step 1 — Get Questions
-    @PostMapping("/questions")
-    public List<String> getQuestions(
-            @RequestBody ForgotPasswordRequest request) {
-
-        return service.getQuestions(request.getUsername());
+    // ✅ Get all master questions (for registration page)
+    @GetMapping("/security-questions")
+    public List<SecurityQuestionMaster> getAllQuestions() {
+        return masterRepo.findAll();
     }
 
-    // Step 2 — Verify Answers
+    // ✅ Step 2 — Verify Answers
     @PostMapping("/verify")
     public String verify(
             @RequestBody VerifySecurityAnswersRequest request) {
@@ -38,7 +39,7 @@ public class ForgotPasswordController {
                 "INVALID_ANSWERS";
     }
 
-    // Step 3 — Reset Password
+    // ✅ Step 3 — Reset Password
     @PostMapping("/reset")
     public String reset(
             @RequestBody ResetPasswordRequest request) {

@@ -9,7 +9,6 @@ public class VerifySecurityAnswersRequest {
 
     private String username;
 
-    // question -> answer
-    private Map<String, String> answers;
-
+    // questionId -> answer
+    private Map<Long, String> answers;
 }
