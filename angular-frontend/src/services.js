@@ -77,3 +77,36 @@ app.controller("OtpController", function ($scope, ApiService, $location) {
     };
 
 });
+app.controller("RegisterController", function ($scope, ApiService) {
+
+    ApiService.getQuestions().then(res => $scope.questions = res.data);
+
+    $scope.answers = {};
+
+    $scope.register = function () {
+
+        var securityAnswers = [];
+
+        angular.forEach($scope.answers, function (value, key) {
+
+            securityAnswers.push({
+                questionId: key,
+                answer: value
+            });
+
+        });
+
+        var req = {
+            username: $scope.user.username,
+            email: $scope.user.email,
+            phone: $scope.user.phone,
+            password: $scope.user.password,
+            securityAnswers: securityAnswers
+        };
+
+        ApiService.register(req)
+            .then(() => alert("Registered Successfully"));
+
+    };
+
+});
