@@ -1,0 +1,22 @@
+<div>
+
+    <h4>Forgot Password</h4>
+
+    <input ng-model="username" class="form-control mb-2" placeholder="Username">
+
+    <button ng-click="getQuestions()" class="btn btn-primary">Next</button>
+
+    <div ng-if="questions">
+
+        <div ng-repeat="q in questions">
+
+            <label>{{q.question}}</label>
+            <input ng-model="answers[q.id]" class="form-control mb-2">
+
+        </div>
+
+        <button ng-click="verify()" class="btn btn-success">Verify</button>
+
+    </div>
+
+</div>
