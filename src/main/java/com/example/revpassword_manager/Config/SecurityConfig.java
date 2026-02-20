@@ -27,24 +27,35 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
 
+                        // ✅ Allow frontend files
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/app.js",
+                                "/services.js",
+                                "/styles.css",
+                                "/Webpages/**",
+                                "/assets/**"
+                        ).permitAll()
+
+                        // ✅ Allow auth APIs
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/forgot/**",
+                                "/api/password/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
 
+                        // 🔐 Everything else secured
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                );
 
         return http.build();
     }
-
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
