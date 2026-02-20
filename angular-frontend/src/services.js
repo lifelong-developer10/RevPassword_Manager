@@ -56,3 +56,24 @@ app.controller("LoginController", function ($scope, ApiService, $location) {
     };
 
 });
+app.controller("OtpController", function ($scope, ApiService, $location) {
+
+    $scope.verify = function () {
+
+        var req = {
+            username: localStorage.getItem("tempUser"),
+            code: $scope.otp.code
+        };
+
+        ApiService.verifyOtp(req)
+            .then(function (res) {
+
+                localStorage.setItem("token", res.data.token);
+
+                $location.path("/dashboard");
+
+            });
+
+    };
+
+});
