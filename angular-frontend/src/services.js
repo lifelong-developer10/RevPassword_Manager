@@ -33,3 +33,26 @@ app.factory("ApiService", function ($http) {
     };
 
 });
+app.controller("LoginController", function ($scope, ApiService, $location) {
+
+    $scope.login = function () {
+
+        ApiService.login($scope.user)
+            .then(function (res) {
+
+                if (res.data.message === "OTP_REQUIRED") {
+
+                    localStorage.setItem("tempUser", $scope.user.username);
+                    $location.path("/otp");
+
+                } else {
+
+                    localStorage.setItem("token", res.data.token);
+                    $location.path("/dashboard");
+
+                }
+
+            });
+    };
+
+});
