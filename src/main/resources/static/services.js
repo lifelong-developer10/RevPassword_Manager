@@ -79,22 +79,34 @@ app.controller("OtpController", function ($scope, ApiService, $location) {
 });
 app.controller("RegisterController", function ($scope, ApiService) {
 
-    ApiService.getQuestions().then(res => $scope.questions = res.data);
+    ApiService.getQuestions().then(res => {
+        $scope.questions = res.data;
+    });
 
-    $scope.answers = {};
+    // limit to 3 selections
+    $scope.limitSelection = function () {
+
+        var selected = $scope.questions.filter(q => q.selected);
+
+        if (selected.length > 3) {
+            alert("You can select only 3 questions");
+            event.target.checked = false;
+        }
+    };
 
     $scope.register = function () {
 
-        var securityAnswers = [];
+        var selected = $scope.questions.filter(q => q.selected);
 
-        angular.forEach($scope.answers, function (value, key) {
+        if (selected.length !== 3) {
+            alert("Please select exactly 3 questions");
+            return;
+        }
 
-            securityAnswers.push({
-                questionId: key,
-                answer: value
-            });
-
-        });
+        var securityAnswers = selected.map(q => ({
+            questionId: q.id,
+            answer: q.answer
+        }));
 
         var req = {
             username: $scope.user.username,
