@@ -7,12 +7,20 @@
     <input ng-model="user.phone" class="form-control mb-2" placeholder="Phone">
     <input type="password" ng-model="user.password" class="form-control mb-2" placeholder="Password">
 
-    <h5>Security Questions</h5>
+    <h5>Select Any 3 Security Questions</h5>
 
     <div ng-repeat="q in questions">
 
+        <input type="checkbox"
+               ng-model="q.selected"
+               ng-change="limitSelection()">
+
         <label>{{q.question}}</label>
-        <input ng-model="answers[q.id]" class="form-control mb-2">
+
+        <input ng-if="q.selected"
+               ng-model="q.answer"
+               class="form-control mb-2"
+               placeholder="Your Answer">
 
     </div>
 
