@@ -51,7 +51,10 @@ public class AuthService {
 
             SecurityQuestionMaster master =
                     masterRepo.findById(dto.getQuestionId())
-                            .orElseThrow();
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Invalid Question ID: "
+                                                    + dto.getQuestionId()));
 
             SecurityQuestions uq =
                     new SecurityQuestions();
