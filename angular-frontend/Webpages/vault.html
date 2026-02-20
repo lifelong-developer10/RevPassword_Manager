@@ -1,0 +1,25 @@
+<div>
+
+    <h4>Password Vault</h4>
+
+    <button class="btn btn-success" ng-click="load()">Load</button>
+
+    <table class="table mt-3">
+
+        <tr>
+            <th>Account</th>
+            <th>Username</th>
+            <th>Password</th>
+        </tr>
+
+        <tr ng-repeat="v in vault">
+
+            <td>{{v.accountName}}</td>
+            <td>{{v.username}}</td>
+            <td>{{v.password}}</td>
+
+        </tr>
+
+    </table>
+
+</div>
