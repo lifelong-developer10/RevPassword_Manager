@@ -120,3 +120,15 @@ app.controller("VaultController", function ($scope, ApiService) {
     };
 
 });
+app.controller("GeneratorController", function ($scope, ApiService) {
+
+    $scope.generate = function () {
+
+        var req = { length: $scope.length || 12 };
+
+        ApiService.generatePassword(req)
+            .then(res => $scope.passwords = res.data.passwords);
+
+    };
+
+});
