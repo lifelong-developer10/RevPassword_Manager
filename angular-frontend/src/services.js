@@ -110,3 +110,13 @@ app.controller("RegisterController", function ($scope, ApiService) {
     };
 
 });
+app.controller("VaultController", function ($scope, ApiService) {
+
+    $scope.load = function () {
+
+        ApiService.getVault()
+            .then(res => $scope.vault = res.data);
+
+    };
+
+});
