@@ -132,3 +132,27 @@ app.controller("GeneratorController", function ($scope, ApiService) {
     };
 
 });
+app.controller("ForgotController", function ($scope, ApiService) {
+
+    $scope.answers = {};
+
+    $scope.getQuestions = function () {
+
+        ApiService.getQuestions()
+            .then(res => $scope.questions = res.data);
+
+    };
+
+    $scope.verify = function () {
+
+        var req = {
+            username: $scope.username,
+            answers: $scope.answers
+        };
+
+        ApiService.verifyAnswers(req)
+            .then(res => alert(res.data));
+
+    };
+
+});
