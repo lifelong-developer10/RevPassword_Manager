@@ -161,3 +161,22 @@ app.controller("OtpController", function ($scope, ApiService, $location) {
     };
 
 });
+app.controller("VaultController", function ($scope, ApiService) {
+
+    function load() {
+        ApiService.getVault().then(res => $scope.vault = res.data);
+    }
+
+    load();
+
+    $scope.delete = function (id) {
+
+        ApiService.deleteEntry(id)
+            .then(() => {
+                Swal.fire("Deleted", "Removed", "success");
+                load();
+            });
+
+    };
+
+});
