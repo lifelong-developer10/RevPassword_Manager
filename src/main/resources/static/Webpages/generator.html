@@ -1,13 +1,18 @@
-<div>
+<div class="container">
 
-    <h4>Password Generator</h4>
+    <h3>Password Generator</h3>
 
-    <input ng-model="length" class="form-control mb-2" placeholder="Length">
+    <input ng-model="length"
+           class="form-control mb-2"
+           placeholder="Length">
 
-    <button class="btn btn-primary" ng-click="generate()">Generate</button>
+    <button class="btn btn-primary"
+            ng-click="generate()">Generate</button>
 
-    <div ng-repeat="p in passwords">
+    <div class="mt-3" ng-repeat="p in passwords">
+
         {{p}}
+
     </div>
 
 </div>
