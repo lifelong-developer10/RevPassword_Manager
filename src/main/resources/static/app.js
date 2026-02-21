@@ -90,7 +90,26 @@ app.controller("LoginController", function ($scope, ApiService, $location) {
 app.controller("RegisterController", function ($scope, ApiService) {
 
     ApiService.getQuestions().then(res => $scope.questions = res.data);
+$scope.register = function () {
 
+    console.log("Register clicked");
+
+    ApiService.register(req)
+        .then(res => {
+
+            console.log(res);
+
+            Swal.fire("Success", "Registered!", "success");
+
+        })
+        .catch(err => {
+
+            console.error(err);
+
+            Swal.fire("Error", "Registration failed", "error");
+
+        });
+};
     $scope.checkStrength = function () {
 
         var p = $scope.user.password || "";
