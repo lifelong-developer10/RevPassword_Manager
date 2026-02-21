@@ -1,29 +1,45 @@
-<div class="card p-4">
+<div class="container">
 
-    <h4>Register</h4>
+    <div class="card p-4 col-md-6 mx-auto">
 
-    <input ng-model="user.username" class="form-control mb-2" placeholder="Username">
-    <input ng-model="user.email" class="form-control mb-2" placeholder="Email">
-    <input ng-model="user.phone" class="form-control mb-2" placeholder="Phone">
-    <input type="password" ng-model="user.password" class="form-control mb-2" placeholder="Password">
+        <h3>Register</h3>
 
-    <h5>Select Any 3 Security Questions</h5>
+        <input ng-model="user.username" class="form-control mb-2" placeholder="Username">
+        <input ng-model="user.email" class="form-control mb-2" placeholder="Email">
+        <input ng-model="user.phone" class="form-control mb-2" placeholder="Phone">
 
-    <div ng-repeat="q in questions">
-
-        <input type="checkbox"
-               ng-model="q.selected"
-               ng-change="limitSelection()">
-
-        <label>{{q.question}}</label>
-
-        <input ng-if="q.selected"
-               ng-model="q.answer"
+        <input type="password"
+               ng-model="user.password"
+               ng-change="checkStrength()"
                class="form-control mb-2"
-               placeholder="Your Answer">
+               placeholder="Password">
+
+        <div class="progress mb-3">
+            <div class="progress-bar bg-success"
+                 ng-style="{'width': strength + '%'}"></div>
+        </div>
+
+        <button class="btn btn-info mb-3"
+                ng-click="generatePassword()">Generate Strong Password</button>
+
+        <h5>Select 3 Security Questions</h5>
+
+        <div ng-repeat="q in questions">
+
+            <input type="checkbox"
+                   ng-model="q.selected">
+
+            {{q.question}}
+
+            <input ng-if="q.selected"
+                   ng-model="q.answer"
+                   class="form-control mb-2"
+                   placeholder="Answer">
+
+        </div>
+
+        <button class="btn btn-success w-100"
+                ng-click="register()">Register</button>
 
     </div>
-
-    <button class="btn btn-success" ng-click="register()">Register</button>
-
 </div>
