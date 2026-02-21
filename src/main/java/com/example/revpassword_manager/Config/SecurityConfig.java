@@ -1,6 +1,5 @@
 package com.example.revpassword_manager.Config;
 
-import com.example.revpassword_manager.Security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // ✅ Allow frontend static files
+                        // ✅ Allow frontend
                         .requestMatchers(
                                 "/",
                                 "/index.html",
@@ -37,16 +36,13 @@ public class SecurityConfig {
                                 "/favicon.ico"
                         ).permitAll()
 
-                        // ✅ Allow public APIs
+                        // ✅ Allow AUTH APIs
                         .requestMatchers(
                                 "/api/auth/**",
-                                "/api/forgot/**",
-                                "/api/password/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/api/forgot/**"
                         ).permitAll()
 
-                        // 🔐 Secure everything else
+                        // 🔐 Protect other APIs
                         .anyRequest().authenticated()
                 )
 
