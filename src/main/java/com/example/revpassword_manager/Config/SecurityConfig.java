@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 "/pages/**",
                                 "/assets/**"
                         ).permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
 
                         // ✅ Allow public APIs
                         .requestMatchers(
