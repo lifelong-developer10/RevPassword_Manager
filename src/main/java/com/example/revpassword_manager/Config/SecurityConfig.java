@@ -33,7 +33,7 @@ public class SecurityConfig {
                                 "/app.js",
                                 "/services.js",
                                 "/styles.css",
-                                "/Webpages/**",
+                                "/pages/**",
                                 "/assets/**"
                         ).permitAll()
 
