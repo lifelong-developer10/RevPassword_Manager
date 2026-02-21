@@ -1,6 +1,6 @@
 app.factory("ApiService", function ($http) {
 
-    var base = "/api";
+    var base = "http://localhost:8080/api";
 
     function authHeader() {
         return {
