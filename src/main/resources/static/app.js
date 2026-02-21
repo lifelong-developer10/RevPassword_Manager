@@ -62,3 +62,28 @@ app.run(function ($rootScope, $location) {
     });
 
 });
+app.controller("LoginController", function ($scope, ApiService, $location) {
+
+    $scope.login = function () {
+
+        ApiService.login($scope.user)
+            .then(res => {
+
+                if (res.data.message === "OTP_REQUIRED") {
+
+                    localStorage.setItem("tempUser", $scope.user.username);
+                    $location.path("/otp");
+
+                } else {
+
+                    localStorage.setItem("token", res.data.token);
+
+                    Swal.fire("Success", "Login Successful", "success");
+
+                    $location.path("/dashboard");
+                }
+
+            });
+    };
+
+});
