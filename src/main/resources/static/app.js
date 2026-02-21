@@ -180,3 +180,13 @@ app.controller("VaultController", function ($scope, ApiService) {
     };
 
 });
+app.controller("AddEntryController", function ($scope, ApiService) {
+
+    $scope.save = function () {
+
+        ApiService.addEntry($scope.entry)
+            .then(() => Swal.fire("Success", "Saved!", "success"));
+
+    };
+
+});
