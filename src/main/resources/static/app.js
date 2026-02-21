@@ -205,3 +205,38 @@ app.controller("GeneratorController", function ($scope) {
     };
 
 });
+app.controller("ForgotController", function ($scope, ApiService) {
+
+    $scope.answers = {};
+
+    $scope.getQuestions = function () {
+
+        ApiService.getQuestions()
+            .then(res => {
+                $scope.questions = res.data;
+            })
+            .catch(err => console.error(err));
+    };
+
+    $scope.verify = function () {
+
+        var req = {
+            username: $scope.username,
+            answers: $scope.answers
+        };
+
+        ApiService.verifyAnswers(req)
+            .then(res => {
+
+                Swal.fire("Verified", "Answers correct", "success");
+
+            })
+            .catch(err => {
+
+                Swal.fire("Error", "Verification failed", "error");
+
+            });
+
+    };
+
+});
