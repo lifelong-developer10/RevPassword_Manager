@@ -34,9 +34,8 @@ public class SecurityConfig {
                                 "/services.js",
                                 "/styles.css",
                                 "/pages/**",
-                                "/assets/**"
+                                "/favicon.ico"
                         ).permitAll()
-                        .requestMatchers("/favicon.ico").permitAll()
 
                         // ✅ Allow public APIs
                         .requestMatchers(
