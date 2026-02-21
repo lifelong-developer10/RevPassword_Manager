@@ -190,3 +190,18 @@ app.controller("AddEntryController", function ($scope, ApiService) {
     };
 
 });
+app.controller("GeneratorController", function ($scope) {
+
+    $scope.generate = function () {
+
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        var pass = "";
+
+        for (var i = 0; i < ($scope.length || 12); i++) {
+            pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        $scope.passwords = [pass];
+    };
+
+});
