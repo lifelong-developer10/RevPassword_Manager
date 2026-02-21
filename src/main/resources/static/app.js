@@ -139,3 +139,25 @@ app.controller("RegisterController", function ($scope, ApiService) {
     };
 
 });
+app.controller("OtpController", function ($scope, ApiService, $location) {
+
+    $scope.verify = function () {
+
+        var req = {
+            username: localStorage.getItem("tempUser"),
+            code: $scope.otp.code
+        };
+
+        ApiService.verifyOtp(req)
+            .then(res => {
+
+                localStorage.setItem("token", res.data.token);
+
+                Swal.fire("Success", "Login Complete", "success");
+
+                $location.path("/dashboard");
+            });
+
+    };
+
+});
