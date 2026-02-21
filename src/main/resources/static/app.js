@@ -87,3 +87,55 @@ app.controller("LoginController", function ($scope, ApiService, $location) {
     };
 
 });
+app.controller("RegisterController", function ($scope, ApiService) {
+
+    ApiService.getQuestions().then(res => $scope.questions = res.data);
+
+    $scope.checkStrength = function () {
+
+        var p = $scope.user.password || "";
+
+        $scope.strength = Math.min(100, p.length * 10);
+    };
+
+    $scope.generatePassword = function () {
+
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        var pass = "";
+
+        for (var i = 0; i < 12; i++) {
+            pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        $scope.user.password = pass;
+        $scope.checkStrength();
+    };
+
+    $scope.register = function () {
+
+        var selected = $scope.questions.filter(q => q.selected);
+
+        if (selected.length !== 3) {
+            Swal.fire("Error", "Select exactly 3 questions", "error");
+            return;
+        }
+
+        var securityAnswers = selected.map(q => ({
+            questionId: q.id,
+            answer: q.answer
+        }));
+
+        var req = {
+            username: $scope.user.username,
+            email: $scope.user.email,
+            phone: $scope.user.phone,
+            password: $scope.user.password,
+            securityAnswers: securityAnswers
+        };
+
+        ApiService.register(req)
+            .then(() => Swal.fire("Success", "Registered!", "success"));
+
+    };
+
+});
