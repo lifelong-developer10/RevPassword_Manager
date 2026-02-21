@@ -1,5 +1,6 @@
 package com.example.revpassword_manager.Config;
 
+import com.example.revpassword_manager.Security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
