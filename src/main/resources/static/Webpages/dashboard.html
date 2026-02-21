@@ -1,8 +1,26 @@
-<div>
+<div class="container">
 
-    <h4>Dashboard</h4>
+    <h2>Dashboard</h2>
 
-    <a href="#!/vault" class="btn btn-primary">Vault</a>
-    <a href="#!/generator" class="btn btn-warning">Generator</a>
+    <div class="row">
 
+        <div class="col-md-3" ng-repeat="card in [
+{title:'Vault',icon:'fa-key',link:'#/vault'},
+{title:'Add Account',icon:'fa-plus',link:'#/add-entry'},
+{title:'Generator',icon:'fa-random',link:'#/generator'}
+]">
+
+            <div class="card p-3 text-center">
+
+                <i class="fa {{card.icon}} fa-2x"></i>
+
+                <h5>{{card.title}}</h5>
+
+                <a ng-href="{{card.link}}" class="btn btn-primary">Open</a>
+
+            </div>
+
+        </div>
+
+    </div>
 </div>
