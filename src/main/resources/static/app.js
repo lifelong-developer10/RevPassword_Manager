@@ -3,35 +3,62 @@ var app = angular.module("secureApp", ["ngRoute"]);
 app.config(function ($routeProvider) {
 
     $routeProvider
+
         .when("/login", {
-            templateUrl: "Webpages/login.html",
+            templateUrl: "pages/login.html",
             controller: "LoginController"
         })
-        .when("/otp", {
-            templateUrl: "Webpages/otp.html",
-            controller: "OtpController"
-        })
+
         .when("/register", {
-            templateUrl: "Webpages/register.html",
+            templateUrl: "pages/register.html",
             controller: "RegisterController"
         })
-        .when("/dashboard", {
-            templateUrl: "Webpages/dashboard.html"
+
+        .when("/otp", {
+            templateUrl: "pages/otp.html",
+            controller: "OtpController"
         })
-        .when("/vault", {
-            templateUrl: "Webpages/vault.html",
-            controller: "VaultController"
-        })
-        .when("/generator", {
-            templateUrl: "Webpages/generator.html",
-            controller: "GeneratorController"
-        })
+
         .when("/forgot", {
-            templateUrl: "Webpages/forgot.html",
+            templateUrl: "pages/forgot.html",
             controller: "ForgotController"
         })
-        .otherwise({
-            redirectTo: "/login"
-        });
+
+        .when("/dashboard", {
+            templateUrl: "pages/dashboard.html"
+        })
+
+        .when("/vault", {
+            templateUrl: "pages/vault.html",
+            controller: "VaultController"
+        })
+
+        .when("/add-entry", {
+            templateUrl: "pages/add-entry.html",
+            controller: "AddEntryController"
+        })
+
+        .when("/generator", {
+            templateUrl: "pages/generator.html",
+            controller: "GeneratorController"
+        })
+
+        .otherwise({ redirectTo: "/login" });
+
+});
+
+app.run(function ($rootScope, $location) {
+
+    $rootScope.$on("$routeChangeStart", function () {
+
+        var token = localStorage.getItem("token");
+
+        if (!token && $location.path() !== "/login"
+            && $location.path() !== "/register"
+            && $location.path() !== "/forgot") {
+
+            $location.path("/login");
+        }
+    });
 
 });
