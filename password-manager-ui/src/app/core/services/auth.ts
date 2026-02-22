@@ -41,4 +41,22 @@ verifyMasterPassword(password: string) {
     { masterPassword: password }
   );
 }
+getProfile() {
+  return this.http.get(`${this.baseUrl}/api/users/profile`);
+}
+
+updateProfile(data: any) {
+  return this.http.put(`${this.baseUrl}/api/users/profile`, data);
+}
+changePassword(data: any) {
+  return this.http.post(`${this.baseUrl}/api/auth/change-password`, data);
+}
+
+getSecurityQuestions() {
+  return this.http.get(`${this.baseUrl}/api/security-questions`);
+}
+
+updateSecurityQuestions(data: any) {
+  return this.http.put(`${this.baseUrl}/api/security-questions`, data);
+}
 }

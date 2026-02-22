@@ -1,24 +1,110 @@
 <div class="container mt-4">
 
-  <h3>Profile</h3>
+  <h3>My Profile</h3>
 
-  <div class="card p-4 shadow">
+  <!-- Tabs -->
 
-    <input class="form-control mb-2"
-           placeholder="Name"
-           [(ngModel)]="user.name">
+  <ul class="nav nav-tabs">
 
-    <input class="form-control mb-2"
-           placeholder="Email"
-           [(ngModel)]="user.email">
+    <li class="nav-item">
+      <button class="nav-link"
+              [class.active]="activeTab === 'info'"
+              (click)="activeTab='info'">
+        Profile Info
+      </button>
+    </li>
 
-    <input class="form-control mb-2"
-           placeholder="Phone"
-           [(ngModel)]="user.phone">
+    <li class="nav-item">
+      <button class="nav-link"
+              [class.active]="activeTab === 'password'"
+              (click)="activeTab='password'">
+        Change Password
+      </button>
+    </li>
 
-    <button class="btn btn-primary">
-      Update
-    </button>
+    <li class="nav-item">
+      <button class="nav-link"
+              [class.active]="activeTab === 'security'"
+              (click)="activeTab='security'">
+        Security Questions
+      </button>
+    </li>
+
+  </ul>
+
+  <div class="card p-4 shadow mt-3 col-md-6">
+
+    <!-- ================= PROFILE INFO ================= -->
+
+    <div *ngIf="activeTab === 'info'">
+
+      <label>Name</label>
+      <input class="form-control mb-2"
+             [(ngModel)]="user.name">
+
+      <label>Email</label>
+      <input class="form-control mb-2"
+             [(ngModel)]="user.email">
+
+      <label>Phone</label>
+      <input class="form-control mb-2"
+             [(ngModel)]="user.phone">
+
+      <button class="btn btn-primary"
+              (click)="updateProfile()">
+        Update Profile
+      </button>
+
+    </div>
+
+    <!-- ================= CHANGE PASSWORD ================= -->
+
+    <div *ngIf="activeTab === 'password'">
+
+      <label>Current Password</label>
+      <input type="password"
+             class="form-control mb-2"
+             [(ngModel)]="passwordData.currentPassword">
+
+      <label>New Password</label>
+      <input type="password"
+             class="form-control mb-2"
+             [(ngModel)]="passwordData.newPassword">
+
+      <label>Confirm Password</label>
+      <input type="password"
+             class="form-control mb-2"
+             [(ngModel)]="passwordData.confirmPassword">
+
+      <button class="btn btn-primary"
+              (click)="changePassword()">
+        Change Password
+      </button>
+
+    </div>
+
+    <!-- ================= SECURITY QUESTIONS ================= -->
+
+    <div *ngIf="activeTab === 'security'">
+
+      <div *ngFor="let q of securityQuestions; let i=index">
+
+        <label>Question {{i+1}}</label>
+        <input class="form-control mb-2"
+               [(ngModel)]="q.question">
+
+        <label>Answer</label>
+        <input class="form-control mb-3"
+               [(ngModel)]="q.answer">
+
+      </div>
+
+      <button class="btn btn-primary"
+              (click)="updateSecurityQuestions()">
+        Update Questions
+      </button>
+
+    </div>
 
   </div>
 
