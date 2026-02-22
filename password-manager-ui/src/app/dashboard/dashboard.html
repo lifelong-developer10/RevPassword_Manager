@@ -1,97 +1,23 @@
 <div class="container mt-4">
 
-  <div class="d-flex justify-content-between">
-
-    <h3>Dashboard</h3>
-
-    <button class="btn btn-danger"
-            (click)="logout()">
-      Logout
-    </button>
-
-  </div>
-
-  <!-- Stats -->
+  <h3>Dashboard</h3>
 
   <div class="row mt-3">
 
     <div class="col-md-3">
       <div class="card p-3 shadow text-center">
-        <h4>{{vault.length}}</h4>
+        <h4>{{total}}</h4>
         <p>Total Accounts</p>
       </div>
     </div>
 
-  </div>
-
-  <!-- Add Account -->
-
-  <div class="card p-3 mt-4 shadow">
-
-    <h5>Add Account</h5>
-
-    <input class="form-control mb-2"
-           placeholder="Website"
-           [(ngModel)]="form.website">
-
-    <input class="form-control mb-2"
-           placeholder="Username"
-           [(ngModel)]="form.username">
-
-    <input class="form-control mb-2"
-           placeholder="Password"
-           [(ngModel)]="form.password">
-
-    <button class="btn btn-primary"
-            (click)="addAccount()">
-      Save
-    </button>
+    <div class="col-md-3">
+      <div class="card p-3 shadow text-center">
+        <h4>{{favorites}}</h4>
+        <p>Favorites</p>
+      </div>
+    </div>
 
   </div>
-
-  <!-- Search -->
-
-  <input class="form-control mt-4"
-         placeholder="Search..."
-         [(ngModel)]="search">
-
-  <!-- Vault Table -->
-
-  <table class="table table-bordered mt-3">
-
-    <thead>
-    <tr>
-      <th>Website</th>
-      <th>Username</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-
-    <tbody>
-
-    <tr *ngFor="let v of vault">
-
-      <td>{{v.website}}</td>
-      <td>{{v.username}}</td>
-
-      <td>
-
-        <button class="btn btn-info btn-sm"
-                (click)="viewPassword(v)">
-          View
-        </button>
-
-        <button class="btn btn-danger btn-sm"
-                (click)="delete(v.id)">
-          Delete
-        </button>
-
-      </td>
-
-    </tr>
-
-    </tbody>
-
-  </table>
 
 </div>

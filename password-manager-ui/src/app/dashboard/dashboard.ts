@@ -1,82 +1,33 @@
 import { Component } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import Swal from 'sweetalert2';
-import { VaultService } from '../services/vault.service';
-import { AuthService } from '../services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { VaultService } from '../core/services/vault.service';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html'
+  templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {
 
-  vault: any[] = [];
-  search = '';
+  total = 0;
+  favorites = 0;
 
-  form: any = {
-    website: '',
-    username: '',
-    password: ''
-  };
-
-  constructor(private vaultService: VaultService,
-              private auth: AuthService) {}
+  constructor(private vaultService: VaultService) {}
 
   ngOnInit() {
-    this.loadVault();
+    this.loadStats();
   }
 
-  loadVault() {
+  loadStats() {
+
     this.vaultService.getAll()
-      .subscribe((res: any) => {
-        this.vault = res;
-      });
-  }
+      .subscribe((res: any[]) => {
 
-  addAccount() {
-
-    this.vaultService.add(this.form)
-      .subscribe(() => {
-
-        Swal.fire('Success','Account added','success');
-
-        this.loadVault();
+        this.total = res.length;
+        this.favorites = res.filter(v => v.favorite).length;
 
       });
-  }
-
-  delete(id: number) {
-
-    this.vaultService.delete(id)
-      .subscribe(() => {
-
-        Swal.fire('Deleted','Account removed','success');
-
-        this.loadVault();
-
-      });
-  }
-
-  viewPassword(v: any) {
-
-    Swal.fire({
-      title: 'Enter Master Password',
-      input: 'password',
-      showCancelButton: true
-    }).then(result => {
-
-      if (result.value) {
-
-        Swal.fire('Password', v.password, 'info');
-
-      }
-
-    });
 
   }
 
-  logout() {
-    this.auth.logout();
-    location.href = '/login';
-  }
 }
