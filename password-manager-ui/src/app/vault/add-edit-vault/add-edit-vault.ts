@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { VaultService } from '../../core/services/vault.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-add-edit-vault',
@@ -23,18 +23,24 @@ export class AddEditVaultComponent implements OnInit {
 
   constructor(
     private vaultService: VaultService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
 
-    const data = history.state;
+    const id = this.route.snapshot.paramMap.get('id');
 
-    if (data && data.id) {
+    if (id) {
 
       this.isEdit = true;
 
-      this.form = { ...data };
+      this.vaultService.getOne(Number(id))
+        .subscribe((res: any) => {
+
+          this.form = res;
+
+        });
 
     }
 
