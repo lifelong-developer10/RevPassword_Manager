@@ -1,5 +1,3 @@
-import { Component } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { VaultService } from '../core/services/vault.service';
 

@@ -3,9 +3,20 @@ import { FormBuilder, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { calculateStrength } from '../../core/password-strength';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  templateUrl: '/login.html',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule]
+})
+export class LoginComponent {}
+
 @Component({
   selector: 'app-register',
-  templateUrl: './register.component.html'
+  templateUrl: '/register.component.html'
 })
 export class RegisterComponent {
 
@@ -14,7 +25,8 @@ export class RegisterComponent {
   strengthScore = 0;
   strengthLabel = '';
   strengthColor = '';
-
+constructor(private fb: FormBuilder,
+              private auth: AuthService) {}
   form = this.fb.group({
     username: ['', Validators.required],
 
@@ -31,8 +43,7 @@ export class RegisterComponent {
     password: ['', Validators.required]
   });
 
-  constructor(private fb: FormBuilder,
-              private auth: AuthService) {}
+
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -66,15 +77,6 @@ export class RegisterComponent {
     this.checkStrength();
   }
 
-checkStrength() {
-
-  const result = calculateStrength(this.form.password);
-
-  this.strengthScore = result.score;
-  this.strengthLabel = result.label;
-  this.strengthColor = result.color;
-
-}
   register() {
 
     if (this.form.invalid) return;

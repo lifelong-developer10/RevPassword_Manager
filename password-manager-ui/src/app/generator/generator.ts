@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-generator',
-  templateUrl: './generator.html'
+  templateUrl: '/generator.html'
 })
 export class GeneratorComponent {
 

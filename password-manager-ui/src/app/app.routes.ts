@@ -1,3 +1,12 @@
+import { LoginComponent } from './auth/login/login';
+import { RegisterComponent } from './auth/register/register';
+import { DashboardComponent } from './dashboard/dashboard';
+import { VaultListComponent } from './vault/vault-list/vault-list';
+import { AddEditVaultComponent } from './vault/add-edit-vault/add-edit-vault';
+import { GeneratorComponent } from './generator/generator';
+import { ProfileComponent } from './profile/profile';
+
+
 export const routes = [
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },

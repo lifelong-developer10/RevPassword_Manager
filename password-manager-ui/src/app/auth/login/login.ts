@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html'
+  standalone: true,
+  templateUrl: './login.html',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class LoginComponent {
-
+ constructor(private fb: FormBuilder,
+              private auth: AuthService,
+              private router: Router) {}
   showPassword = false;
 
   form = this.fb.group({
@@ -17,9 +19,7 @@ export class LoginComponent {
     password: ['', Validators.required]
   });
 
-  constructor(private fb: FormBuilder,
-              private auth: AuthService,
-              private router: Router) {}
+
 
   togglePassword() {
     this.showPassword = !this.showPassword;
