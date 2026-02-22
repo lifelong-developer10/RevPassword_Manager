@@ -64,7 +64,7 @@ requestRecovery(email: string) {
 }
 
 sendOtp(email: string) {
-   this.method = 'otp';
+
   return this.http.post(`${this.baseUrl}/api/auth/send-otp`, { email });
 }
 
@@ -73,7 +73,7 @@ verifyOtp(data: any) {
 }
 
 getRecoveryQuestions(email: string) {
-  this.method = 'questions';
+
   return this.http.get(`${this.baseUrl}/api/security-questions/recovery?email=${email}`);
 }
 

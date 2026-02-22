@@ -26,8 +26,7 @@ logout() {
     this.vaultService.getAll()
 .subscribe((res: any) => {
         this.total = res.length;
-        this.favorites = res.filter(v => v.favorite).length;
-
+this.favorites = (res as any[]).filter((v: any) => v.favorite).length;
       });
 
   }
