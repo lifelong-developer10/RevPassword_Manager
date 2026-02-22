@@ -32,17 +32,36 @@
           <i class="fa"
              [ngClass]="showPassword ? 'fa-eye-slash':'fa-eye'"></i>
         </button>
+        <div class="input-group mb-2">
 
-      </div>
+          <input class="form-control"
+                 placeholder="Password"
+                 [(ngModel)]="form.password"
+                 (input)="checkStrength()">
 
-      <div class="progress mb-2">
+          <button class="btn btn-secondary"
+                  (click)="generatePassword()">
+            Generate
+          </button>
 
-        <div class="progress-bar"
-             [style.width.%]="strength">
-          {{strength}}%
         </div>
 
+        <!-- Strength Bar -->
+
+        <div class="progress mb-2">
+
+          <div class="progress-bar"
+               [style.width.%]="strengthScore"
+               [style.background]="strengthColor">
+
+            {{strengthLabel}} ({{strengthScore}}%)
+
+          </div>
+
+        </div>
       </div>
+
+
 
       <button type="button"
               class="btn btn-secondary w-100 mb-2"

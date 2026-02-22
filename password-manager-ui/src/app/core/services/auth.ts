@@ -35,4 +35,10 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
+verifyMasterPassword(password: string) {
+  return this.http.post(
+    `${this.baseUrl}/api/auth/verify-master-password`,
+    { masterPassword: password }
+  );
+}
 }

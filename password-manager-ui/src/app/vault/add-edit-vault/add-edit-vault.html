@@ -17,7 +17,33 @@
       <input class="form-control"
              placeholder="Password"
              [(ngModel)]="form.password">
+      <div class="input-group mb-2">
 
+        <input class="form-control"
+               placeholder="Password"
+               [(ngModel)]="form.password"
+               (input)="checkStrength()">
+
+        <button class="btn btn-secondary"
+                (click)="generatePassword()">
+          Generate
+        </button>
+
+      </div>
+
+      <!-- Strength Bar -->
+
+      <div class="progress mb-2">
+
+        <div class="progress-bar"
+             [style.width.%]="strengthScore"
+             [style.background]="strengthColor">
+
+          {{strengthLabel}} ({{strengthScore}}%)
+
+        </div>
+
+      </div>
       <button class="btn btn-secondary"
               (click)="generatePassword()">
         Generate

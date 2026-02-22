@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { VaultService } from '../../core/services/vault.service';
 import { Router, ActivatedRoute } from '@angular/router';
-
+import { calculateStrength } from '../../core/utils/password-strength';
 @Component({
   selector: 'app-add-edit-vault',
   templateUrl: './add-edit-vault.html'
@@ -20,7 +20,9 @@ export class AddEditVaultComponent implements OnInit {
   };
 
   isEdit = false;
-
+strengthScore = 0;
+strengthLabel = '';
+strengthColor = '';
   constructor(
     private vaultService: VaultService,
     private router: Router,
@@ -46,6 +48,16 @@ export class AddEditVaultComponent implements OnInit {
 
   }
 
+
+checkStrength() {
+
+  const result = calculateStrength(this.form.password);
+
+  this.strengthScore = result.score;
+  this.strengthLabel = result.label;
+  this.strengthColor = result.color;
+
+}
   generatePassword() {
 
     const chars =
@@ -58,6 +70,8 @@ export class AddEditVaultComponent implements OnInit {
     }
 
     this.form.password = pass;
+
+    this.checkStrength();
   }
 
   save() {

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
-
+import { calculateStrength } from '../../core/password-strength';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html'
@@ -11,6 +11,9 @@ export class RegisterComponent {
 
   showPassword = false;
   strength = 0;
+  strengthScore = 0;
+  strengthLabel = '';
+  strengthColor = '';
 
   form = this.fb.group({
     username: ['', Validators.required],
@@ -48,19 +51,30 @@ export class RegisterComponent {
   }
 
   generatePassword() {
+
     const chars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%';
 
     let pass = '';
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
       pass += chars.charAt(Math.floor(Math.random() * chars.length));
     }
 
-    this.form.patchValue({ password: pass });
+    this.form.password = pass;
+
     this.checkStrength();
   }
 
+checkStrength() {
+
+  const result = calculateStrength(this.form.password);
+
+  this.strengthScore = result.score;
+  this.strengthLabel = result.label;
+  this.strengthColor = result.color;
+
+}
   register() {
 
     if (this.form.invalid) return;
