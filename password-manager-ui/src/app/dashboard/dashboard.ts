@@ -3,7 +3,8 @@ import { VaultService } from '../core/services/vault.service';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.html'
+  templateUrl: './dashboard.html',
+   imports: [CommonModule, FormsModule]
 })
 export class DashboardComponent implements OnInit {
 

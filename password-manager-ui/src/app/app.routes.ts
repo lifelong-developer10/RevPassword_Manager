@@ -9,7 +9,7 @@ import { ProfileComponent } from './profile/profile';
 
 export const routes = [
 
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' as const},
 
   { path: 'login', component: LoginComponent },
 

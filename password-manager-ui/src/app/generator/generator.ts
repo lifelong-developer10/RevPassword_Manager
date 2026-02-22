@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-generator',
-  templateUrl: '/generator.html'
+  templateUrl: './generator.html',
+   imports: [CommonModule, FormsModule]
 })
 export class GeneratorComponent {
 

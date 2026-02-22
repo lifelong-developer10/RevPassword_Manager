@@ -6,7 +6,8 @@ import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-vault-list',
   templateUrl: './vault-list.html',
-  styleUrls: ['./vault-list.css']
+  styleUrls: ['./vault-list.css'],
+   imports: [CommonModule, FormsModule]
 })
 export class VaultListComponent implements OnInit {
 

@@ -6,17 +6,12 @@ import { calculateStrength } from '../../core/password-strength';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-@Component({
-  selector: 'app-login',
-  standalone: true,
-  templateUrl: '/login.html',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule]
-})
-export class LoginComponent {}
+
 
 @Component({
   selector: 'app-register',
-  templateUrl: '/register.component.html'
+  templateUrl: './register.component.html',
+  imports: [CommonModule, FormsModule]
 })
 export class RegisterComponent {
 

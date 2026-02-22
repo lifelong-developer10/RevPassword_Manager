@@ -5,7 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { calculateStrength } from '../../core/password-strength';
 @Component({
   selector: 'app-add-edit-vault',
-  templateUrl: './add-edit-vault.html'
+  templateUrl: './add-edit-vault.html',
+   imports: [CommonModule, FormsModule]
 })
 export class AddEditVaultComponent implements OnInit {
 

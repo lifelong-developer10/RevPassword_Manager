@@ -4,7 +4,9 @@ import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
-  templateUrl: '/forgot-password.html'
+  standalone: true,
+  templateUrl: './forgot-password.html',
+  imports: [CommonModule, FormsModule]
 })
 export class ForgotPasswordComponent {
 
@@ -59,7 +61,10 @@ export class ForgotPasswordComponent {
     });
 
   }
-
+logout() {
+  localStorage.removeItem('token');
+  window.location.href = '/login';
+}
   // ---------------- SECURITY QUESTIONS ----------------
 
   loadQuestions() {

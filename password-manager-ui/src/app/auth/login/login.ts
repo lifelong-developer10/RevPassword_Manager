@@ -9,10 +9,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class LoginComponent {
+   showPassword = false;
  constructor(private fb: FormBuilder,
-              private auth: AuthService,
+              private auth: Auth.Service,
               private router: Router) {}
-  showPassword = false;
+
 
   form = this.fb.group({
     username: ['', Validators.required],
