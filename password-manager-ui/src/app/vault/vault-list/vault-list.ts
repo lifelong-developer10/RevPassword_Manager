@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { VaultService } from '../../core/services/vault.service';
-import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 import { VaultService } from '../../core/services/vault.service';
 
 @Component({
@@ -14,7 +13,10 @@ export class VaultListComponent implements OnInit {
   vault: any[] = [];
   keyword = '';
 
-  constructor(private vaultService: VaultService) {}
+  constructor(
+    private vaultService: VaultService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadVault();
@@ -28,6 +30,7 @@ export class VaultListComponent implements OnInit {
   }
 
   search() {
+
     if (!this.keyword) {
       this.loadVault();
       return;
@@ -39,26 +42,36 @@ export class VaultListComponent implements OnInit {
       });
   }
 
+  filter(category: string) {
+
+    if (category === 'ALL') {
+      this.loadVault();
+      return;
+    }
+
+    this.vaultService.filter(category)
+      .subscribe((res: any) => {
+        this.vault = res;
+      });
+  }
+
   delete(id: number) {
 
     Swal.fire({
       title: 'Delete?',
-      text: 'Are you sure?',
       icon: 'warning',
       showCancelButton: true
     }).then(result => {
 
-      if (result.isConfirmed) {
+      if (!result.isConfirmed) return;
 
-        this.vaultService.delete(id)
-          .subscribe(() => {
+      this.vaultService.delete(id)
+        .subscribe(() => {
 
-            Swal.fire('Deleted','Entry removed','success');
-            this.loadVault();
+          Swal.fire('Deleted','Entry removed','success');
+          this.loadVault();
 
-          });
-
-      }
+        });
 
     });
 
@@ -72,32 +85,35 @@ export class VaultListComponent implements OnInit {
       showCancelButton: true
     }).then(result => {
 
-      if (result.value) {
+      if (!result.value) return;
 
-        // you can call backend verification here
+      // TODO: call backend verify API
 
-        Swal.fire('Password', item.password, 'info');
-
-      }
+      Swal.fire('Password', item.password, 'info');
 
     });
 
   }
-viewPassword(item: any) {
 
-  Swal.fire({
-    title: 'Enter Master Password',
-    input: 'password',
-    showCancelButton: true
-  }).then(result => {
+  edit(item: any) {
 
-    if (!result.value) return;
+    this.router.navigate(['/vault/add'], {
+      state: item
+    });
 
-    // call backend verify API here
+  }
 
-    Swal.fire('Password', item.password, 'info');
+  toggleFavorite(item: any) {
 
-  });
+    item.favorite = !item.favorite;
 
-}
+    this.vaultService.update(item.id, item)
+      .subscribe(() => {
+
+        Swal.fire('Updated','Favorite changed','success');
+
+      });
+
+  }
+
 }

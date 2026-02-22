@@ -2,7 +2,7 @@
 
   <h3 class="mb-3">My Vault</h3>
 
-  <!-- Search -->
+  <!-- Search + Filter -->
 
   <div class="row mb-3">
 
@@ -11,6 +11,21 @@
              placeholder="Search website..."
              [(ngModel)]="keyword"
              (input)="search()">
+    </div>
+
+    <div class="col-md-3">
+      <select class="form-control"
+              (change)="filter($event.target.value)">
+
+        <option value="ALL">All</option>
+        <option value="SOCIAL">Social</option>
+        <option value="BANKING">Banking</option>
+        <option value="EMAIL">Email</option>
+        <option value="SHOPPING">Shopping</option>
+        <option value="WORK">Work</option>
+        <option value="OTHER">Other</option>
+
+      </select>
     </div>
 
   </div>
@@ -26,18 +41,27 @@
 
         <div class="card-body">
 
-          <h5>{{item.websiteName}}</h5>
+          <div class="d-flex justify-content-between">
 
-          <p class="text-muted">
+            <h5>{{item.websiteName}}</h5>
+
+            <button class="btn btn-sm btn-warning"
+                    (click)="toggleFavorite(item)">
+              <i class="fa"
+                 [ngClass]="item.favorite ? 'fa-star':'fa-star-o'">
+              </i>
+            </button>
+
+          </div>
+
+          <p class="text-muted mb-1">
             {{item.username}}
           </p>
 
           <span class="badge bg-primary">
             {{item.category}}
           </span>
-          <button class="btn btn-sm btn-warning">
-            ⭐
-          </button>
+
           <div class="actions mt-3">
 
             <button class="btn btn-sm btn-info"
@@ -45,7 +69,8 @@
               <i class="fa fa-eye"></i>
             </button>
 
-            <button class="btn btn-sm btn-warning">
+            <button class="btn btn-sm btn-warning"
+                    (click)="edit(item)">
               <i class="fa fa-edit"></i>
             </button>
 
