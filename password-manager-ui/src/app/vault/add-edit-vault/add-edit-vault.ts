@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { VaultService } from '../../core/services/vault.service';
 import { Router } from '@angular/router';
@@ -8,9 +7,10 @@ import { Router } from '@angular/router';
   selector: 'app-add-edit-vault',
   templateUrl: './add-edit-vault.html'
 })
-export class AddEditVaultComponent {
+export class AddEditVaultComponent implements OnInit {
 
   form: any = {
+    id: null,
     websiteName: '',
     username: '',
     password: '',
@@ -19,8 +19,26 @@ export class AddEditVaultComponent {
     favorite: false
   };
 
-  constructor(private vaultService: VaultService,
-              private router: Router) {}
+  isEdit = false;
+
+  constructor(
+    private vaultService: VaultService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+
+    const data = history.state;
+
+    if (data && data.id) {
+
+      this.isEdit = true;
+
+      this.form = { ...data };
+
+    }
+
+  }
 
   generatePassword() {
 
@@ -38,19 +56,27 @@ export class AddEditVaultComponent {
 
   save() {
 
-    this.vaultService.add(this.form)
-      .subscribe({
+    if (this.isEdit) {
 
-        next: () => {
-          Swal.fire('Success','Saved successfully','success');
+      this.vaultService.update(this.form.id, this.form)
+        .subscribe(() => {
+
+          Swal.fire('Updated','Saved successfully','success');
           this.router.navigate(['/vault']);
-        },
 
-        error: () => {
-          Swal.fire('Error','Failed','error');
-        }
+        });
 
-      });
+    } else {
+
+      this.vaultService.add(this.form)
+        .subscribe(() => {
+
+          Swal.fire('Success','Added successfully','success');
+          this.router.navigate(['/vault']);
+
+        });
+
+    }
 
   }
 

@@ -97,9 +97,7 @@ export class VaultListComponent implements OnInit {
 
   edit(item: any) {
 
-    this.router.navigate(['/vault/add'], {
-      state: item
-    });
+    this.router.navigate(['/vault/edit', item.id]);
 
   }
 

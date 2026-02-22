@@ -14,6 +14,13 @@ export const routes = [
 
   { path: 'generator', component: GeneratorComponent },
 
-  { path: 'profile', component: ProfileComponent }
-
+  { path: 'profile', component: ProfileComponent },
+{
+  path: 'vault/add',
+  component: AddEditVaultComponent
+},
+{
+  path: 'vault/edit/:id',
+  component: AddEditVaultComponent
+}
 ];
