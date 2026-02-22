@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { VaultService } from '../core/services/vault.service';
-
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',

@@ -3,6 +3,8 @@ import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { VaultService } from '../../core/services/vault.service';
 import { AuthService } from '../../core/services/auth.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-vault-list',
   templateUrl: './vault-list.html',

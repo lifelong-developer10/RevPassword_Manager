@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -9,49 +11,35 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class LoginComponent {
-   showPassword = false;
- constructor(private fb: FormBuilder,
-              private auth: Auth.Service,
-              private router: Router) {}
 
+  show2FAScreen = false;
+  twoFACode = '';
 
-  form = this.fb.group({
-    username: ['', Validators.required],
-    password: ['', Validators.required]
-  });
+  form: any;
 
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router
+  ) {
 
+    this.form = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
 
-  togglePassword() {
-    this.showPassword = !this.showPassword;
   }
-login() {
 
-  this.auth.login(this.form.value)
-    .subscribe((res: any) => {
+  login() {
 
-      if (res.requires2FA) {
+    this.auth.login(this.form.value)
+      .subscribe((res: any) => {
 
-        this.show2FAScreen = true;
-        return;
+        localStorage.setItem('token', res.token);
+        this.router.navigate(['/dashboard']);
 
-      }
+      });
 
-      this.auth.saveToken(res.token);
-      this.router.navigate(['/dashboard']);
+  }
 
-    });
-
-}
-verifyLogin2FA() {
-
-  this.auth.verify2FA(this.twoFACode)
-    .subscribe((res: any) => {
-
-      this.auth.saveToken(res.token);
-      this.router.navigate(['/dashboard']);
-
-    });
-
-}
 }

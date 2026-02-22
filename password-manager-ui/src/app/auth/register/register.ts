@@ -5,13 +5,13 @@ import { AuthService } from '../../services/auth.service';
 import { calculateStrength } from '../../core/password-strength';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 
 
 @Component({
   selector: 'app-register',
-  templateUrl: './register.component.html',
-  imports: [CommonModule, FormsModule]
+  templateUrl: './register.html',
+imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class RegisterComponent {
 

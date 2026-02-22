@@ -3,6 +3,8 @@ import Swal from 'sweetalert2';
 import { VaultService } from '../../core/services/vault.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { calculateStrength } from '../../core/password-strength';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-add-edit-vault',
   templateUrl: './add-edit-vault.html',
