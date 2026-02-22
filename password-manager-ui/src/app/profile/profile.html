@@ -13,7 +13,13 @@
         Profile Info
       </button>
     </li>
-
+    <li class="nav-item">
+      <button class="nav-link"
+              [class.active]="activeTab === '2fa'"
+              (click)="activeTab='2fa'">
+        Two Factor Auth
+      </button>
+    </li>
     <li class="nav-item">
       <button class="nav-link"
               [class.active]="activeTab === 'password'"

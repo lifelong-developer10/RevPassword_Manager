@@ -87,5 +87,45 @@ export class ProfileComponent implements OnInit {
       });
 
   }
+twoFAEnabled = false;
+twoFACode = '';
+secret = '';
 
+enable2FA() {
+
+  this.authService.enable2FA()
+    .subscribe((res: any) => {
+
+      this.secret = res.secret;   // backend may send secret
+      this.twoFAEnabled = true;
+
+      Swal.fire('2FA Enabled','Enter verification code','success');
+
+    });
+
+}
+
+verify2FA() {
+
+  this.authService.verify2FA(this.twoFACode)
+    .subscribe(() => {
+
+      Swal.fire('Success','2FA Verified','success');
+
+    });
+
+}
+
+disable2FA() {
+
+  this.authService.disable2FA()
+    .subscribe(() => {
+
+      this.twoFAEnabled = false;
+
+      Swal.fire('Disabled','2FA turned off','success');
+
+    });
+
+}
 }
