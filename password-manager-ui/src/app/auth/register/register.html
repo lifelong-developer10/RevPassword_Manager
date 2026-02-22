@@ -1,1 +1,41 @@
-<p>register works!</p>
+<div class="container mt-5">
+  <div class="card p-4 shadow">
+
+    <h3 class="text-center mb-3">Register</h3>
+
+    <form [formGroup]="form" (ngSubmit)="register()">
+
+      <input class="form-control mb-3"
+             placeholder="Username"
+             formControlName="username">
+
+      <input class="form-control mb-3"
+             placeholder="Email"
+             formControlName="email">
+
+      <input class="form-control mb-3"
+             placeholder="Phone"
+             formControlName="phone">
+
+      <div class="input-group mb-3">
+        <input class="form-control"
+               [type]="showPassword ? 'text':'password'"
+               placeholder="Password"
+               formControlName="password">
+
+        <button type="button"
+                class="btn btn-outline-secondary"
+                (click)="togglePassword()">
+          <i class="fa"
+             [ngClass]="showPassword ? 'fa-eye-slash':'fa-eye'"></i>
+        </button>
+      </div>
+
+      <button class="btn btn-primary w-100">
+        Register
+      </button>
+
+    </form>
+
+  </div>
+</div>
