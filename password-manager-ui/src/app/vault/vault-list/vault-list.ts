@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { VaultService } from '../../core/services/vault.service';
-
+import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-vault-list',
   templateUrl: './vault-list.html',
@@ -13,10 +13,11 @@ export class VaultListComponent implements OnInit {
   vault: any[] = [];
   keyword = '';
 
-  constructor(
-    private vaultService: VaultService,
-    private router: Router
-  ) {}
+ constructor(
+   private vaultService: VaultService,
+   private authService: AuthService,
+   private router: Router
+ ) {}
 
   ngOnInit() {
     this.loadVault();
@@ -76,24 +77,47 @@ export class VaultListComponent implements OnInit {
     });
 
   }
+viewPassword(item: any) {
 
-  viewPassword(item: any) {
+  Swal.fire({
+    title: 'Enter Master Password',
+    input: 'password',
+    inputPlaceholder: 'Master password',
+    showCancelButton: true
+  }).then(result => {
 
-    Swal.fire({
-      title: 'Enter Master Password',
-      input: 'password',
-      showCancelButton: true
-    }).then(result => {
+    if (!result.value) return;
 
-      if (!result.value) return;
+    this.authService.verifyMasterPassword(result.value)
+      .subscribe({
 
-      // TODO: call backend verify API
+        next: (res: any) => {
 
-      Swal.fire('Password', item.password, 'info');
+          if (res === true || res.valid) {
 
-    });
+            Swal.fire({
+              title: 'Password',
+              text: item.password,
+              icon: 'info'
+            });
 
-  }
+          } else {
+
+            Swal.fire('Error','Incorrect master password','error');
+
+          }
+
+        },
+
+        error: () => {
+          Swal.fire('Error','Verification failed','error');
+        }
+
+      });
+
+  });
+
+}
 
   edit(item: any) {
 

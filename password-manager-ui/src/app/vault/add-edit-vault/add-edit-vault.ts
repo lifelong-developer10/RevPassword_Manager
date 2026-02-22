@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { VaultService } from '../../core/services/vault.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { calculateStrength } from '../../core/utils/password-strength';
+import { calculateStrength } from '../../core/password-strength';
 @Component({
   selector: 'app-add-edit-vault',
   templateUrl: './add-edit-vault.html'
