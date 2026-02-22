@@ -1,4 +1,3 @@
-import { Component } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { VaultService } from '../../core/services/vault.service';
 
@@ -9,18 +8,32 @@ import { VaultService } from '../../core/services/vault.service';
 export class VaultListComponent implements OnInit {
 
   vault: any[] = [];
+  keyword = '';
 
   constructor(private vaultService: VaultService) {}
 
   ngOnInit() {
-    this.loadVault();
+    this.load();
   }
 
-  loadVault() {
+  load() {
     this.vaultService.getAll()
       .subscribe((res: any) => {
         this.vault = res;
       });
   }
 
+  search() {
+    this.vaultService.search(this.keyword)
+      .subscribe((res: any) => {
+        this.vault = res;
+      });
+  }
+
+  delete(id: number) {
+    this.vaultService.delete(id)
+      .subscribe(() => {
+        this.load();
+      });
+  }
 }
