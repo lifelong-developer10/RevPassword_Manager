@@ -34,10 +34,12 @@
         </button>
         <div class="input-group mb-2">
 
-          <input class="form-control"
+          <input type="password"
+                 formControlName="password"
                  placeholder="Password"
-                 [(ngModel)]="form.password"
+                 class="form-control"
                  (input)="checkStrength()">
+
 
           <button class="btn btn-secondary"
                   (click)="generatePassword()">

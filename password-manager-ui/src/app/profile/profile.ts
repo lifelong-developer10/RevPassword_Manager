@@ -47,7 +47,10 @@ export class ProfileComponent implements OnInit {
         Swal.fire('Success','Profile updated','success');
       });
   }
-
+logout() {
+  localStorage.removeItem('token');
+  window.location.href = '/login';
+}
   // ---------------- Change Password ----------------
 
   changePassword() {

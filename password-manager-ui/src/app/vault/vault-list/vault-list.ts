@@ -121,7 +121,10 @@ viewPassword(item: any) {
   });
 
 }
-
+logout() {
+  localStorage.removeItem('token');
+  window.location.href = '/login';
+}
   edit(item: any) {
 
     this.router.navigate(['/vault/edit', item.id]);

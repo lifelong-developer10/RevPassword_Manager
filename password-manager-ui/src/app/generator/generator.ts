@@ -10,7 +10,10 @@ import { FormsModule } from '@angular/forms';
 export class GeneratorComponent {
 
   password = '';
-
+logout() {
+  localStorage.removeItem('token');
+  window.location.href = '/login';
+}
   generate() {
 
     const chars =

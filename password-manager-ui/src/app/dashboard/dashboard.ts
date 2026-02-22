@@ -17,12 +17,14 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.loadStats();
   }
-
+logout() {
+  localStorage.removeItem('token');
+  window.location.href = '/login';
+}
   loadStats() {
 
     this.vaultService.getAll()
-      .subscribe((res: any[]) => {
-
+.subscribe((res: any) => {
         this.total = res.length;
         this.favorites = res.filter(v => v.favorite).length;
 

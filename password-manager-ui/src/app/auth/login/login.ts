@@ -14,6 +14,12 @@ export class LoginComponent {
 
   show2FAScreen = false;
   twoFACode = '';
+showPassword = false;
+
+
+togglePassword() {
+  this.showPassword = !this.showPassword;
+}
 
   form: any;
 
@@ -29,7 +35,21 @@ export class LoginComponent {
     });
 
   }
+logout() {
+  localStorage.removeItem('token');
+  window.location.href = '/login';
+}
+verifyLogin2FA() {
 
+  this.auth.verify2FA(this.twoFACode)
+    .subscribe((res: any) => {
+
+      localStorage.setItem('token', res.token);
+      this.router.navigate(['/dashboard']);
+
+    });
+
+}
   login() {
 
     this.auth.login(this.form.value)

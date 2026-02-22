@@ -1,75 +1,40 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
-import { AuthService } from '../../services/auth.service';
-import { calculateStrength } from '../../core/password-strength';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   templateUrl: './register.html',
-imports: [CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class RegisterComponent {
 
+  form: any;
+
   showPassword = false;
-  strength = 0;
-  strengthScore = 0;
-  strengthLabel = '';
-  strengthColor = '';
-constructor(private fb: FormBuilder,
-              private auth: AuthService) {}
-  form = this.fb.group({
-    username: ['', Validators.required],
 
-    email: ['', [
-      Validators.required,
-      Validators.pattern('^[a-zA-Z0-9._%+-]+@gmail\\.com$')
-    ]],
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router
+  ) {
 
-    phone: ['', [
-      Validators.required,
-      Validators.pattern('^[0-9]{10}$')
-    ]],
+    // Create form here (IMPORTANT)
+    this.form = this.fb.group({
+      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', Validators.required],
+      password: ['', Validators.required]
+    });
 
-    password: ['', Validators.required]
-  });
-
-
+  }
 
   togglePassword() {
     this.showPassword = !this.showPassword;
-  }
-
-  checkStrength() {
-    const value = this.form.value.password || '';
-    let score = 0;
-
-    if (value.length > 6) score += 25;
-    if (/[A-Z]/.test(value)) score += 25;
-    if (/[0-9]/.test(value)) score += 25;
-    if (/[^A-Za-z0-9]/.test(value)) score += 25;
-
-    this.strength = score;
-  }
-
-  generatePassword() {
-
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%';
-
-    let pass = '';
-
-    for (let i = 0; i < 12; i++) {
-      pass += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    this.form.password = pass;
-
-    this.checkStrength();
   }
 
   register() {
@@ -80,13 +45,21 @@ constructor(private fb: FormBuilder,
       .subscribe({
 
         next: () => {
-          Swal.fire('Success','Registered successfully','success');
+          alert('Registration successful');
+          this.router.navigate(['/login']);
         },
 
         error: () => {
-          Swal.fire('Error','Registration failed','error');
+          alert('Registration failed');
         }
 
       });
+
   }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
+
 }

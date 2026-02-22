@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,8 @@ export class AuthService {
 
   private baseUrl = environment.apiUrl;
 
-  constructor(private http: Ht,tpClient) {}
+
+constructor(private http: HttpClient) {}
 
   register(data: any) {
     return this.http.post(`${this.baseUrl}/auth/register`, data);

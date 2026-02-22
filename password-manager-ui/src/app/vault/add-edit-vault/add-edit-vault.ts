@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { VaultService } from '../../core/services/vault.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { calculateStrength } from '../../core/password-strength';
+import { calculateStrength } from '../../core/password-strength/password-strength';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 @Component({
@@ -50,7 +50,10 @@ strengthColor = '';
     }
 
   }
-
+logout() {
+  localStorage.removeItem('token');
+  window.location.href = '/login';
+}
 
 checkStrength() {
 

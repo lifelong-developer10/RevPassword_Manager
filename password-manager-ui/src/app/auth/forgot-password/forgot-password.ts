@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import Swal from 'sweetalert2';
-import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+
+import { AuthService } from '../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
@@ -22,30 +24,40 @@ export class ForgotPasswordComponent {
 
   questions: any[] = [];
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  // ---------------- STEP 1 ----------------
+  // ================= STEP 1 =================
 
-  sendMethods() {
+  continue() {
 
-    this.authService.requestRecovery(this.email)
-      .subscribe(() => {
+    if (!this.email) {
+      Swal.fire('Error', 'Enter email', 'error');
+      return;
+    }
 
-        this.step = 2;
-
-      });
-
+    this.step = 2;
   }
 
-  // ---------------- OTP ----------------
+  // ================= OTP FLOW =================
 
   sendOtp() {
 
-    this.authService.sendOtp(this.email)
-      .subscribe(() => {
+    this.method = 'otp';
 
-        Swal.fire('OTP Sent','Check your email','success');
-        this.step = 3;
+    this.authService.sendOtp(this.email)
+      .subscribe({
+
+        next: () => {
+          Swal.fire('OTP Sent', 'Check your email', 'success');
+          this.step = 3;
+        },
+
+        error: () => {
+          Swal.fire('Error', 'Failed to send OTP', 'error');
+        }
 
       });
 
@@ -56,26 +68,38 @@ export class ForgotPasswordComponent {
     this.authService.verifyOtp({
       email: this.email,
       otp: this.otp
-    }).subscribe(() => {
+    }).subscribe({
 
-      this.step = 4;
+      next: () => {
+        Swal.fire('Verified', 'OTP correct', 'success');
+        this.step = 4;
+      },
+
+      error: () => {
+        Swal.fire('Error', 'Invalid OTP', 'error');
+      }
 
     });
 
   }
-logout() {
-  localStorage.removeItem('token');
-  window.location.href = '/login';
-}
-  // ---------------- SECURITY QUESTIONS ----------------
+
+  // ================= SECURITY QUESTIONS =================
 
   loadQuestions() {
 
-    this.authService.getRecoveryQuestions(this.email)
-      .subscribe((res: any) => {
+    this.method = 'questions';
 
-        this.questions = res;
-        this.step = 3;
+    this.authService.getRecoveryQuestions(this.email)
+      .subscribe({
+
+        next: (res: any) => {
+          this.questions = res;
+          this.step = 3;
+        },
+
+        error: () => {
+          Swal.fire('Error', 'Unable to load questions', 'error');
+        }
 
       });
 
@@ -86,28 +110,58 @@ logout() {
     this.authService.verifySecurityAnswers({
       email: this.email,
       questions: this.questions
-    }).subscribe(() => {
+    }).subscribe({
 
-      this.step = 4;
+      next: () => {
+        Swal.fire('Verified', 'Answers correct', 'success');
+        this.step = 4;
+      },
+
+      error: () => {
+        Swal.fire('Error', 'Wrong answers', 'error');
+      }
 
     });
 
   }
 
-  // ---------------- RESET PASSWORD ----------------
+  // ================= RESET PASSWORD =================
 
   resetPassword() {
+
+    if (!this.newPassword) {
+      Swal.fire('Error', 'Enter new password', 'error');
+      return;
+    }
 
     this.authService.resetPassword({
       email: this.email,
       newPassword: this.newPassword
-    }).subscribe(() => {
+    }).subscribe({
 
-      Swal.fire('Success','Password reset','success');
-      this.step = 1;
+      next: () => {
+
+        Swal.fire('Success', 'Password reset successful', 'success');
+
+        this.router.navigate(['/login']);
+
+      },
+
+      error: () => {
+        Swal.fire('Error', 'Reset failed', 'error');
+      }
 
     });
 
+  }
+sendMethods() {
+  this.continue();
+}
+  // ================= LOGOUT =================
+
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 
 }

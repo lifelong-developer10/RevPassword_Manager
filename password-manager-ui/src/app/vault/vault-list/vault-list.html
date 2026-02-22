@@ -46,9 +46,7 @@
     </div>
 
     <div class="col-md-3">
-      <select class="form-control"
-              (change)="filter($event.target.value)">
-
+      <select #cat (change)="filter(cat.value)">
         <option value="ALL">All</option>
         <option value="SOCIAL">Social</option>
         <option value="BANKING">Banking</option>
@@ -56,9 +54,9 @@
         <option value="SHOPPING">Shopping</option>
         <option value="WORK">Work</option>
         <option value="OTHER">Other</option>
-
       </select>
     </div>
+
     <div class="col-md-3 text-end">
       <button class="btn btn-primary"
               routerLink="/vault/add">
