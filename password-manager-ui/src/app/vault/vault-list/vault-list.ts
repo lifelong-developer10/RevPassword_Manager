@@ -83,5 +83,21 @@ export class VaultListComponent implements OnInit {
     });
 
   }
+viewPassword(item: any) {
 
+  Swal.fire({
+    title: 'Enter Master Password',
+    input: 'password',
+    showCancelButton: true
+  }).then(result => {
+
+    if (!result.value) return;
+
+    // call backend verify API here
+
+    Swal.fire('Password', item.password, 'info');
+
+  });
+
+}
 }

@@ -1,15 +1,19 @@
-import { Routes } from '@angular/router';
-const routes: Routes = [
+export const routes = [
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
-  { path: 'register', component: RegisterComponent },
-
   { path: 'login', component: LoginComponent },
 
-  { path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [AuthGuard]
-  }
+  { path: 'register', component: RegisterComponent },
+
+  { path: 'dashboard', component: DashboardComponent },
+
+  { path: 'vault', component: VaultListComponent },
+
+  { path: 'vault/add', component: AddEditVaultComponent },
+
+  { path: 'generator', component: GeneratorComponent },
+
+  { path: 'profile', component: ProfileComponent }
 
 ];
