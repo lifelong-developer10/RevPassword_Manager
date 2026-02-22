@@ -1,1 +1,65 @@
-<p>vault-list works!</p>
+<div class="container mt-4">
+
+  <h3 class="mb-3">My Vault</h3>
+
+  <!-- Search -->
+
+  <div class="row mb-3">
+
+    <div class="col-md-6">
+      <input class="form-control"
+             placeholder="Search website..."
+             [(ngModel)]="keyword"
+             (input)="search()">
+    </div>
+
+  </div>
+
+  <!-- Cards -->
+
+  <div class="row">
+
+    <div class="col-md-4 mb-3"
+         *ngFor="let item of vault">
+
+      <div class="vault-card shadow">
+
+        <div class="card-body">
+
+          <h5>{{item.websiteName}}</h5>
+
+          <p class="text-muted">
+            {{item.username}}
+          </p>
+
+          <span class="badge bg-primary">
+            {{item.category}}
+          </span>
+
+          <div class="actions mt-3">
+
+            <button class="btn btn-sm btn-info"
+                    (click)="viewPassword(item)">
+              <i class="fa fa-eye"></i>
+            </button>
+
+            <button class="btn btn-sm btn-warning">
+              <i class="fa fa-edit"></i>
+            </button>
+
+            <button class="btn btn-sm btn-danger"
+                    (click)="delete(item.id)">
+              <i class="fa fa-trash"></i>
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

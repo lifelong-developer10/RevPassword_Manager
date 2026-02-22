@@ -1,1 +1,58 @@
-<p>add-edit-vault works!</p>
+<div class="container mt-4">
+
+  <h3>Add Account</h3>
+
+  <div class="card p-4 shadow">
+
+    <input class="form-control mb-2"
+           placeholder="Website"
+           [(ngModel)]="form.websiteName">
+
+    <input class="form-control mb-2"
+           placeholder="Username"
+           [(ngModel)]="form.username">
+
+    <div class="input-group mb-2">
+
+      <input class="form-control"
+             placeholder="Password"
+             [(ngModel)]="form.password">
+
+      <button class="btn btn-secondary"
+              (click)="generatePassword()">
+        Generate
+      </button>
+
+    </div>
+
+    <select class="form-control mb-2"
+            [(ngModel)]="form.category">
+
+      <option>SOCIAL</option>
+      <option>BANKING</option>
+      <option>EMAIL</option>
+      <option>SHOPPING</option>
+      <option>WORK</option>
+      <option>OTHER</option>
+
+    </select>
+
+    <textarea class="form-control mb-2"
+              placeholder="Notes"
+              [(ngModel)]="form.notes">
+    </textarea>
+
+    <label>
+      <input type="checkbox"
+             [(ngModel)]="form.favorite">
+      Favorite
+    </label>
+
+    <button class="btn btn-primary mt-3"
+            (click)="save()">
+      Save
+    </button>
+
+  </div>
+
+</div>

@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { VaultService } from '../../core/services/vault.service';
+import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
+import { VaultService } from '../../core/services/vault.service';
 
 @Component({
   selector: 'app-vault-list',
-  templateUrl: './vault-list.html'
+  templateUrl: './vault-list.html',
+  styleUrls: ['./vault-list.css']
 })
 export class VaultListComponent implements OnInit {
 
@@ -13,10 +17,10 @@ export class VaultListComponent implements OnInit {
   constructor(private vaultService: VaultService) {}
 
   ngOnInit() {
-    this.load();
+    this.loadVault();
   }
 
-  load() {
+  loadVault() {
     this.vaultService.getAll()
       .subscribe((res: any) => {
         this.vault = res;
@@ -24,6 +28,11 @@ export class VaultListComponent implements OnInit {
   }
 
   search() {
+    if (!this.keyword) {
+      this.loadVault();
+      return;
+    }
+
     this.vaultService.search(this.keyword)
       .subscribe((res: any) => {
         this.vault = res;
@@ -31,9 +40,48 @@ export class VaultListComponent implements OnInit {
   }
 
   delete(id: number) {
-    this.vaultService.delete(id)
-      .subscribe(() => {
-        this.load();
-      });
+
+    Swal.fire({
+      title: 'Delete?',
+      text: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true
+    }).then(result => {
+
+      if (result.isConfirmed) {
+
+        this.vaultService.delete(id)
+          .subscribe(() => {
+
+            Swal.fire('Deleted','Entry removed','success');
+            this.loadVault();
+
+          });
+
+      }
+
+    });
+
   }
+
+  viewPassword(item: any) {
+
+    Swal.fire({
+      title: 'Enter Master Password',
+      input: 'password',
+      showCancelButton: true
+    }).then(result => {
+
+      if (result.value) {
+
+        // you can call backend verification here
+
+        Swal.fire('Password', item.password, 'info');
+
+      }
+
+    });
+
+  }
+
 }
