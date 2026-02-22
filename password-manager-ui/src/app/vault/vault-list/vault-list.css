@@ -1,15 +1,16 @@
-
 .vault-card {
   border-radius: 12px;
   background: white;
-  padding: 15px;
+  padding: 20px;
   transition: 0.3s;
+  position: relative;
 }
 
 .vault-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 
 .actions button {
-  margin-right: 5px;
+  margin-right: 6px;
 }
