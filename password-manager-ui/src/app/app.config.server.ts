@@ -4,8 +4,9 @@ import { appConfig } from './app.config';
 import { serverRoutes } from './app.routes.server';
 
 const serverConfig: ApplicationConfig = {
-  providers: [
-    provideServerRendering(withRoutes(serverRoutes))
+
+providers: [
+  provideHttpClient(withInterceptors([jwtInterceptor]))
   ]
 };
 

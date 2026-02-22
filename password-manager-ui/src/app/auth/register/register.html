@@ -1,27 +1,30 @@
 <div class="container mt-5">
-  <div class="card p-4 shadow">
+
+  <div class="card p-4 shadow col-md-5 mx-auto">
 
     <h3 class="text-center mb-3">Register</h3>
 
     <form [formGroup]="form" (ngSubmit)="register()">
 
-      <input class="form-control mb-3"
+      <input class="form-control mb-2"
              placeholder="Username"
              formControlName="username">
 
-      <input class="form-control mb-3"
-             placeholder="Email"
+      <input class="form-control mb-2"
+             placeholder="Email (@gmail.com)"
              formControlName="email">
 
-      <input class="form-control mb-3"
+      <input class="form-control mb-2"
              placeholder="Phone"
              formControlName="phone">
 
-      <div class="input-group mb-3">
+      <div class="input-group mb-2">
+
         <input class="form-control"
                [type]="showPassword ? 'text':'password'"
                placeholder="Password"
-               formControlName="password">
+               formControlName="password"
+               (input)="checkStrength()">
 
         <button type="button"
                 class="btn btn-outline-secondary"
@@ -29,7 +32,23 @@
           <i class="fa"
              [ngClass]="showPassword ? 'fa-eye-slash':'fa-eye'"></i>
         </button>
+
       </div>
+
+      <div class="progress mb-2">
+
+        <div class="progress-bar"
+             [style.width.%]="strength">
+          {{strength}}%
+        </div>
+
+      </div>
+
+      <button type="button"
+              class="btn btn-secondary w-100 mb-2"
+              (click)="generatePassword()">
+        Generate Strong Password
+      </button>
 
       <button class="btn btn-primary w-100">
         Register
@@ -38,4 +57,5 @@
     </form>
 
   </div>
+
 </div>
