@@ -21,10 +21,9 @@ export class VaultService {
     return this.http.get(this.baseUrl);
   }
 
-  // Get single
-  getOne(id: number) {
-    return this.http.get(`${this.baseUrl}/${id}`);
-  }
+getOne(id: number) {
+  return this.http.get(`${this.baseUrl}/${id}`);
+}
 
   // Update
   update(id: number, data: any) {
