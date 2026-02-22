@@ -112,6 +112,41 @@
 
     </div>
 
-  </div>
 
+  <div *ngIf="activeTab === '2fa'">
+
+    <h5>Two-Factor Authentication</h5>
+
+    <div *ngIf="!twoFAEnabled">
+
+      <button class="btn btn-primary"
+              (click)="enable2FA()">
+        Enable 2FA
+      </button>
+
+    </div>
+
+    <div *ngIf="twoFAEnabled">
+
+      <p>Secret Key:</p>
+      <code>{{secret}}</code>
+
+      <input class="form-control mt-2"
+             placeholder="Enter Code"
+             [(ngModel)]="twoFACode">
+
+      <button class="btn btn-success mt-2"
+              (click)="verify2FA()">
+        Verify Code
+      </button>
+
+      <button class="btn btn-danger mt-2 ms-2"
+              (click)="disable2FA()">
+        Disable 2FA
+      </button>
+
+    </div>
+
+  </div>
+</div>
 </div>

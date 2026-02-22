@@ -24,27 +24,33 @@ export class LoginComponent {
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
+login() {
 
-  login() {
+  this.auth.login(this.form.value)
+    .subscribe((res: any) => {
 
-    if (this.form.invalid) return;
+      if (res.requires2FA) {
 
-    this.auth.login(this.form.value)
-      .subscribe({
+        this.show2FAScreen = true;
+        return;
 
-        next: (res: any) => {
+      }
 
-          this.auth.saveToken(res.token);
+      this.auth.saveToken(res.token);
+      this.router.navigate(['/dashboard']);
 
-          Swal.fire('Success','Login successful','success');
+    });
 
-          this.router.navigate(['/dashboard']);
-        },
+}
+verifyLogin2FA() {
 
-        error: () => {
-          Swal.fire('Error','Invalid credentials','error');
-        }
+  this.auth.verify2FA(this.twoFACode)
+    .subscribe((res: any) => {
 
-      });
-  }
+      this.auth.saveToken(res.token);
+      this.router.navigate(['/dashboard']);
+
+    });
+
+}
 }
