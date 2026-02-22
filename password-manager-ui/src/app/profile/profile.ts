@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-profile',
-  imports: [],
-  templateUrl: './profile.html',
-  styleUrl: './profile.css',
+  templateUrl: './profile.html'
 })
-export class Profile {
+export class ProfileComponent {
+
+  user = {
+    name: '',
+    email: '',
+    phone: ''
+  };
 
 }
