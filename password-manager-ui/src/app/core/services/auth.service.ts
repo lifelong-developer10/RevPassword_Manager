@@ -46,7 +46,7 @@ verifyMasterPassword(password: string) {
   );
 }
 getProfile() {
-  return this.http.get(`${this.baseUrl}/api/users/profile`);
+  return this.http.get('http://localhost:8080/api/user/profile');
 }
 
 updateProfile(data: any) {

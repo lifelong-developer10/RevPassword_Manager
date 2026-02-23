@@ -39,6 +39,9 @@ getOne(id: number) {
   search(keyword: string) {
     return this.http.get(`${this.baseUrl}/search?keyword=${keyword}`);
   }
+ create(data: any) {
+    return this.http.post(this.baseUrl, data);
+  }
 
   // Favorites
   favorites() {

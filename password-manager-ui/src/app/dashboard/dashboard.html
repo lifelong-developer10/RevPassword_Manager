@@ -1,52 +1,158 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4">
-
-  <span class="navbar-brand fw-bold">
-    🔐 Password Manager
-  </span>
-
-  <div class="ms-auto">
-
-    <button class="btn btn-light btn-sm"
-            routerLink="/dashboard">
-      Dashboard
-    </button>
-
-    <button class="btn btn-light btn-sm ms-2"
-            routerLink="/vault">
-      Vault
-    </button>
-
-    <button class="btn btn-light btn-sm ms-2"
-            routerLink="/profile">
-      Profile
-    </button>
-
-    <button class="btn btn-danger btn-sm ms-2"
-            (click)="logout()">
-      Logout
-    </button>
-
-  </div>
-
-</nav>
 <div class="container mt-4">
 
-  <h3>Dashboard</h3>
+  <h2 class="mb-4 fw-bold text-primary">Dashboard</h2>
 
-  <div class="row mt-3">
+  <div class="row">
 
-    <div class="col-md-3">
-      <div class="stat-card bg-primary text-white">
-        <h4>{{total}}</h4>
-        <p>Total Accounts</p>
+    <!-- PROFILE CARD -->
+    <div class="col-md-4 mb-4">
+
+      <div class="card shadow-lg border-0 h-100">
+
+        <div class="card-body text-center">
+
+          <h4 class="fw-bold mb-3">Master Profile</h4>
+
+          <p><strong>Name:</strong> {{profile?.username}}</p>
+          <p><strong>Email:</strong> {{profile?.email}}</p>
+          <p><strong>Phone:</strong> {{profile?.phone}}</p>
+
+          <hr>
+
+          <h5>Total Accounts</h5>
+          <h2 class="text-success fw-bold">{{totalAccounts}}</h2>
+
+          <button class="btn btn-outline-primary mt-3"
+                  (click)="goProfile()">
+            Update Profile
+          </button>
+
+        </div>
+
       </div>
+
     </div>
 
-    <div class="col-md-3">
-      <div class="stat-card bg-success text-white">
-        <h4>{{favorites}}</h4>
-        <p>Favorites</p>
+
+    <!-- ADD ACCOUNT CARD -->
+    <div class="col-md-4 mb-4">
+
+      <div class="card shadow-lg border-0 h-100">
+
+        <div class="card-body">
+
+          <h4 class="fw-bold mb-3 text-center">
+            Add Account
+          </h4>
+
+          <form (ngSubmit)="addAccount()">
+
+            <input class="form-control mb-2"
+                   placeholder="Website Name"
+                   [(ngModel)]="vault.websiteName"
+                   name="websiteName"
+                   required>
+
+            <input class="form-control mb-2"
+                   placeholder="Username"
+                   [(ngModel)]="vault.username"
+                   name="username"
+                   required>
+
+            <div class="input-group mb-2">
+
+              <input class="form-control"
+                     placeholder="Password"
+                     [(ngModel)]="vault.password"
+                     name="password"
+                     (input)="checkStrength()"
+                     required>
+
+              <button class="btn btn-outline-secondary"
+                      type="button"
+                      (click)="generatePassword()">
+                Generate
+              </button>
+
+            </div>
+
+            <!-- Strength Bar -->
+
+            <div class="progress mb-2"
+                 style="height:6px">
+
+              <div class="progress-bar"
+                   [style.width.%]="strengthScore"
+                   [style.background]="strengthColor">
+              </div>
+
+            </div>
+
+            <small>
+              {{strengthLabel}} ({{strengthScore}}%)
+            </small>
+
+            <select class="form-control mt-2"
+                    [(ngModel)]="vault.category"
+                    name="category"
+                    required>
+
+              <option value="">Select Category</option>
+              <option>SOCIAL</option>
+              <option>BANKING</option>
+              <option>SHOPPING</option>
+              <option>WORK</option>
+
+            </select>
+
+            <button class="btn btn-success w-100 mt-3">
+              Submit
+            </button>
+
+          </form>
+
+          <div *ngIf="successMessage"
+               class="text-success mt-2 text-center">
+
+            {{successMessage}}
+
+          </div>
+
+          <button class="btn btn-outline-dark w-100 mt-3"
+                  (click)="goVault()">
+
+            View All Accounts
+
+          </button>
+
+        </div>
+
       </div>
+
+    </div>
+
+
+    <!-- SUMMARY CARD -->
+    <div class="col-md-4 mb-4">
+
+      <div class="card shadow-lg border-0 h-100">
+
+        <div class="card-body text-center">
+
+          <h4 class="fw-bold mb-3">Summary</h4>
+
+          <h5>Total Vault Items</h5>
+          <h2 class="text-primary">{{totalAccounts}}</h2>
+
+          <hr>
+
+          <h5>Favorites</h5>
+          <h2 class="text-warning">{{favorites}}</h2>
+
+        </div>
+
+      </div>
+
     </div>
 
   </div>
