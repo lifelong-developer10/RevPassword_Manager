@@ -47,8 +47,10 @@ ngOnInit() {
 
 }
 logout() {
+
   localStorage.removeItem('token');
-  window.location.href = '/login';
+
+  this.router.navigate(['/login']);
 }
 verifyLogin2FA() {
 

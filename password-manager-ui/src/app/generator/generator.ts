@@ -11,8 +11,10 @@ export class GeneratorComponent {
 
   password = '';
 logout() {
+
   localStorage.removeItem('token');
-  window.location.href = '/login';
+
+  this.router.navigate(['/login']);
 }
   generate() {
 

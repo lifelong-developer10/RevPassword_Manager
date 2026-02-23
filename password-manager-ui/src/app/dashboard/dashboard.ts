@@ -18,8 +18,10 @@ export class DashboardComponent implements OnInit {
     this.loadStats();
   }
 logout() {
+
   localStorage.removeItem('token');
-  window.location.href = '/login';
+
+  this.router.navigate(['/login']);
 }
   loadStats() {
 

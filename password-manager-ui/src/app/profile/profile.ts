@@ -48,8 +48,10 @@ export class ProfileComponent implements OnInit {
       });
   }
 logout() {
+
   localStorage.removeItem('token');
-  window.location.href = '/login';
+
+  this.router.navigate(['/login']);
 }
   // ---------------- Change Password ----------------
 

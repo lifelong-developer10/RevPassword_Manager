@@ -21,17 +21,23 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-
+canActivate: [authGuard]
   },
 
-  { path: 'vault', component: VaultListComponent, canActivate: [authGuard] },
+  { path: 'vault', component: VaultListComponent,
+    canActivate: [authGuard] },
 
-  { path: 'vault/add', component: AddEditVaultComponent },
+  { path: 'vault/add',
+    component: AddEditVaultComponent,
+     canActivate: [authGuard]},
 
-  { path: 'vault/edit/:id', component: AddEditVaultComponent },
+  { path: 'vault/edit/:id', component: AddEditVaultComponent,
+    canActivate: [authGuard]
+    },
 
   { path: 'generator', component: GeneratorComponent },
 
-  { path: 'profile', component: ProfileComponent }
+  { path: 'profile', component: ProfileComponent,
+    canActivate: [authGuard]}
 
 ];

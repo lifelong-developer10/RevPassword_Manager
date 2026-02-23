@@ -159,9 +159,11 @@ sendMethods() {
 }
   // ================= LOGOUT =================
 
-  logout() {
-    localStorage.removeItem('token');
-    this.router.navigate(['/login']);
-  }
+ logout() {
+
+   localStorage.removeItem('token');
+
+   this.router.navigate(['/login']);
+ }
 
 }
