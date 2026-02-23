@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
-
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -34,27 +32,27 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
+
         String path = request.getServletPath();
 
-        if (path.startsWith("/api/auth") ||
-                path.startsWith("/api/forgot") ||
-                path.startsWith("/pages") ||
-                path.equals("/") ||
-                path.equals("/index.html")) {
+        // ✅ PUBLIC ENDPOINTS — SKIP JWT
+        if (path.startsWith("/api/auth")
+                || path.startsWith("/api/forgot")
+                || path.startsWith("/error")) {
 
             filterChain.doFilter(request, response);
             return;
         }
+
         String authHeader = request.getHeader("Authorization");
 
-        String token = null;
-        String username = null;
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-
-            token = authHeader.substring(7);
-            username = jwtUtil.extractUsername(token);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
 
         if (username != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {

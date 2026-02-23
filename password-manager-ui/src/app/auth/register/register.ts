@@ -130,7 +130,7 @@ ngOnInit() {
     this.form.patchValue({
       password: password
     });
-
+ localStorage.setItem('generatedPassword', password);
     this.checkStrength();
   }
 

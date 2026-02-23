@@ -35,6 +35,17 @@ togglePassword() {
     });
 
   }
+ngOnInit() {
+
+  const savedPassword = localStorage.getItem('generatedPassword');
+
+  if (savedPassword) {
+    this.form.patchValue({
+      password: savedPassword
+    });
+  }
+
+}
 logout() {
   localStorage.removeItem('token');
   window.location.href = '/login';
@@ -50,16 +61,29 @@ verifyLogin2FA() {
     });
 
 }
-  login() {
+login() {
 
-    this.auth.login(this.form.value)
-      .subscribe((res: any) => {
+   if (this.form.invalid) return;
 
-        localStorage.setItem('token', res.token);
-        this.router.navigate(['/dashboard']);
+   this.auth.login(this.form.value).subscribe({
 
-      });
+     next: (res: any) => {
 
-  }
+       console.log('TOKEN:', res.token);
+
+       localStorage.setItem('token', res.token);
+      localStorage.removeItem('generatedPassword');
+       alert('Login Successful');
+
+       this.router.navigate(['/dashboard']);
+     },
+
+     error: () => {
+       alert('Invalid Credentials');
+     }
+
+   });
+
+ }
 
 }

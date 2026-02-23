@@ -58,7 +58,11 @@ public class AuthService {
 
             SecurityQuestions uq =
                     new SecurityQuestions();
+            if (request.getSecurityAnswers() == null ||
+                    request.getSecurityAnswers().size() < 3) {
 
+                throw new RuntimeException("Minimum 3 answers required");
+            }
             uq.setUser(user);
             uq.setQuestion(master);
             uq.setAnswerHash(
@@ -73,31 +77,24 @@ public class AuthService {
 
     public String login(LoginRequest request) {
 
-            Authentication auth =
-                    authManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(
-                                    request.getUsername(),
-                                    request.getPassword()
-                            )
-                    );
+        MasterUser user =
+                userRepository.findByUsername(request.getUsername())
+                        .orElseThrow(() ->
+                                new RuntimeException("User not found"));
 
-            if (auth.isAuthenticated()) {
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPasswordEncrypted())) {
 
-                MasterUser user =
-                        userRepository.findByUsername(
-                                request.getUsername()).orElseThrow();
-
-                if (user.isTwoFactorEnabled()) {
-
-                    otpService.generateOtp(user.getUsername());
-
-                    return "OTP_REQUIRED";
-                }
-
-                return jwtUtil.generateToken(user.getUsername());
-            }
-
-            throw new RuntimeException("Invalid Credentials");
+            throw new RuntimeException("Invalid password");
         }
+
+        if (user.isTwoFactorEnabled()) {
+            otpService.generateOtp(user.getUsername());
+            return "OTP_REQUIRED";
+        }
+
+        return jwtUtil.generateToken(user.getUsername());
+    }
 
 }

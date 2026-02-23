@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,8 +22,13 @@ public class MasterController {
         private final AuthService service;
 private final SecurityQuestionMasterRepository masterRepo;
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest req) {
-        return service.register(req);
+    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
+
+        String message = service.register(req);
+
+        return ResponseEntity.ok().body(
+                Map.of("message", message)
+        );
     }
 
     @PostMapping("/login")

@@ -10,40 +10,29 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.*;
+
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> {})
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // ✅ Allow frontend
-                        .requestMatchers(
-                                "/",
-                                "/index.html",
-                                "/app.js",
-                                "/services.js",
-                                "/styles.css",
-                                "/pages/**",
-                                "/favicon.ico"
-                        ).permitAll()
-
-                        // ✅ Allow AUTH APIs
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/forgot/**"
                         ).permitAll()
 
-                        // 🔐 Protect other APIs
                         .anyRequest().authenticated()
                 )
 
@@ -55,6 +44,25 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    // ✅ CORS CONFIGURATION FOR ANGULAR
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 
     @Bean
