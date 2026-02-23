@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,11 +11,14 @@ import { AuthService } from '../../core/services/auth.service';
   templateUrl: './register.html',
   imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 
   form: any;
 
   showPassword = false;
+
+  // ===== Security Questions =====
+  questions: any[] = [];
 
   // ===== Password Strength =====
   strengthScore = 0;
@@ -33,6 +36,26 @@ export class RegisterComponent {
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       password: ['', Validators.required]
+    });
+
+  }
+
+  // ================= INIT =================
+
+  ngOnInit() {
+    this.loadQuestions();
+  }
+
+  // ================= LOAD QUESTIONS =================
+
+  loadQuestions() {
+
+    this.auth.getQuestions().subscribe((res: any[]) => {
+
+      this.questions = res
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+
     });
 
   }
@@ -94,27 +117,37 @@ export class RegisterComponent {
     this.checkStrength();
   }
 
-  // ================= Register =================
+  // ================= REGISTER =================
 
   register() {
 
     if (this.form.invalid) return;
 
-    this.auth.register(this.form.value)
-      .subscribe({
+    const payload = {
+      ...this.form.value,
+      securityAnswers: this.questions.map(q => ({
+        questionId: q.id,
+        answer: q.answer
+      }))
+    };
 
-        next: () => {
-          alert('Registration successful');
-          this.router.navigate(['/login']);
-        },
+    this.auth.register(payload).subscribe({
 
-        error: () => {
-          alert('Registration failed');
-        }
+      next: () => {
+        alert('Registration successful');
+        this.router.navigate(['/login']);
+      },
 
-      });
+      error: (err) => {
+        console.error(err);
+        alert('Registration failed');
+      }
+
+    });
 
   }
+
+  // ================= LOGOUT =================
 
   logout() {
     localStorage.removeItem('token');

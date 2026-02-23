@@ -13,11 +13,13 @@ export class AuthService {
 constructor(private http: HttpClient) {}
 
   register(data: any) {
-    return this.http.post(`${this.baseUrl}/auth/register`, data);
+    return this.http.post(`${this.baseUrl}/register`, data);
   }
-
+getQuestions() {
+  return this.http.get<any[]>('http://localhost:8080/api/security-questions');
+}
   login(data: any) {
-    return this.http.post(`${this.baseUrl}/auth/login`, data);
+    return this.http.post(`${this.baseUrl}/login`, data);
   }
 
   saveToken(token: string) {

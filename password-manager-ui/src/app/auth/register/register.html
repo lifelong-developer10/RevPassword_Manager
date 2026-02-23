@@ -35,11 +35,7 @@
 
         <div class="input-group mb-2">
 
-          <input type="password"
-                 formControlName="password"
-                 placeholder="Password"
-                 class="form-control"
-                 (input)="checkStrength()">
+
 
 
           <button class="btn btn-secondary"
@@ -62,15 +58,27 @@
           </div>
 
         </div>
+        <div *ngFor="let q of questions; let i = index">
+
+          <label>{{ q.question }}</label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="q.answer"
+            name="answer{{i}}"
+            required>
+
+        </div>
       </div>
 
 
 
-      <button type="button"
-              class="btn btn-secondary w-100 mb-2"
-              (click)="generatePassword()">
-        Generate Strong Password
-      </button>
+<!--      <button type="button"-->
+<!--              class="btn btn-secondary w-100 mb-2"-->
+<!--              (click)="generatePassword()">-->
+<!--        Generate Strong Password-->
+<!--      </button>-->
 
       <button class="btn btn-primary w-100">
         Register
