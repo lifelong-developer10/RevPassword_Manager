@@ -59,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             UserDetails userDetails =
                     userDetailsService.loadUserByUsername(username);
-
+            System.out.println("AUTH HEADER: " + authHeader);
             if (jwtUtil.isValid(token, userDetails.getUsername())) {
 
                 UsernamePasswordAuthenticationToken authToken =

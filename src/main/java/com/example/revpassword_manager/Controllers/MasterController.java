@@ -3,12 +3,14 @@ package com.example.revpassword_manager.Controllers;
 import com.example.revpassword_manager.DTOs.AuthResponse;
 import com.example.revpassword_manager.DTOs.LoginRequest;
 import com.example.revpassword_manager.DTOs.RegisterRequest;
+import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Reposiotory.SecurityQuestionMasterRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
 import com.example.revpassword_manager.Services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +23,8 @@ public class MasterController {
 
         private final AuthService service;
 private final SecurityQuestionMasterRepository masterRepo;
+private final UserRepository userRepo;
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
 
@@ -46,5 +50,14 @@ private final SecurityQuestionMasterRepository masterRepo;
         return masterRepo.findAll();
     }
 
+    @GetMapping
+    public MasterUser getProfile(Authentication auth) {
+
+        String username = auth.getName();
+
+        return userRepo
+                .findByUsername(username)
+                .orElseThrow();
+    }
 }
 
