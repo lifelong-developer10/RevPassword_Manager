@@ -106,7 +106,18 @@
                     placeholder="Notes"
                     [(ngModel)]="vault.notes"
                     name="notes"></textarea>
+          <div class="form-check mt-2">
 
+            <input type="checkbox"
+                   class="form-check-input"
+                   [(ngModel)]="vault.favorite"
+                   name="favorite">
+
+            <label class="form-check-label">
+              Mark as Favorite ⭐
+            </label>
+
+          </div>
           <button class="btn btn-primary w-100">
             Add Account
           </button>
@@ -127,16 +138,32 @@
           Last Added
         </h5>
 
-        <div *ngIf="lastAccount; else noData">
+        <div class="card-body" *ngIf="lastAccount; else noData">
 
-          <p><strong>{{lastAccount.accountName}}</strong></p>
-          <p>{{lastAccount.website}}</p>
-          <p>{{lastAccount.username}}</p>
+          <p><strong>Account:</strong> {{lastAccount.accountName}}</p>
+
+          <p><strong>Website:</strong> {{lastAccount.website}}</p>
+
+          <p><strong>Username:</strong> {{lastAccount.username}}</p>
+
+          <p><strong>Password:</strong> {{lastAccount.password}}</p>
+
+          <p><strong>Category:</strong> {{lastAccount.category}}</p>
+
+          <p><strong>Notes:</strong> {{lastAccount.notes || '—'}}</p>
+
+          <p>
+            <strong>Favorite:</strong>
+            <span *ngIf="lastAccount.favorite">⭐ Yes</span>
+            <span *ngIf="!lastAccount.favorite">No</span>
+          </p>
+
+
 
         </div>
 
         <ng-template #noData>
-          <p class="text-muted">No accounts yet</p>
+          <p>No accounts yet</p>
         </ng-template>
 
         <div class="mt-auto">

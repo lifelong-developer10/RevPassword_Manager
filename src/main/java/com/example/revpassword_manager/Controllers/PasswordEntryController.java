@@ -53,8 +53,7 @@ public class PasswordEntryController {
     }
 
     @GetMapping("/last")
-    public AllPasswordEntry getLast(Authentication auth) {
-
+    public PasswordEntryResponse getLast(Authentication auth) throws Exception {
         return service.getLastEntry(auth.getName());
     }
     @DeleteMapping("/{id}")

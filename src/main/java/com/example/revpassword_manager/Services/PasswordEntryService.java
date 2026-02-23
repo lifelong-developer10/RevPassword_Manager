@@ -55,13 +55,32 @@ public class PasswordEntryService {
         return mapToResponse(entry);
     }
 
-    public AllPasswordEntry getLastEntry(String username) {
+    public PasswordEntryResponse getLastEntry(String username) throws Exception {
 
-        return repo
-                .findTopByUserUsernameOrderByCreatedAtDesc(username)
-                .orElse(null);
+        AllPasswordEntry entry =
+                repo.findTopByUserUsernameOrderByCreatedAtDesc(username)
+                        .orElse(null);
+
+        if (entry == null) return null;
+
+        PasswordEntryResponse res = new PasswordEntryResponse();
+
+        res.setId(entry.getId());
+        res.setAccountName(entry.getAccountName());
+        res.setWebsite(entry.getWebsite());
+        res.setUsername(entry.getUsername());
+
+        // IMPORTANT — decrypt password
+        res.setPassword(
+                encryptionUtil.decrypt(entry.getPasswordEncrypted())
+        );
+
+        res.setCategory(entry.getCategory());
+        res.setNotes(entry.getNotes());
+        res.setFavorite(entry.isFavorite());
+
+        return res;
     }
-
     public List<PasswordEntryResponse> getAllEntries(String username)
             throws Exception {
 

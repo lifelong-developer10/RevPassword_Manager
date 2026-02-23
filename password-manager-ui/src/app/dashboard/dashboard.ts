@@ -97,47 +97,51 @@ export class DashboardComponent implements OnInit {
   }
 
   // ================= ADD ACCOUNT =================
+addVault() {
 
-  addVault(): void {
+  this.vaultService.create(this.vault).subscribe({
 
-    this.vaultService.create(this.vault).subscribe({
+    next: (res: any) => {
 
-      next: () => {
+      alert('Account Added Successfully');
 
-        alert('Account Added Successfully');
+      // clear form
+      this.vault = {
+        accountName: '',
+        website: '',
+        username: '',
+        password: '',
+        category: '',
+        notes: '',
+        favorite: false
+      };
 
-        // reset form
-        this.vault = {
-          accountName: '',
-          website: '',
-          username: '',
-          password: '',
-          category: '',
-          notes: '',
-          favorite: false
-        };
+      // reload dashboard data
+      this.loadVaultSummary();
+      this.loadLastAccount();
 
-        this.loadVaultSummary();
-        this.loadLastAccount();
+    },
 
-      },
+    error: (err: any) => console.error(err)
 
-      error: (err: any) => console.error(err)
+  });
 
-    });
-
-  }
+}
 
   // ================= LAST ACCOUNT =================
+loadLastAccount() {
 
-  loadLastAccount(): void {
+  this.vaultService.getLast().subscribe({
 
-    this.vaultService.getLast().subscribe({
-      next: (res: any) => this.lastAccount = res,
-      error: (err: any) => console.error(err)
-    });
+    next: (res: any) => {
+      this.lastAccount = { ...res };   // force refresh
+    },
 
-  }
+    error: (err: any) => console.error(err)
+
+  });
+
+}
 
   // ================= PASSWORD GENERATOR =================
 

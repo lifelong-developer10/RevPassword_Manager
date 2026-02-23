@@ -1,5 +1,6 @@
 package com.example.revpassword_manager.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,6 +24,7 @@ public class AllPasswordEntry {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
+        @JsonIgnore
         @ManyToOne
         @JoinColumn(name = "user_id")
         private MasterUser user;
