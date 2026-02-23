@@ -2,213 +2,167 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { HttpClient } from '@angular/common/http';
 import { VaultService } from '../core/services/vault.service';
-import { AuthService } from '../core/services/auth.service';
+import { ProfileService } from '../core/services/profile.service';
 import { NavbarComponent } from '../core/navbar/navbar';
+
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css'],
-  imports: [CommonModule, FormsModule, NavbarComponent]
+  standalone: true,
+   styleUrls: ['./dashboard.css'],
+  imports: [CommonModule, FormsModule,NavbarComponent]
 })
 export class DashboardComponent implements OnInit {
 
+  user: any;
+  lastAccount: any;
 
+  totalAccounts = 0;
+  strongPasswords = 0;
+  weakPasswords = 0;
 
-  totalAccounts: number = 0;
-  strongPasswords: number = 0;
-  weakPasswords: number = 0;
-lastAccount: any = null;
-  user: any = {};
-
+  // ✅ vault object
   vault: any = {
     accountName: '',
     website: '',
     username: '',
-    passwordEncrypted: '',
+    password: '',
     category: '',
     notes: '',
     favorite: false
   };
 
-  strengthScore = 0;
-  strengthColor = 'red';
-  successMessage = '';
-
   constructor(
     private vaultService: VaultService,
-    private authService: AuthService,
+    private profileService: ProfileService,
     private router: Router
   ) {}
 
-  // ================= INIT =================
+  ngOnInit(): void {
+    this.loadProfile();
+    this.loadVaultSummary();
+    this.loadLastAccount();
+  }
 
+  // ================= PROFILE =================
 
+  loadProfile(): void {
 
-
-
-ngOnInit() {
-  this.loadProfile();
-  this.loadVaultSummary();
-  this.loadLastAccount();
-}
-
-
-  // ================= LOAD PROFILE =================
-
-  loadProfile() {
-
-    this.authService.getProfile().subscribe({
-      next: (res: any) => {
-        this.user = res;
-      },
-      error: () => {
-        console.log('Profile load failed');
-      }
+    this.profileService.getProfile().subscribe({
+      next: (res: any) => this.user = res,
+      error: (err: any) => console.error(err)
     });
 
   }
-goVault() {
-  this.router.navigate(['/vault']);
-}
-// last added account details
-loadLastAccount() {
 
-  this.vaultService.getAll().subscribe((res: any) => {
+  // ================= SUMMARY =================
 
-    const data = res as any[];
+  loadVaultSummary(): void {
 
-    if (data.length > 0) {
-      this.lastAccount = data[data.length - 1];
-    }
+    this.vaultService.getAll().subscribe({
 
-  });
+      next: (res: any) => {
 
-}
-  // ================= LOAD SUMMARY =================
-loadVaultSummary() {
+        const list = res || [];
 
-  this.vaultService.getAll().subscribe((res: any) => {
+        this.totalAccounts = list.length;
 
-    const data = res as any[];
+        this.strongPasswords =
+          list.filter((v: any) => this.isStrong(v.password)).length;
 
-    this.totalAccounts = data.length;
+        this.weakPasswords =
+          list.filter((v: any) => !this.isStrong(v.password)).length;
 
-    this.strongPasswords = data.filter(v =>
-      this.isStrong(v.password)
-    ).length;
+      },
 
-    this.weakPasswords = data.filter(v =>
-      !this.isStrong(v.password)
-    ).length;
+      error: (err: any) => console.error(err)
+    });
 
-  });
+  }
 
-}
+  isStrong(password: string): boolean {
 
-goProfile() {
-  this.router.navigate(['/profile']);
-}
+    if (!password) return false;
 
+    let score = 0;
 
-isStrong(password: string): boolean {
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
 
-  if (!password) return false;
+    return score >= 3;
+  }
 
-  let score = 0;
-
-  if (password.length >= 8) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-
-  return score >= 3;
-}
   // ================= ADD ACCOUNT =================
 
-  addVault() {
+  addVault(): void {
 
-    const payload = {
-      accountName: this.vault.accountName,
-      website: this.vault.website,
-      username: this.vault.username,
-      passwordEncrypted: this.vault.passwordEncrypted,
-      category: this.vault.category,
-      notes: this.vault.notes,
-      favorite: this.vault.favorite
-    };
+    this.vaultService.create(this.vault).subscribe({
 
-    this.vaultService.create(payload)
-      .subscribe({
+      next: () => {
 
-        next: () => {
+        alert('Account Added Successfully');
 
-          this.successMessage = 'Account Added Successfully ✅';
+        // reset form
+        this.vault = {
+          accountName: '',
+          website: '',
+          username: '',
+          password: '',
+          category: '',
+          notes: '',
+          favorite: false
+        };
 
-          this.vault = {
-            accountName: '',
-            website: '',
-            username: '',
-            passwordEncrypted: '',
-            category: '',
-            notes: '',
-            favorite: false
-          };
+        this.loadVaultSummary();
+        this.loadLastAccount();
 
-          this.loadVaultSummary();
-          this.loadLastAccount();
+      },
 
-        },
+      error: (err: any) => console.error(err)
 
-        error: (err) => {
-          console.error(err);
-          alert('Error adding account');
-        }
+    });
 
-      });
+  }
+
+  // ================= LAST ACCOUNT =================
+
+  loadLastAccount(): void {
+
+    this.vaultService.getLast().subscribe({
+      next: (res: any) => this.lastAccount = res,
+      error: (err: any) => console.error(err)
+    });
 
   }
 
   // ================= PASSWORD GENERATOR =================
 
-  generatePassword() {
+  generatePassword(): void {
 
     const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
 
-    let password = '';
+    let pass = '';
 
     for (let i = 0; i < 12; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
     }
 
-    this.vault.password = password;
-
-    this.checkStrength();
+    this.vault.password = pass;
   }
 
-  // ================= PASSWORD STRENGTH =================
+  // ================= NAVIGATION =================
 
-  checkStrength() {
+  goVault(): void {
+    this.router.navigate(['/vault']);
+  }
 
-    const password = this.vault.password || '';
-
-    let score = 0;
-
-    if (password.length >= 8) score += 25;
-    if (/[A-Z]/.test(password)) score += 25;
-    if (/[0-9]/.test(password)) score += 25;
-    if (/[^A-Za-z0-9]/.test(password)) score += 25;
-
-    this.strengthScore = score;
-
-    if (score <= 25) this.strengthColor = 'red';
-    else if (score <= 50) this.strengthColor = 'orange';
-    else if (score <= 75) this.strengthColor = 'blue';
-    else this.strengthColor = 'green';
-
+  goProfile(): void {
+    this.router.navigate(['/profile']);
   }
 
 }

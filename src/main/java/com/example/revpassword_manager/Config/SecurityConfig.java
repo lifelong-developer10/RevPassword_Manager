@@ -30,9 +30,10 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/api/auth/**",
-                                "/api/forgot/**"
+                                "/api/forgot/**",
+                                "/api/vault/**",
+                                "/api/profile/**"
                         ).permitAll()
-
                         .anyRequest().authenticated()
                 )
 

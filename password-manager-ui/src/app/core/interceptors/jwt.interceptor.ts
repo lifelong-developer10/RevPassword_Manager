@@ -6,12 +6,13 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   if (token) {
 
-    req = req.clone({
+    const cloned = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
       }
     });
 
+    return next(cloned);
   }
 
   return next(req);

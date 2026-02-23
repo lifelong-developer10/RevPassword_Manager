@@ -16,10 +16,7 @@ export class VaultService {
     return this.http.post(this.baseUrl, data);
   }
 
-  // Get all entries
-  getAll() {
-    return this.http.get(this.baseUrl);
-  }
+
 
 getOne(id: number) {
   return this.http.get(`${this.baseUrl}/${id}`);
@@ -28,6 +25,9 @@ getOne(id: number) {
   // Update
   update(id: number, data: any) {
     return this.http.put(`${this.baseUrl}/${id}`, data);
+  }
+ getAll() {
+    return this.http.get<any[]>(this.baseUrl);
   }
 
   // Delete
@@ -52,5 +52,7 @@ getOne(id: number) {
   filter(category: string) {
     return this.http.get(`${this.baseUrl}/category?category=${category}`);
   }
-
+ getLast() {
+    return this.http.get<any>(`${this.baseUrl}/last`);
+  }
 }

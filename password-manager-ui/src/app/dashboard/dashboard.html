@@ -17,7 +17,7 @@
         <p><strong>Email:</strong> {{user?.email || '—'}}</p>
         <p><strong>Phone:</strong> {{user?.phone || '—'}}</p>
 
-        <button class="btn btn-outline-primary w-100 mb-3"
+        <button class="btn btn-primary w-100 mb-3"
                 (click)="goProfile()">
           Update Profile
         </button>
@@ -107,7 +107,7 @@
                     [(ngModel)]="vault.notes"
                     name="notes"></textarea>
 
-          <button class="btn btn-success w-100">
+          <button class="btn btn-primary w-100">
             Add Account
           </button>
 
@@ -141,7 +141,7 @@
 
         <div class="mt-auto">
 
-          <button class="btn btn-outline-primary w-100"
+          <button class="btn btn-primary w-100"
                   (click)="goVault()">
             View All Accounts
           </button>
