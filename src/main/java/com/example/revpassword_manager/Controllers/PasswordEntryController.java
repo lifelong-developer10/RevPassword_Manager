@@ -2,9 +2,11 @@ package com.example.revpassword_manager.Controllers;
 
 import com.example.revpassword_manager.DTOs.PasswordEntryRequest;
 import com.example.revpassword_manager.DTOs.PasswordEntryResponse;
+import com.example.revpassword_manager.Models.AllPasswordEntry;
 import com.example.revpassword_manager.Security.CustomUserDetails;
 import com.example.revpassword_manager.Services.PasswordEntryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +52,11 @@ public class PasswordEntryController {
         return service.updateEntry(id, request);
     }
 
+    @GetMapping("/last")
+    public AllPasswordEntry getLast(Authentication auth) {
+
+        return service.getLastEntry(auth.getName());
+    }
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.deleteEntry(id);

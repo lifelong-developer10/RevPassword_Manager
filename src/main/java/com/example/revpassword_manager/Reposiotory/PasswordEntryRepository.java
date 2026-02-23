@@ -19,5 +19,8 @@ public interface PasswordEntryRepository
 
     List<AllPasswordEntry> findByUserAndAccountNameContainingIgnoreCase(
             MasterUser user, String keyword);
+
+    Optional<AllPasswordEntry>
+    findTopByUserUsernameOrderByCreatedAtDesc(String username);
 }
 

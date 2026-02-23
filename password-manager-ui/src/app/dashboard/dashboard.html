@@ -1,160 +1,155 @@
+<app-navbar></app-navbar>
 <div class="container mt-4">
 
-  <h2 class="mb-4 fw-bold text-primary">Dashboard</h2>
-
-  <div class="row">
+  <div class="row g-4">
 
     <!-- PROFILE CARD -->
-    <div class="col-md-4 mb-4">
+    <div class="col-lg-4">
 
-      <div class="card shadow-lg border-0 h-100">
+      <div class="card shadow-sm h-100 p-3">
 
-        <div class="card-body text-center">
+        <h5 class="mb-3">
+          <i class="fa fa-user me-2"></i>
+          Profile
+        </h5>
 
-          <h4 class="fw-bold mb-3">Master Profile</h4>
+        <p><strong>Name:</strong> {{user?.username || '—'}}</p>
+        <p><strong>Email:</strong> {{user?.email || '—'}}</p>
+        <p><strong>Phone:</strong> {{user?.phone || '—'}}</p>
 
-          <p><strong>Name:</strong> {{profile?.username}}</p>
-          <p><strong>Email:</strong> {{profile?.email}}</p>
-          <p><strong>Phone:</strong> {{profile?.phone}}</p>
+        <button class="btn btn-outline-primary w-100 mb-3"
+                (click)="goProfile()">
+          Update Profile
+        </button>
 
-          <hr>
+        <!-- VAULT SUMMARY INSIDE PROFILE -->
+        <h6 class="mt-2">Vault Summary</h6>
 
-          <h5>Total Accounts</h5>
-          <h2 class="text-success fw-bold">{{totalAccounts}}</h2>
+        <div class="summary-row">
 
-          <button class="btn btn-outline-primary mt-3"
-                  (click)="goProfile()">
-            Update Profile
-          </button>
+          <div class="summary-item">
+            <div class="circle-outline">{{totalAccounts}}</div>
+            <small>Total</small>
+          </div>
+
+          <div class="summary-item">
+            <div class="circle-outline">{{strongPasswords}}</div>
+            <small>Strong</small>
+          </div>
+
+          <div class="summary-item">
+            <div class="circle-outline">{{weakPasswords}}</div>
+            <small>Weak</small>
+          </div>
 
         </div>
 
       </div>
-
     </div>
 
 
     <!-- ADD ACCOUNT CARD -->
-    <div class="col-md-4 mb-4">
+    <div class="col-lg-4">
 
-      <div class="card shadow-lg border-0 h-100">
+      <div class="card shadow-sm h-100 p-3">
 
-        <div class="card-body">
+        <h5 class="mb-3">
+          <i class="fa fa-lock me-2"></i>
+          Add Account
+        </h5>
 
-          <h4 class="fw-bold mb-3 text-center">
-            Add Account
-          </h4>
+        <form (ngSubmit)="addVault()">
 
-          <form (ngSubmit)="addAccount()">
+          <input class="form-control mb-2"
+                 placeholder="Account Name"
+                 [(ngModel)]="vault.accountName"
+                 name="accountName"
+                 required>
 
-            <input class="form-control mb-2"
-                   placeholder="Website Name"
-                   [(ngModel)]="vault.websiteName"
-                   name="websiteName"
+          <input class="form-control mb-2"
+                 placeholder="Website URL"
+                 [(ngModel)]="vault.website"
+                 name="website"
+                 required>
+
+          <input class="form-control mb-2"
+                 placeholder="Username / Email"
+                 [(ngModel)]="vault.username"
+                 name="username"
+                 required>
+
+          <div class="input-group mb-2">
+
+            <input class="form-control"
+                   placeholder="Password"
+                   [(ngModel)]="vault.password"
+                   name="password"
                    required>
 
-            <input class="form-control mb-2"
-                   placeholder="Username"
-                   [(ngModel)]="vault.username"
-                   name="username"
-                   required>
 
-            <div class="input-group mb-2">
-
-              <input class="form-control"
-                     placeholder="Password"
-                     [(ngModel)]="vault.password"
-                     name="password"
-                     (input)="checkStrength()"
-                     required>
-
-              <button class="btn btn-outline-secondary"
-                      type="button"
-                      (click)="generatePassword()">
-                Generate
-              </button>
-
-            </div>
-
-            <!-- Strength Bar -->
-
-            <div class="progress mb-2"
-                 style="height:6px">
-
-              <div class="progress-bar"
-                   [style.width.%]="strengthScore"
-                   [style.background]="strengthColor">
-              </div>
-
-            </div>
-
-            <small>
-              {{strengthLabel}} ({{strengthScore}}%)
-            </small>
-
-            <select class="form-control mt-2"
-                    [(ngModel)]="vault.category"
-                    name="category"
-                    required>
-
-              <option value="">Select Category</option>
-              <option>SOCIAL</option>
-              <option>BANKING</option>
-              <option>SHOPPING</option>
-              <option>WORK</option>
-
-            </select>
-
-            <button class="btn btn-success w-100 mt-3">
-              Submit
-            </button>
-
-          </form>
-
-          <div *ngIf="successMessage"
-               class="text-success mt-2 text-center">
-
-            {{successMessage}}
 
           </div>
 
-          <button class="btn btn-outline-dark w-100 mt-3"
+          <select class="form-control mb-2"
+                  [(ngModel)]="vault.category"
+                  name="category">
+
+            <option value="">Category</option>
+            <option>Social</option>
+            <option>Banking</option>
+            <option>Work</option>
+            <option>Other</option>
+
+          </select>
+
+          <textarea class="form-control mb-3"
+                    placeholder="Notes"
+                    [(ngModel)]="vault.notes"
+                    name="notes"></textarea>
+
+          <button class="btn btn-success w-100">
+            Add Account
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+
+    <!-- LAST ADDED CARD -->
+    <div class="col-lg-4">
+
+      <div class="card shadow-sm h-100 p-3 d-flex flex-column">
+
+        <h5 class="mb-3">
+          <i class="fa fa-clock me-2"></i>
+          Last Added
+        </h5>
+
+        <div *ngIf="lastAccount; else noData">
+
+          <p><strong>{{lastAccount.accountName}}</strong></p>
+          <p>{{lastAccount.website}}</p>
+          <p>{{lastAccount.username}}</p>
+
+        </div>
+
+        <ng-template #noData>
+          <p class="text-muted">No accounts yet</p>
+        </ng-template>
+
+        <div class="mt-auto">
+
+          <button class="btn btn-outline-primary w-100"
                   (click)="goVault()">
-
             View All Accounts
-
           </button>
 
         </div>
 
       </div>
-
-    </div>
-
-
-    <!-- SUMMARY CARD -->
-    <div class="col-md-4 mb-4">
-
-      <div class="card shadow-lg border-0 h-100">
-
-        <div class="card-body text-center">
-
-          <h4 class="fw-bold mb-3">Summary</h4>
-
-          <h5>Total Vault Items</h5>
-          <h2 class="text-primary">{{totalAccounts}}</h2>
-
-          <hr>
-
-          <h5>Favorites</h5>
-          <h2 class="text-warning">{{favorites}}</h2>
-
-        </div>
-
-      </div>
-
     </div>
 
   </div>
-
 </div>

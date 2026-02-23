@@ -1,124 +1,174 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { VaultService } from '../core/services/vault.service';
 import { AuthService } from '../core/services/auth.service';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-
+import { NavbarComponent } from '../core/navbar/navbar';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.html',
-  imports: [CommonModule, FormsModule]
+  styleUrls: ['./dashboard.css'],
+  imports: [CommonModule, FormsModule, NavbarComponent]
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(
-    private router: Router,
-    private vaultService: VaultService,
-    private authService: AuthService
-  ) {}
 
-  // ================= PROFILE =================
 
-  profile: any = {};
-
-  totalAccounts = 0;
-  favorites = 0;
-
-  // ================= QUICK ADD VAULT =================
+  totalAccounts: number = 0;
+  strongPasswords: number = 0;
+  weakPasswords: number = 0;
+lastAccount: any = null;
+  user: any = {};
 
   vault: any = {
-    websiteName: '',
+    accountName: '',
+    website: '',
     username: '',
-    password: '',
-    category: ''
+    passwordEncrypted: '',
+    category: '',
+    notes: '',
+    favorite: false
   };
 
+  strengthScore = 0;
+  strengthColor = 'red';
   successMessage = '';
 
-  // ================= PASSWORD STRENGTH =================
+  constructor(
+    private vaultService: VaultService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  strengthScore = 0;
-  strengthLabel = '';
-  strengthColor = 'red';
+  // ================= INIT =================
 
-  ngOnInit(): void {
 
-    this.loadProfile();
-    this.loadStats();
 
-  }
+
+
+ngOnInit() {
+  this.loadProfile();
+  this.loadVaultSummary();
+  this.loadLastAccount();
+}
+
 
   // ================= LOAD PROFILE =================
 
   loadProfile() {
 
-    this.authService.getProfile()
-      .subscribe((res: any) => {
-        this.profile = res;
-      });
+    this.authService.getProfile().subscribe({
+      next: (res: any) => {
+        this.user = res;
+      },
+      error: () => {
+        console.log('Profile load failed');
+      }
+    });
 
   }
+goVault() {
+  this.router.navigate(['/vault']);
+}
+// last added account details
+loadLastAccount() {
 
-  // ================= LOAD STATS =================
+  this.vaultService.getAll().subscribe((res: any) => {
 
-  loadStats() {
+    const data = res as any[];
 
-    this.vaultService.getAll()
-      .subscribe((res: any) => {
-
-        this.totalAccounts = res.length || 0;
-        this.favorites = res.filter((v: any) => v.favorite).length || 0;
-
-      });
-
-  }
-
-  // ================= ADD ACCOUNT =================
-
-  addAccount() {
-
-    if (!this.vault.websiteName ||
-        !this.vault.username ||
-        !this.vault.password ||
-        !this.vault.category) {
-
-      alert('Please fill all fields');
-      return;
+    if (data.length > 0) {
+      this.lastAccount = data[data.length - 1];
     }
 
-    this.vaultService.create(this.vault)
-      .subscribe(() => {
+  });
 
-        this.successMessage = 'Account Added Successfully';
+}
+  // ================= LOAD SUMMARY =================
+loadVaultSummary() {
 
-        this.vault = {
-          websiteName: '',
-          username: '',
-          password: '',
-          category: ''
-        };
+  this.vaultService.getAll().subscribe((res: any) => {
 
-        this.loadStats();
+    const data = res as any[];
+
+    this.totalAccounts = data.length;
+
+    this.strongPasswords = data.filter(v =>
+      this.isStrong(v.password)
+    ).length;
+
+    this.weakPasswords = data.filter(v =>
+      !this.isStrong(v.password)
+    ).length;
+
+  });
+
+}
+
+goProfile() {
+  this.router.navigate(['/profile']);
+}
+
+
+isStrong(password: string): boolean {
+
+  if (!password) return false;
+
+  let score = 0;
+
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  return score >= 3;
+}
+  // ================= ADD ACCOUNT =================
+
+  addVault() {
+
+    const payload = {
+      accountName: this.vault.accountName,
+      website: this.vault.website,
+      username: this.vault.username,
+      passwordEncrypted: this.vault.passwordEncrypted,
+      category: this.vault.category,
+      notes: this.vault.notes,
+      favorite: this.vault.favorite
+    };
+
+    this.vaultService.create(payload)
+      .subscribe({
+
+        next: () => {
+
+          this.successMessage = 'Account Added Successfully ✅';
+
+          this.vault = {
+            accountName: '',
+            website: '',
+            username: '',
+            passwordEncrypted: '',
+            category: '',
+            notes: '',
+            favorite: false
+          };
+
+          this.loadVaultSummary();
+          this.loadLastAccount();
+
+        },
+
+        error: (err) => {
+          console.error(err);
+          alert('Error adding account');
+        }
 
       });
 
-  }
-
-  // ================= NAVIGATION =================
-
-  goProfile() {
-    this.router.navigate(['/profile']);
-  }
-
-  goVault() {
-    this.router.navigate(['/vault']);
-  }
-
-  logout() {
-    localStorage.removeItem('token');
-    this.router.navigate(['/login']);
   }
 
   // ================= PASSWORD GENERATOR =================
@@ -131,18 +181,15 @@ export class DashboardComponent implements OnInit {
     let password = '';
 
     for (let i = 0; i < 12; i++) {
-
-      password += chars.charAt(
-        Math.floor(Math.random() * chars.length)
-      );
-
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
 
     this.vault.password = password;
 
     this.checkStrength();
-
   }
+
+  // ================= PASSWORD STRENGTH =================
 
   checkStrength() {
 
@@ -157,19 +204,10 @@ export class DashboardComponent implements OnInit {
 
     this.strengthScore = score;
 
-    if (score <= 25) {
-      this.strengthLabel = 'Weak';
-      this.strengthColor = 'red';
-    } else if (score <= 50) {
-      this.strengthLabel = 'Medium';
-      this.strengthColor = 'orange';
-    } else if (score <= 75) {
-      this.strengthLabel = 'Strong';
-      this.strengthColor = 'blue';
-    } else {
-      this.strengthLabel = 'Very Strong';
-      this.strengthColor = 'green';
-    }
+    if (score <= 25) this.strengthColor = 'red';
+    else if (score <= 50) this.strengthColor = 'orange';
+    else if (score <= 75) this.strengthColor = 'blue';
+    else this.strengthColor = 'green';
 
   }
 

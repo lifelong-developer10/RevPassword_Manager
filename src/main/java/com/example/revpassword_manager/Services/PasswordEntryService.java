@@ -55,6 +55,13 @@ public class PasswordEntryService {
         return mapToResponse(entry);
     }
 
+    public AllPasswordEntry getLastEntry(String username) {
+
+        return repo
+                .findTopByUserUsernameOrderByCreatedAtDesc(username)
+                .orElse(null);
+    }
+
     public List<PasswordEntryResponse> getAllEntries(String username)
             throws Exception {
 

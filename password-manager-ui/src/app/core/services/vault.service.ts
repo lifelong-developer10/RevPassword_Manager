@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 })
 export class VaultService {
 
-  private baseUrl = environment.apiUrl + '/api/vault';
+  private baseUrl = 'http://localhost:8080/api/vault';
 
   constructor(private http: HttpClient) {}
 
