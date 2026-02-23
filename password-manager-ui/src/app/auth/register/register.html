@@ -1,86 +1,118 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4">
 
-<div class="container mt-5">
+  <span class="navbar-brand fw-bold">
+    🔐 Password Manager
+  </span>
 
-  <div class="card p-4 shadow col-md-6 mx-auto">
-    <h3 class="text-center mb-3">Register</h3>
+  <div class="ms-auto">
+
+    <button class="btn btn-light btn-sm"
+            routerLink="/dashboard">
+      Dashboard
+    </button>
+
+    <button class="btn btn-light btn-sm ms-2"
+            routerLink="/vault">
+      Vault
+    </button>
+
+    <button class="btn btn-light btn-sm ms-2"
+            routerLink="/profile">
+      Profile
+    </button>
+
+    <button class="btn btn-danger btn-sm ms-2"
+            (click)="logout()">
+      Logout
+    </button>
+
+  </div>
+
+</nav>
+<br>
+<div class="card p-4 shadow col-md-6 mx-auto mt-2">
+<div class="auth-container">
+
+  <div class="auth-card">
+
+    <h3 class="text-center mb-3">Create Account</h3>
 
     <form [formGroup]="form" (ngSubmit)="register()">
 
-      <input class="form-control mb-2"
-             placeholder="Username"
-             formControlName="username">
+      <!-- Username -->
+      <input
+        class="form-control mb-3"
+        placeholder="Username"
+        formControlName="username">
 
-      <input class="form-control mb-2"
-             placeholder="Email (@gmail.com)"
-             formControlName="email">
+      <!-- Email -->
+      <input
+        class="form-control mb-3"
+        placeholder="Email (@gmail.com)"
+        formControlName="email">
 
-      <input class="form-control mb-2"
-             placeholder="Phone"
-             formControlName="phone">
+      <!-- Phone -->
+      <input
+        class="form-control mb-3"
+        placeholder="Phone (10 digits)"
+        formControlName="phone">
 
+      <!-- Password -->
       <div class="input-group mb-2">
 
-        <input class="form-control"
-               [type]="showPassword ? 'text':'password'"
-               placeholder="Password"
-               formControlName="password"
-               (input)="checkStrength()">
+        <input
+          class="form-control"
+          [type]="showPassword ? 'text':'password'"
+          formControlName="password"
+          (input)="checkStrength()">
 
-        <button type="button"
-                class="btn btn-outline-secondary"
-                (click)="togglePassword()">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="togglePassword()">
+
           <i class="fa"
              [ngClass]="showPassword ? 'fa-eye-slash':'fa-eye'"></i>
+
         </button>
 
-        <div class="input-group mb-2">
+      </div>
 
+      <!-- Generate -->
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary mb-3"
+        (click)="generatePassword()">
+        Generate Strong Password
+      </button>
 
-
-
-          <button class="btn btn-secondary"
-                  (click)="generatePassword()">
-            Generate
-          </button>
-
-        </div>
-
-        <!-- Strength Bar -->
-
-        <div class="progress mb-2">
-
-          <div class="progress-bar"
-               [style.width.%]="strengthScore"
-               [style.background]="strengthColor">
-
-            {{strengthLabel}} ({{strengthScore}}%)
-
-          </div>
-
-        </div>
-        <div *ngFor="let q of questions; let i = index">
-
-          <label>{{ q.question }}</label>
-
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="q.answer"
-            name="answer{{i}}"
-            required>
-
+      <!-- Strength -->
+      <div class="progress mb-3" style="height:6px">
+        <div class="progress-bar"
+             [style.width.%]="strengthScore"
+             [style.background]="strengthColor">
         </div>
       </div>
 
+      <small>{{strengthLabel}} ({{strengthScore}}%)</small>
 
+      <!-- Security Questions -->
+      <h5 class="mt-4">Security Questions</h5>
 
-<!--      <button type="button"-->
-<!--              class="btn btn-secondary w-100 mb-2"-->
-<!--              (click)="generatePassword()">-->
-<!--        Generate Strong Password-->
-<!--      </button>-->
+      <div *ngFor="let q of questions">
 
-      <button class="btn btn-primary w-100">
+        <label class="fw-semibold">{{q.question}}</label>
+
+        <input
+          class="form-control mb-2"
+          [(ngModel)]="q.answer"
+          [ngModelOptions]="{standalone:true}"
+          placeholder="Your Answer"
+          required>
+
+      </div>
+
+      <button class="btn btn-primary w-100 mt-3">
         Register
       </button>
 
@@ -88,4 +120,5 @@
 
   </div>
 
+</div>
 </div>

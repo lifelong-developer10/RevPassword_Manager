@@ -32,32 +32,49 @@ export class RegisterComponent implements OnInit {
   ) {
 
     this.form = this.fb.group({
-      username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      password: ['', Validators.required]
+
+      username: ['', [Validators.required, Validators.minLength(3)]],
+
+      email: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)
+      ]],
+
+      phone: ['', [
+        Validators.required,
+        Validators.pattern(/^[0-9]{10}$/)
+      ]],
+
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8)
+      ]]
+
     });
 
   }
 
   // ================= INIT =================
 
-  ngOnInit() {
-    this.loadQuestions();
-  }
+
+ngOnInit() {
+  this.loadQuestions();
+}
 
   // ================= LOAD QUESTIONS =================
 
   loadQuestions() {
-
     this.auth.getQuestions().subscribe((res: any[]) => {
 
       this.questions = res
         .sort(() => 0.5 - Math.random())
-        .slice(0, 3);
+        .slice(0, 3)
+        .map(q => ({
+          ...q,
+          answer: ''
+        }));
 
     });
-
   }
 
   // ================= Toggle Password =================
@@ -118,35 +135,43 @@ export class RegisterComponent implements OnInit {
   }
 
   // ================= REGISTER =================
+register() {
 
-  register() {
-
-    if (this.form.invalid) return;
-
-    const payload = {
-      ...this.form.value,
-      securityAnswers: this.questions.map(q => ({
-        questionId: q.id,
-        answer: q.answer
-      }))
-    };
-
-    this.auth.register(payload).subscribe({
-
-      next: () => {
-        alert('Registration successful');
-        this.router.navigate(['/login']);
-      },
-
-      error: (err) => {
-        console.error(err);
-        alert('Registration failed');
-      }
-
-    });
-
+  if (this.form.invalid) {
+    alert('Please fill all required fields correctly');
+    return;
   }
 
+  // validate security answers
+  const invalidAnswer = this.questions.some(q => !q.answer || q.answer.trim() === '');
+
+  if (invalidAnswer) {
+    alert('Please answer all security questions');
+    return;
+  }
+
+  const payload = {
+    ...this.form.value,
+    securityAnswers: this.questions.map(q => ({
+      questionId: q.id,
+      answer: q.answer
+    }))
+  };
+
+  this.auth.register(payload).subscribe({
+
+    next: () => {
+      alert('Registration successful');
+      this.router.navigate(['/login']);
+    },
+
+    error: () => {
+      alert('Registration failed');
+    }
+
+  });
+
+}
   // ================= LOGOUT =================
 
   logout() {

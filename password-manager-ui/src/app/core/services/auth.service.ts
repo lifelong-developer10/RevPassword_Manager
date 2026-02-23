@@ -16,7 +16,9 @@ constructor(private http: HttpClient) {}
     return this.http.post(`${this.baseUrl}/register`, data);
   }
 getQuestions() {
-  return this.http.get<any[]>('http://localhost:8080/api/security-questions');
+  return this.http.get<any[]>(
+    'http://localhost:8080/api/auth/security-questions'
+  );
 }
   login(data: any) {
     return this.http.post(`${this.baseUrl}/login`, data);
@@ -55,11 +57,11 @@ changePassword(data: any) {
 }
 
 getSecurityQuestions() {
-  return this.http.get(`${this.baseUrl}/api/security-questions`);
+  return this.http.get(`${this.baseUrl}/api/auth/security-questions`);
 }
 
 updateSecurityQuestions(data: any) {
-  return this.http.put(`${this.baseUrl}/api/security-questions`, data);
+  return this.http.put(`${this.baseUrl}/api/auth/security-questions`, data);
 }
 requestRecovery(email: string) {
   return this.http.post(`${this.baseUrl}/api/auth/forgot-password`, { email });
@@ -76,11 +78,11 @@ verifyOtp(data: any) {
 
 getRecoveryQuestions(email: string) {
 
-  return this.http.get(`${this.baseUrl}/api/security-questions/recovery?email=${email}`);
+  return this.http.get(`${this.baseUrl}/api/auth/security-questions/recovery?email=${email}`);
 }
 
 verifySecurityAnswers(data: any) {
-  return this.http.post(`${this.baseUrl}/api/security-questions/verify`, data);
+  return this.http.post(`${this.baseUrl}/api/sauth/ecurity-questions/verify`, data);
 }
 
 resetPassword(data: any) {
