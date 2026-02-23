@@ -35,10 +35,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // ✅ PUBLIC ENDPOINTS — SKIP JWT
+        // Allow only auth endpoints without token
         if (path.startsWith("/api/auth")
                 || path.startsWith("/api/forgot")
-                || path.startsWith("/error")) {
+                || path.startsWith("/api/security")
+                || path.equals("/")) {
 
             filterChain.doFilter(request, response);
             return;
@@ -46,34 +47,32 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-        String token = authHeader.substring(7);
-        String username = jwtUtil.extractUsername(token);
+            String token = authHeader.substring(7);
+            String username = jwtUtil.extractUsername(token);
 
-        if (username != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(username);
-            System.out.println("AUTH HEADER: " + authHeader);
-            if (jwtUtil.isValid(token, userDetails.getUsername())) {
+                UserDetails userDetails =
+                        userDetailsService.loadUserByUsername(username);
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
+                if (jwtUtil.isValid(token, userDetails.getUsername())) {
 
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request));
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities());
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authToken);
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request));
+
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authToken);
+                }
             }
         }
 
