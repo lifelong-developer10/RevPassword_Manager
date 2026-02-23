@@ -1,5 +1,6 @@
 package com.example.revpassword_manager.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ public class MasterUser {
     private String passwordEncrypted;
 
     private boolean twoFactorEnabled;
-
+@JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<AllPasswordEntry> passwordEntries;
 

@@ -2,6 +2,7 @@ package com.example.revpassword_manager.Controllers;
 
 import com.example.revpassword_manager.DTOs.AuthResponse;
 import com.example.revpassword_manager.DTOs.LoginRequest;
+import com.example.revpassword_manager.DTOs.ProfileResponse;
 import com.example.revpassword_manager.DTOs.RegisterRequest;
 import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
@@ -51,13 +52,20 @@ private final UserRepository userRepo;
     }
 
     @GetMapping
-    public MasterUser getProfile(Authentication auth) {
+    public ProfileResponse getProfile(Authentication auth) {
 
         String username = auth.getName();
 
-        return userRepo
-                .findByUsername(username)
-                .orElseThrow();
+        MasterUser user =
+                userRepo.findByUsername(username)
+                        .orElseThrow();
+        System.out.println("PROFILE USER: " + username);
+        return new ProfileResponse(
+                user.getUsername(),
+                user.getEmail(),
+                user.getPhone()
+        );
+
     }
 }
 
