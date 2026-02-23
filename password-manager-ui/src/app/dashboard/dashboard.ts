@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { VaultService } from '../core/services/vault.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
@@ -12,7 +13,8 @@ export class DashboardComponent implements OnInit {
   total = 0;
   favorites = 0;
 
-  constructor(private vaultService: VaultService) {}
+  constructor(private vaultService: VaultService,
+    private router: Router) {}
 
   ngOnInit() {
     this.loadStats();

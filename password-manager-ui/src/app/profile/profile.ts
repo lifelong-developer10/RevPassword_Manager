@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.html',
@@ -27,7 +27,8 @@ export class ProfileComponent implements OnInit {
 
   securityQuestions: any[] = [];
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,
+    private router: Router) {}
 
   ngOnInit() {
     this.loadProfile();
