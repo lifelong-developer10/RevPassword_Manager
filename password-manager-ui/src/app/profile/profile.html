@@ -37,14 +37,14 @@
 
         <h5 class="mb-3">Security Questions</h5>
 
-        <div *ngFor="let q of questions; let i = index">
+        <div *ngFor="let q of questions">
 
-          <label class="fw-bold">
-            {{q.questionText}}
-          </label>
+          <label>{{q.question}}</label>
 
-          <input class="form-control mb-2"
-                 [(ngModel)]="q.answer">
+          <input
+            type="text"
+            [(ngModel)]="q.answer"
+            class="form-control">
 
         </div>
 

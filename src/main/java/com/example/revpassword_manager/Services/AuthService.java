@@ -1,5 +1,6 @@
 package com.example.revpassword_manager.Services;
 
+import com.example.revpassword_manager.DTOs.ChangePasswordRequest;
 import com.example.revpassword_manager.DTOs.LoginRequest;
 import com.example.revpassword_manager.DTOs.RegisterRequest;
 import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
@@ -95,29 +96,35 @@ public class AuthService {
 
         return jwtUtil.generateToken(user.getUsername());
     }
+    public String changePassword(String username,
+                                 ChangePasswordRequest req) {
 
-    public String changePassword(
-            String username,
-            String oldPassword,
-            String newPassword) {
+        MasterUser user =
+                userRepository.findByUsername(username).orElseThrow();
+
+        if (!passwordEncoder.matches(req.getCurrentPassword(),
+                user.getPasswordEncrypted())) {
+
+            throw new RuntimeException("Wrong current password");
+        }
+
+        user.setPasswordEncrypted(
+                passwordEncoder.encode(req.getNewPassword()));
+
+        userRepository.save(user);
+
+        return "Password Updated";
+    }
+    public MasterUser updateProfile(String username, MasterUser req) {
 
         MasterUser user =
                 userRepository.findByUsername(username)
                         .orElseThrow();
 
-        if (!passwordEncoder.matches(
-                oldPassword,
-                user.getPasswordEncrypted())) {
+        user.setEmail(req.getEmail());
+        user.setPhone(req.getPhone());
+        user.setUsername(req.getUsername());
 
-            throw new RuntimeException("Old password incorrect");
-        }
-
-        user.setPasswordEncrypted(
-                passwordEncoder.encode(newPassword));
-
-        userRepository.save(user);
-
-        return "Password Updated Successfully";
+        return userRepository.save(user);
     }
-
 }

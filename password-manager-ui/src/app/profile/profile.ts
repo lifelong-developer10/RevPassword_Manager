@@ -118,17 +118,17 @@ export class ProfileComponent implements OnInit {
 
   toggle2FA() {
 
-    const payload = {
-      enabled: !this.user.twoFactorEnabled
-    };
+    const token = localStorage.getItem('token');
 
-    this.profileService.update2FA(payload)
-      .subscribe(() => {
+    this.profileService.toggle2FA(!this.user.twoFactorEnabled)
+      .subscribe({
 
-        this.user.twoFactorEnabled =
-          !this.user.twoFactorEnabled;
+        next: () => {
 
-        this.message = '2FA Updated';
+          this.user.twoFactorEnabled =
+            !this.user.twoFactorEnabled;
+
+        }
 
       });
 

@@ -22,38 +22,31 @@ public class SecurityQuestionService {
     private final SecurityQuestionRepository masterRepo;
     private final PasswordEncoder encoder;
 
-    public String updateUserQuestions(
+    public String updateQuestions(
             String username,
-            List<UserQuestionAnswer> request) {
+            List<UserQuestionAnswer> list) {
 
-        MasterUser user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        MasterUser user =
+                userRepo.findByUsername(username)
+                        .orElseThrow();
 
-        // delete old questions
         userQuestionRepo.deleteByUser(user);
 
-        List<SecurityQuestions> list = new ArrayList<>();
+        for (UserQuestionAnswer dto : list) {
 
-        for (UserQuestionAnswer dto : request) {
-
-            SecurityQuestionMaster question =
+            SecurityQuestionMaster q =
                     masterRepo.findById(dto.getQuestionId())
-                            .orElseThrow(() ->
-                                    new RuntimeException("Question not found")).getQuestion();
+                            .orElseThrow().getQuestion();
 
-            SecurityQuestions uq = new SecurityQuestions();
+            SecurityQuestions entity = new SecurityQuestions();
+            entity.setUser(user);
+            entity.setQuestion(q);
+            entity.setAnswerHash(
+                    encoder.encode(dto.getAnswer()));
 
-            uq.setUser(user);
-            uq.setQuestion(question);
-            uq.setAnswerHash(
-                    encoder.encode(dto.getAnswer())
-            );
-
-            list.add(uq);
+            userQuestionRepo.save(entity);
         }
 
-        userQuestionRepo.saveAll(list);
-
-        return "Security Questions Updated Successfully";
+        return "Updated";
     }
 }

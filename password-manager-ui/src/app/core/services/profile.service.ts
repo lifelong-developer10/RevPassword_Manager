@@ -30,7 +30,18 @@ updateProfile(data: any) {
 }
 
 updateQuestions(data: any) {
-  return this.http.put(this.API + '/auth/security-questions', data);
+
+  const token = localStorage.getItem('token');
+
+  return this.http.put(
+    'http://localhost:8080/api/profile/security-questions',
+    data,
+    {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }
+  );
 }
 
 changePassword(data: any) {
@@ -40,5 +51,18 @@ changePassword(data: any) {
 update2FA(data: any) {
   return this.http.post(this.API + '/auth/2fa', data);
 }
+toggle2FA(enabled: boolean) {
 
+  const token = localStorage.getItem('token');
+
+  return this.http.post(
+    'http://localhost:8080/api/profile/2fa',
+    { enabled: enabled },
+    {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }
+  );
+}
 }

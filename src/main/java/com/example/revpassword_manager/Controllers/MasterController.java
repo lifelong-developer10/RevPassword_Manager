@@ -7,6 +7,7 @@ import com.example.revpassword_manager.Reposiotory.UserRepository;
 import com.example.revpassword_manager.Security.CustomUserDetails;
 import com.example.revpassword_manager.Services.AuthService;
 import com.example.revpassword_manager.Services.ForgotPasswordService;
+import com.example.revpassword_manager.Services.SecurityQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ public class MasterController {
 private final SecurityQuestionRepository masterRepo;
 private final UserRepository userRepo;
 private final AuthService authService;
+private final SecurityQuestionService security;
 private final ForgotPasswordService forgotPasswordService;
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
@@ -63,7 +65,6 @@ private final ForgotPasswordService forgotPasswordService;
         );
 
     }
-
     @GetMapping("/security-questions")
     public List<UserQuestionAnswer> getUserSecurityQuestions(
             @AuthenticationPrincipal CustomUserDetails user) {
@@ -71,17 +72,17 @@ private final ForgotPasswordService forgotPasswordService;
         return forgotPasswordService.getUserQuestionsWithMask(
                 user.getUsername());
     }
-
-    @PostMapping("/change-password")
-    public String changePassword(
+    @PostMapping("/profile/security-questions")
+    public String updateQuestions(
             @AuthenticationPrincipal CustomUserDetails user,
-            @RequestBody ChangePasswordRequest request) {
+            @RequestBody List<UserQuestionAnswer> list) {
 
-        return authService.changePassword(
+        return security.updateQuestions(
                 user.getUsername(),
-                request.getOldPassword(),
-                request.getNewPassword());
+                list);
     }
+
+
 
 
 
