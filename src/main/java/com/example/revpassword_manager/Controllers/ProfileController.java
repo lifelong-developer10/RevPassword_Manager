@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -48,46 +49,25 @@ private final PasswordEncoder encode;
                 user.getPhone()
         );
     }
-
     @PutMapping
     public MasterUser updateProfile(
-            @AuthenticationPrincipal CustomUserDetails user,
+            Authentication auth,
             @RequestBody MasterUser request) {
 
-        return authService.updateProfile(
-                user.getUsername(),
-                request);
-    }
+        String username = auth.getName();
 
+        return authService.updateProfile(username, request);
+    }
     @PostMapping("/change-password")
     public String changePassword(
-            String username,
-            ChangePasswordRequest req) {
+            Authentication auth,
+            @RequestBody ChangePasswordRequest req) {
 
-        MasterUser user =
-                userRepository.findByUsername(username)
-                        .orElseThrow();
+        String username = auth.getName();
 
-        if (!encode.matches(
-                req.getCurrentPassword(),
-                user.getPasswordEncrypted())) {
-
-            throw new RuntimeException("Wrong current password");
-        }
-
-        if (!req.getNewPassword()
-                .equals(req.getConfirmPassword())) {
-
-            throw new RuntimeException("Passwords do not match");
-        }
-
-        user.setPasswordEncrypted(
-                encode.encode(req.getNewPassword()));
-
-        userRepository.save(user);
-
-        return "Password Updated";
+        return authService.changePassword(username, req);
     }
+
     @GetMapping("/security-questions")
     public List<UserQuestionAnswer> getUserSecurityQuestions(
             @AuthenticationPrincipal CustomUserDetails user) {
@@ -95,14 +75,13 @@ private final PasswordEncoder encode;
         return forgotPasswordService.getUserQuestionsWithMask(
                 user.getUsername());
     }
+
     @PutMapping("/security-questions")
-    public String updateQuestions(
+    public Map<String, String> updateQuestions(
             @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody List<UserQuestionAnswer> list) {
 
-        return security.updateQuestions(
-                user.getUsername(),
-                list);
+        return security.updateQuestions(user.getUsername(), list);
     }
 
     @PostMapping("/2fa")
@@ -115,8 +94,5 @@ private final PasswordEncoder encode;
                 request.isEnabled());
 
     }
-    @GetMapping("/profile/security-questions")
-    public List<SecurityQuestions> getUserQuestions(Authentication auth) {
-        return security.getUserQuestions(auth.getName());
-    }
+
 }

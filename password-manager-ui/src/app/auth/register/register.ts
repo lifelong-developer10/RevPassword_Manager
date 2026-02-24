@@ -63,20 +63,21 @@ ngOnInit() {
 
   // ================= LOAD QUESTIONS =================
 
-  loadQuestions() {
-    this.auth.getQuestions().subscribe((res: any[]) => {
+ loadQuestions() {
+   this.auth.getQuestions().subscribe((res: any[]) => {
 
-      this.questions = res
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 3)
-        .map(q => ({
-          questionId: q.questionId,
-          question: q.question,
-          answer: ''
-        }));
+     this.questions = res
+       .sort(() => 0.5 - Math.random())
+       .slice(0, 3)
+       .map(q => ({
+         id: q.id,              // ✅ ensure id stored
+         question: q.question,
+         answer: ''
+       }));
 
-    });
-  }
+     console.log('QUESTIONS LOADED', this.questions);
+   });
+ }
 
   // ================= Toggle Password =================
 
@@ -131,7 +132,10 @@ ngOnInit() {
     this.form.patchValue({
       password: password
     });
- localStorage.setItem('generatedPassword', password);
+
+    // ✅ Store only generated password
+    localStorage.setItem('generatedPassword', password);
+
     this.checkStrength();
   }
 
@@ -139,40 +143,31 @@ ngOnInit() {
 register() {
 
   if (this.form.invalid) {
-    alert('Please fill all required fields correctly');
-    return;
-  }
-
-  const invalidAnswer = this.questions.some(q => !q.answer || q.answer.trim() === '');
-
-  if (invalidAnswer) {
-    alert('Please answer all security questions');
+    alert('Please fill all required fields');
     return;
   }
 
   const payload = {
     ...this.form.value,
     securityAnswers: this.questions.map(q => ({
-      questionId: q.questionId,
+      questionId: q.id,
       answer: q.answer
     }))
   };
 
-  console.log(payload); // DEBUG
+  console.log('REGISTER PAYLOAD', payload);
 
   this.auth.register(payload).subscribe({
-
     next: () => {
+        localStorage.removeItem('generatedPassword');
       alert('Registration successful');
       this.router.navigate(['/login']);
     },
-
-    error: () => {
+    error: (err) => {
+      console.error(err);
       alert('Registration failed');
     }
-
   });
-
 }
   // ================= LOGOUT =================
 

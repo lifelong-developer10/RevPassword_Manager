@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -112,6 +114,7 @@ public class AuthService {
 
         return "Password Updated";
     }
+    @Transactional
     public MasterUser updateProfile(String username, MasterUser req) {
 
         MasterUser user =
@@ -121,7 +124,12 @@ public class AuthService {
         user.setEmail(req.getEmail());
         user.setPhone(req.getPhone());
         user.setUsername(req.getUsername());
-
+        if (userRepository.existsByUsername(req.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
         return userRepository.save(user);
+    }
+    public List<SecurityQuestionMaster> getAllQuestions() {
+        return masterRepo.findAll();
     }
 }

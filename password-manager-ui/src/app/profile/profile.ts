@@ -72,7 +72,12 @@ export class ProfileComponent implements OnInit {
 
 updateQuestions() {
 
-  this.profileService.updateQuestions(this.questions)
+  const payload = this.questions.map(q => ({
+    questionId: q.id,
+    answer: q.answer
+  }));
+
+  this.profileService.updateQuestions(payload)
     .subscribe(() => alert('Questions Updated'));
 
 }

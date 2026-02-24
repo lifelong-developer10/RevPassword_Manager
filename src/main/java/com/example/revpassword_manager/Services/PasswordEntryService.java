@@ -7,6 +7,7 @@ import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Reposiotory.PasswordEntryRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
 import com.example.revpassword_manager.Security.EncryptionUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -122,7 +123,7 @@ public class PasswordEntryService {
 
         return mapToResponse(entry);
     }
-
+@Transactional
     public void deleteEntry(Long id) {
         repo.deleteById(id);
     }

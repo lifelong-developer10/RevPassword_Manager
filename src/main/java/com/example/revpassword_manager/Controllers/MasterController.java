@@ -2,6 +2,7 @@ package com.example.revpassword_manager.Controllers;
 
 import com.example.revpassword_manager.DTOs.*;
 import com.example.revpassword_manager.Models.MasterUser;
+import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
 import com.example.revpassword_manager.Security.CustomUserDetails;
@@ -65,11 +66,9 @@ private final ForgotPasswordService forgotPasswordService;
 
     }
     @GetMapping("/security-questions")
-    public List<UserQuestionAnswer> getUserSecurityQuestions(
-            @AuthenticationPrincipal CustomUserDetails user) {
+    public List<SecurityQuestionMaster> getAllQuestions() {
 
-        return forgotPasswordService.getUserQuestionsWithMask(
-                user.getUsername());
+        return service.getAllQuestions();
     }
 
 

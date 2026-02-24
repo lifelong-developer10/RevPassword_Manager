@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/vault")
 @RequiredArgsConstructor
@@ -21,19 +20,21 @@ public class PasswordEntryController {
 
     @PostMapping
     public PasswordEntryResponse add(
-            @AuthenticationPrincipal CustomUserDetails user,
+            Authentication auth,
             @RequestBody PasswordEntryRequest request)
             throws Exception {
 
-        return service.addEntry(user.getUsername(), request);
+        String username = auth.getName();
+        return service.addEntry(username, request);
     }
 
     @GetMapping
     public List<PasswordEntryResponse> getAll(
-            @AuthenticationPrincipal CustomUserDetails user)
+            Authentication auth)
             throws Exception {
 
-        return service.getAllEntries(user.getUsername());
+        String username = auth.getName();
+        return service.getAllEntries(username);
     }
 
     @GetMapping("/{id}")
@@ -53,9 +54,12 @@ public class PasswordEntryController {
     }
 
     @GetMapping("/last")
-    public PasswordEntryResponse getLast(Authentication auth) throws Exception {
+    public PasswordEntryResponse getLast(Authentication auth)
+            throws Exception {
+
         return service.getLastEntry(auth.getName());
     }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.deleteEntry(id);
@@ -63,28 +67,28 @@ public class PasswordEntryController {
 
     @GetMapping("/favorites")
     public List<PasswordEntryResponse> favorites(
-            @AuthenticationPrincipal CustomUserDetails user)
+            Authentication auth)
             throws Exception {
 
-        return service.getFavorites(user.getUsername());
+        return service.getFavorites(auth.getName());
     }
 
     @GetMapping("/search")
     public List<PasswordEntryResponse> search(
-            @AuthenticationPrincipal CustomUserDetails user,
+            Authentication auth,
             @RequestParam String keyword)
             throws Exception {
 
-        return service.search(user.getUsername(), keyword);
+        return service.search(auth.getName(), keyword);
     }
 
     @GetMapping("/category")
     public List<PasswordEntryResponse> filter(
-            @AuthenticationPrincipal CustomUserDetails user,
+            Authentication auth,
             @RequestParam String category)
             throws Exception {
 
         return service.filterByCategory(
-                user.getUsername(), category);
+                auth.getName(), category);
     }
 }

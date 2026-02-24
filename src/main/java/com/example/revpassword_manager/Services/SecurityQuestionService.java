@@ -4,56 +4,62 @@ import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
 import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Models.SecurityQuestions;
+import com.example.revpassword_manager.Reposiotory.SecurityQuestionMasterRepository;
 import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SecurityQuestionService {
 
+    private final SecurityQuestionRepository questionRepo;
+    private final SecurityQuestionMasterRepository masterRepo;
     private final UserRepository userRepo;
-    private final SecurityQuestionRepository userQuestionRepo;
-    private final SecurityQuestionRepository masterRepo;
     private final PasswordEncoder encoder;
-
-    public String updateQuestions(
-            String username,
-            List<UserQuestionAnswer> list) {
+    @Transactional
+    public Map<String, String> updateQuestions(String username,
+                                               List<UserQuestionAnswer> list){
 
         MasterUser user =
                 userRepo.findByUsername(username)
                         .orElseThrow();
 
-        userQuestionRepo.deleteByUser(user);
+        // delete old questions
+        questionRepo.deleteByUser(user);
 
-        for (UserQuestionAnswer dto : list) {
+        for (UserQuestionAnswer q : list) {
 
-            SecurityQuestionMaster q =
-                    masterRepo.findById(dto.getQuestionId())
-                            .orElseThrow().getQuestion();
+            SecurityQuestionMaster master =
+                    masterRepo.findById(q.getQuestionId())
+                            .orElseThrow();
 
             SecurityQuestions entity = new SecurityQuestions();
-            entity.setUser(user);
-            entity.setQuestion(q);
-            entity.setAnswerHash(
-                    encoder.encode(dto.getAnswer()));
 
-            userQuestionRepo.save(entity);
+            entity.setUser(user);
+            entity.setQuestion(master);
+            entity.setAnswerHash(q.getAnswer());
+
+            questionRepo.save(entity);
         }
 
-        return "Updated";
-    }
+        return Map.of("message", "Security Questions Updated");    }
+
     public List<SecurityQuestions> getUserQuestions(String username) {
 
         MasterUser user =
-                userRepo.findByUsername(username).orElseThrow();
+                userRepo.findByUsername(username)
+                        .orElseThrow();
 
-        return userQuestionRepo.findByUser(user);
+        return questionRepo.findByUser(user);
     }
 }
