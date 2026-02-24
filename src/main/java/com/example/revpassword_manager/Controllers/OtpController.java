@@ -38,14 +38,5 @@ public class OtpController {
         return result ? "OTP Verified" : "Invalid OTP";
     }
 
-    @PostMapping("/2fa")
-    public String update2FA(
-            @AuthenticationPrincipal CustomUserDetails user,
-            @RequestBody TwoFactorRequest request) {
 
-        return twoFactorService.updateTwoFactor(
-                user.getUsername(),
-                request.isEnabled());
-
-    }
 }

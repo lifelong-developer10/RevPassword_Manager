@@ -49,79 +49,57 @@ export class ProfileComponent implements OnInit {
   // ================= LOAD QUESTIONS =================
 
  questions: any[] = [];
-
  loadQuestions() {
 
    this.profileService.getQuestions()
-     .subscribe((res: any[]) => {
+     .subscribe((res: any) => {
 
-       this.questions = res;
-
-       console.log("Questions:", this.questions);
+       this.questions = res || [];
 
      });
 
  }
+ // ================= UPDATE PROFILE =================
 
-  // ================= UPDATE PROFILE =================
+ updateProfile() {
 
-  updateProfile() {
+   this.profileService.updateProfile(this.user)
+     .subscribe(() => alert('Profile Updated'));
 
-    this.profileService.updateProfile(this.user)
-      .subscribe(() => {
-        this.message = 'Profile Updated Successfully';
-      });
-
-  }
+ }
 
   // ================= UPDATE QUESTIONS =================
 
-  updateQuestions() {
+updateQuestions() {
 
-    const payload = {
-      questions: this.questions
-    };
+  this.profileService.updateQuestions(this.questions)
+    .subscribe(() => alert('Questions Updated'));
 
-    this.profileService.updateQuestions(payload)
-      .subscribe({
-
-        next: () => alert('Questions Updated'),
-        error: (err) => console.error(err)
-
-      });
-
-  }
+}
 
   // ================= CHANGE PASSWORD =================
 
   changePassword() {
 
     if (this.password.new !== this.password.confirm) {
-      alert('Passwords do not match');
+      alert('Password mismatch');
       return;
     }
 
-    this.profileService.changePassword(this.password)
-      .subscribe(() => {
-        this.message = 'Password Updated Successfully';
-
-        this.password = {
-          current: '',
-          new: '',
-          confirm: ''
-        };
-      });
+    this.profileService.changePassword({
+      currentPassword: this.password.current,
+      newPassword: this.password.new,
+      confirmPassword: this.password.confirm
+    }).subscribe(() => alert('Password Updated'));
 
   }
-
   // ================= TOGGLE 2FA =================
 
   toggle2FA() {
 
     const token = localStorage.getItem('token');
 
-    this.profileService.toggle2FA(!this.user.twoFactorEnabled)
-      .subscribe({
+this.profileService.update2FA(!this.user.twoFactorEnabled)      .subscribe({
 
         next: () => {
 

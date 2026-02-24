@@ -7,6 +7,7 @@ import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
 import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Models.SecurityQuestions;
+import com.example.revpassword_manager.Reposiotory.SecurityQuestionMasterRepository;
 import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
 
@@ -27,42 +28,40 @@ public class AuthService {
     private final UserRepository userRepository; // Your JPA Repository
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;// Injected from SecurityConfig
-   private final SecurityQuestionRepository userQuestionRepo;
-    private final SecurityQuestionRepository masterRepo;
-
+    private final SecurityQuestionRepository userQuestionRepo;
+    private final SecurityQuestionMasterRepository masterRepo;
     public String register(RegisterRequest request) {
 
-        if (request.getSecurityAnswers().size() != 3)
+        if (request.getSecurityAnswers() == null ||
+                request.getSecurityAnswers().size() != 3) {
             throw new RuntimeException("Select exactly 3 questions");
+        }
 
         MasterUser user = new MasterUser();
 
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
-
         user.setPasswordEncrypted(
                 passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
 
-        for (UserQuestionAnswer dto :
-                request.getSecurityAnswers()) {
+        for (UserQuestionAnswer dto : request.getSecurityAnswers()) {
+
+            if (dto.getQuestionId() == null) {
+                throw new RuntimeException("Question ID cannot be null");
+            }
 
             SecurityQuestionMaster master =
                     masterRepo.findById(dto.getQuestionId())
                             .orElseThrow(() ->
                                     new RuntimeException(
                                             "Invalid Question ID: "
-                                                    + dto.getQuestionId())).getQuestion();
+                                                    + dto.getQuestionId()));
 
-            SecurityQuestions uq =
-                    new SecurityQuestions();
-            if (request.getSecurityAnswers() == null ||
-                    request.getSecurityAnswers().size() < 3) {
+            SecurityQuestions uq = new SecurityQuestions();
 
-                throw new RuntimeException("Minimum 3 answers required");
-            }
             uq.setUser(user);
             uq.setQuestion(master);
             uq.setAnswerHash(
@@ -73,7 +72,6 @@ public class AuthService {
 
         return "User Registered Successfully";
     }
-
 
     public String login(LoginRequest request) {
 
@@ -89,13 +87,12 @@ public class AuthService {
             throw new RuntimeException("Invalid password");
         }
 
-        if (user.isTwoFactorEnabled()) {
-            otpService.generateOtp(user.getUsername());
-            return "OTP_REQUIRED";
-        }
-
+        // 🔥 NO OTP HERE — Direct JWT
         return jwtUtil.generateToken(user.getUsername());
     }
+
+
+
     public String changePassword(String username,
                                  ChangePasswordRequest req) {
 

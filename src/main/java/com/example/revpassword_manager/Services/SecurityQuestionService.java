@@ -49,4 +49,11 @@ public class SecurityQuestionService {
 
         return "Updated";
     }
+    public List<SecurityQuestions> getUserQuestions(String username) {
+
+        MasterUser user =
+                userRepo.findByUsername(username).orElseThrow();
+
+        return userQuestionRepo.findByUser(user);
+    }
 }

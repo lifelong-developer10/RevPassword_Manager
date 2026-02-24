@@ -26,7 +26,6 @@ public class MasterController {
 private final SecurityQuestionRepository masterRepo;
 private final UserRepository userRepo;
 private final AuthService authService;
-private final SecurityQuestionService security;
 private final ForgotPasswordService forgotPasswordService;
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
@@ -72,15 +71,7 @@ private final ForgotPasswordService forgotPasswordService;
         return forgotPasswordService.getUserQuestionsWithMask(
                 user.getUsername());
     }
-    @PostMapping("/profile/security-questions")
-    public String updateQuestions(
-            @AuthenticationPrincipal CustomUserDetails user,
-            @RequestBody List<UserQuestionAnswer> list) {
 
-        return security.updateQuestions(
-                user.getUsername(),
-                list);
-    }
 
 
 

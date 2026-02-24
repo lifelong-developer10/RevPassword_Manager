@@ -70,7 +70,8 @@ ngOnInit() {
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map(q => ({
-          ...q,
+          questionId: q.questionId,
+          question: q.question,
           answer: ''
         }));
 
@@ -142,7 +143,6 @@ register() {
     return;
   }
 
-  // validate security answers
   const invalidAnswer = this.questions.some(q => !q.answer || q.answer.trim() === '');
 
   if (invalidAnswer) {
@@ -153,10 +153,12 @@ register() {
   const payload = {
     ...this.form.value,
     securityAnswers: this.questions.map(q => ({
-      questionId: q.id,
+      questionId: q.questionId,
       answer: q.answer
     }))
   };
+
+  console.log(payload); // DEBUG
 
   this.auth.register(payload).subscribe({
 

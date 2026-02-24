@@ -33,18 +33,6 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        String path = request.getServletPath();
-
-        // Allow only auth endpoints without token
-        if (path.equals("/api/auth/login")
-                || path.equals("/api/auth/register")
-                || path.startsWith("/api/forgot")) {
-
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -58,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 UserDetails userDetails =
                         userDetailsService.loadUserByUsername(username);
 
-                if (jwtUtil.isValid(token, userDetails.getUsername())) {
+                if (jwtUtil.isValid(token, username)) {
 
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(

@@ -1,68 +1,46 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ProfileService {
 
-  API = 'http://localhost:8080/api';
+  private API = 'http://localhost:8080/api';
 
   constructor(private http: HttpClient) {}
 
-getProfile() {
-  return this.http.get(this.API + '/profile');
-}
-getQuestions() {
-  return this.http.get<any[]>(this.API + '/auth/security-questions');
-}
-updateProfile(data: any) {
+  // ================= PROFILE =================
 
-  const token = localStorage.getItem('token');
+  getProfile(): Observable<any> {
+    return this.http.get(`${this.API}/profile`);
+  }
 
-  return this.http.put(
-    'http://localhost:8080/api/profile',
-    data,
-    {
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    }
-  );
-}
+  updateProfile(data: any): Observable<any> {
+    return this.http.put(`${this.API}/profile`, data);
+  }
 
-updateQuestions(data: any) {
+  // ================= SECURITY QUESTIONS =================
 
-  const token = localStorage.getItem('token');
+  getQuestions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/auth/security-questions`);
+  }
 
-  return this.http.put(
-    'http://localhost:8080/api/profile/security-questions',
-    data,
-    {
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    }
-  );
-}
+  updateQuestions(data: any): Observable<any> {
+    return this.http.put(`${this.API}/profile/security-questions`, data);
+  }
 
-changePassword(data: any) {
-  return this.http.post(this.API + '/auth/change-password', data);
-}
+  // ================= CHANGE PASSWORD =================
 
-update2FA(data: any) {
-  return this.http.post(this.API + '/auth/2fa', data);
-}
-toggle2FA(enabled: boolean) {
+  changePassword(data: any): Observable<any> {
+    return this.http.post(`${this.API}/profile/change-password`, data);
+  }
 
-  const token = localStorage.getItem('token');
+  // ================= TWO FACTOR =================
 
-  return this.http.post(
-    'http://localhost:8080/api/profile/2fa',
-    { enabled: enabled },
-    {
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    }
-  );
-}
+  update2FA(enabled: boolean): Observable<any> {
+    return this.http.post(`${this.API}/profile/2fa`, { enabled });
+  }
+
 }
