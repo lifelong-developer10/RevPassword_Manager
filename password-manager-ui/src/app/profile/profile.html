@@ -1,185 +1,128 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4">
-
-  <span class="navbar-brand fw-bold">
-    🔐 Password Manager
-  </span>
-
-  <div class="ms-auto">
-
-    <button class="btn btn-light btn-sm"
-            routerLink="/dashboard">
-      Dashboard
-    </button>
-
-    <button class="btn btn-light btn-sm ms-2"
-            routerLink="/vault">
-      Vault
-    </button>
-
-    <button class="btn btn-light btn-sm ms-2"
-            routerLink="/profile">
-      Profile
-    </button>
-
-    <button class="btn btn-danger btn-sm ms-2"
-            (click)="logout()">
-      Logout
-    </button>
-
-  </div>
-
-</nav>
-
-
+<app-navbar></app-navbar>
 <div class="container mt-4">
 
-  <h3>My Profile</h3>
+  <!-- ROW 1 — 4 CARDS -->
+  <div class="row g-4">
 
-  <!-- Tabs -->
+    <!-- ================= PROFILE CARD ================= -->
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 h-100">
 
-  <ul class="nav nav-tabs">
+        <h5 class="mb-3">Profile Info</h5>
 
-    <li class="nav-item">
-      <button class="nav-link"
-              [class.active]="activeTab === 'info'"
-              (click)="activeTab='info'">
-        Profile Info
-      </button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link"
-              [class.active]="activeTab === '2fa'"
-              (click)="activeTab='2fa'">
-        Two Factor Auth
-      </button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link"
-              [class.active]="activeTab === 'password'"
-              (click)="activeTab='password'">
-        Change Password
-      </button>
-    </li>
-
-    <li class="nav-item">
-      <button class="nav-link"
-              [class.active]="activeTab === 'security'"
-              (click)="activeTab='security'">
-        Security Questions
-      </button>
-    </li>
-
-  </ul>
-
-  <div class="card p-4 shadow mt-3 col-md-6">
-
-    <!-- ================= PROFILE INFO ================= -->
-
-    <div *ngIf="activeTab === 'info'">
-
-      <label>Name</label>
-      <input class="form-control mb-2"
-             [(ngModel)]="user.name">
-
-      <label>Email</label>
-      <input class="form-control mb-2"
-             [(ngModel)]="user.email">
-
-      <label>Phone</label>
-      <input class="form-control mb-2"
-             [(ngModel)]="user.phone">
-
-      <button class="btn btn-primary"
-              (click)="updateProfile()">
-        Update Profile
-      </button>
-
-    </div>
-
-    <!-- ================= CHANGE PASSWORD ================= -->
-
-    <div *ngIf="activeTab === 'password'">
-
-      <label>Current Password</label>
-      <input type="password"
-             class="form-control mb-2"
-             [(ngModel)]="passwordData.currentPassword">
-
-      <label>New Password</label>
-      <input type="password"
-             class="form-control mb-2"
-             [(ngModel)]="passwordData.newPassword">
-
-      <label>Confirm Password</label>
-      <input type="password"
-             class="form-control mb-2"
-             [(ngModel)]="passwordData.confirmPassword">
-
-      <button class="btn btn-primary"
-              (click)="changePassword()">
-        Change Password
-      </button>
-
-    </div>
-
-    <!-- ================= SECURITY QUESTIONS ================= -->
-
-    <div *ngIf="activeTab === 'security'">
-
-      <div *ngFor="let q of securityQuestions; let i=index">
-
-        <label>Question {{i+1}}</label>
+        <label>Username</label>
         <input class="form-control mb-2"
-               [(ngModel)]="q.question">
+               [(ngModel)]="user.username">
 
-        <label>Answer</label>
+        <label>Email</label>
+        <input class="form-control mb-2"
+               [(ngModel)]="user.email">
+
+        <label>Phone</label>
         <input class="form-control mb-3"
-               [(ngModel)]="q.answer">
+               [(ngModel)]="user.phone">
+
+        <button class="btn btn-primary w-100"
+                (click)="updateProfile()">
+          Update Profile
+        </button>
 
       </div>
-
-      <button class="btn btn-primary"
-              (click)="updateSecurityQuestions()">
-        Update Questions
-      </button>
-
     </div>
 
 
-  <div *ngIf="activeTab === '2fa'">
+    <!-- ================= SECURITY QUESTIONS CARD ================= -->
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 h-100">
 
-    <h5>Two-Factor Authentication</h5>
+        <h5 class="mb-3">Security Questions</h5>
 
-    <div *ngIf="!twoFAEnabled">
+        <div *ngFor="let q of questions; let i = index">
 
-      <button class="btn btn-primary"
-              (click)="enable2FA()">
-        Enable 2FA
-      </button>
+          <label class="fw-bold">
+            {{q.questionText}}
+          </label>
 
+          <input class="form-control mb-2"
+                 [(ngModel)]="q.answer">
+
+        </div>
+
+        <button class="btn btn-primary w-100 mt-2"
+                (click)="updateQuestions()">
+          Update Questions
+        </button>
+
+      </div>
     </div>
 
-    <div *ngIf="twoFAEnabled">
 
-      <p>Secret Key:</p>
-      <code>{{secret}}</code>
+    <!-- ================= CHANGE PASSWORD CARD ================= -->
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 h-100">
 
-      <input class="form-control mt-2"
-             placeholder="Enter Code"
-             [(ngModel)]="twoFACode">
+        <h5 class="mb-3">Change Master Password</h5>
 
-      <button class="btn btn-success mt-2"
-              (click)="verify2FA()">
-        Verify Code
-      </button>
+        <label>Current Password</label>
+        <input type="password"
+               class="form-control mb-2"
+               [(ngModel)]="password.current">
 
-      <button class="btn btn-danger mt-2 ms-2"
-              (click)="disable2FA()">
-        Disable 2FA
-      </button>
+        <label>New Password</label>
+        <input type="password"
+               class="form-control mb-2"
+               [(ngModel)]="password.new">
 
+        <label>Confirm Password</label>
+        <input type="password"
+               class="form-control mb-3"
+               [(ngModel)]="password.confirm">
+
+        <button class="btn btn-primary w-100"
+                (click)="changePassword()">
+          Update Password
+        </button>
+
+      </div>
+    </div>
+
+
+    <!-- ================= 2FA CARD ================= -->
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 h-100 text-center">
+
+        <h5 class="mb-3">Two Factor Authentication</h5>
+
+        <p>
+          Status:
+          <span class="fw-bold"
+                [class.text-success]="user.twoFactorEnabled"
+                [class.text-danger]="!user.twoFactorEnabled">
+
+            {{ user.twoFactorEnabled ? 'Enabled' : 'Disabled' }}
+
+          </span>
+        </p>
+
+        <button class="btn btn-outline-primary w-100"
+                (click)="toggle2FA()">
+
+          {{ user.twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA' }}
+
+        </button>
+
+      </div>
     </div>
 
   </div>
-</div>
+
+
+  <!-- ================= SUCCESS MESSAGE ================= -->
+  <div class="mt-3 text-center text-success fw-bold"
+       *ngIf="message">
+
+    {{message}}
+
+  </div>
+
 </div>

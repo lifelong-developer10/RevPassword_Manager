@@ -1,17 +1,16 @@
 package com.example.revpassword_manager.Controllers;
 
-import com.example.revpassword_manager.DTOs.AuthResponse;
-import com.example.revpassword_manager.DTOs.LoginRequest;
-import com.example.revpassword_manager.DTOs.ProfileResponse;
-import com.example.revpassword_manager.DTOs.RegisterRequest;
+import com.example.revpassword_manager.DTOs.*;
 import com.example.revpassword_manager.Models.MasterUser;
-import com.example.revpassword_manager.Models.SecurityQuestionMaster;
-import com.example.revpassword_manager.Reposiotory.SecurityQuestionMasterRepository;
+import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
+import com.example.revpassword_manager.Security.CustomUserDetails;
 import com.example.revpassword_manager.Services.AuthService;
+import com.example.revpassword_manager.Services.ForgotPasswordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +22,10 @@ import java.util.Map;
 public class MasterController {
 
         private final AuthService service;
-private final SecurityQuestionMasterRepository masterRepo;
+private final SecurityQuestionRepository masterRepo;
 private final UserRepository userRepo;
-
+private final AuthService authService;
+private final ForgotPasswordService forgotPasswordService;
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
 
@@ -46,10 +46,6 @@ private final UserRepository userRepo;
                 new AuthResponse(token, "Login Successful")
         );
     }
-    @GetMapping("/security-questions")
-    public List<SecurityQuestionMaster> getAllQuestions() {
-        return masterRepo.findAll();
-    }
 
     @GetMapping
     public ProfileResponse getProfile(Authentication auth) {
@@ -67,5 +63,28 @@ private final UserRepository userRepo;
         );
 
     }
+
+    @GetMapping("/security-questions")
+    public List<UserQuestionAnswer> getUserSecurityQuestions(
+            @AuthenticationPrincipal CustomUserDetails user) {
+
+        return forgotPasswordService.getUserQuestionsWithMask(
+                user.getUsername());
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody ChangePasswordRequest request) {
+
+        return authService.changePassword(
+                user.getUsername(),
+                request.getOldPassword(),
+                request.getNewPassword());
+    }
+
+
+
+
 }
 

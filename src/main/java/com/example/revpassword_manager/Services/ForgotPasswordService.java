@@ -1,6 +1,8 @@
 package com.example.revpassword_manager.Services;
 
 import com.example.revpassword_manager.DTOs.ResetPasswordRequest;
+import com.example.revpassword_manager.DTOs.SecurityQuestionDTO;
+import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
 import com.example.revpassword_manager.DTOs.VerifySecurityAnswersRequest;
 import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,17 +25,24 @@ public class ForgotPasswordService {
     private final SecurityQuestionRepository questionRepo;
     private final PasswordEncoder encoder;
    private final  SecurityQuestionRepository userQuestionRepo;
-    public List<SecurityQuestionMaster> getUserQuestions(
-            String username) {
 
-        MasterUser user =
-                userRepo.findByUsername(username)
-                        .orElseThrow();
+    public List<UserQuestionAnswer> getUserQuestionsWithMask(String username) {
 
-        return userQuestionRepo.findByUser(user)
-                .stream()
-                .map(SecurityQuestions::getQuestion)
-                .toList();
+        MasterUser user = userRepo.findByUsername(username).orElseThrow();
+
+        List<SecurityQuestions> list = userQuestionRepo.findByUser(user);
+
+        return list.stream().map(q -> {
+
+            UserQuestionAnswer dto = new UserQuestionAnswer();
+
+            dto.setQuestionId(q.getQuestion().getId());
+            dto.setQuestion(q.getQuestion().getQuestion());
+            dto.setAnswer("********"); // masked
+
+            return dto;
+
+        }).toList();
     }
 
     public boolean verifyAnswers(VerifySecurityAnswersRequest request) {
@@ -86,6 +96,5 @@ public class ForgotPasswordService {
 
         return "Password Reset Successful";
     }
-
 
 }

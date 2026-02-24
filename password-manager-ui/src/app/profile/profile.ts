@@ -1,140 +1,137 @@
 import { Component, OnInit } from '@angular/core';
-import Swal from 'sweetalert2';
-import { AuthService } from '../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ProfileService } from '../core/services/profile.service';
+import { NavbarComponent } from '../core/navbar/navbar';
+
 @Component({
   selector: 'app-profile',
+  standalone: true,
   templateUrl: './profile.html',
-   imports: [CommonModule, FormsModule]
+  styleUrls: ['./profile.css'],
+  imports: [CommonModule, FormsModule,NavbarComponent]
 })
 export class ProfileComponent implements OnInit {
 
-  activeTab = 'info';
+  // ================= USER =================
+  user: any = {};
 
-  user: any = {
-    name: '',
-    email: '',
-    phone: ''
+
+
+  // ================= PASSWORD MODEL =================
+  password = {
+    current: '',
+    new: '',
+    confirm: ''
   };
 
-  passwordData = {
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  };
+  // ================= MESSAGE =================
+  message = '';
 
-  securityQuestions: any[] = [];
-
-  constructor(private authService: AuthService,
-    private router: Router) {}
+  constructor(private profileService: ProfileService) {}
 
   ngOnInit() {
     this.loadProfile();
-    this.loadSecurityQuestions();
+    this.loadQuestions();
   }
 
-  // ---------------- Profile ----------------
+  // ================= LOAD PROFILE =================
 
   loadProfile() {
-    this.authService.getProfile()
-      .subscribe((res: any) => this.user = res);
+
+    this.profileService.getProfile()
+      .subscribe((res: any) => {
+        this.user = res;
+      });
+
   }
+
+  // ================= LOAD QUESTIONS =================
+
+ questions: any[] = [];
+
+ loadQuestions() {
+
+   this.profileService.getQuestions()
+     .subscribe((res: any[]) => {
+
+       this.questions = res;
+
+       console.log("Questions:", this.questions);
+
+     });
+
+ }
+
+  // ================= UPDATE PROFILE =================
 
   updateProfile() {
-    this.authService.updateProfile(this.user)
+
+    this.profileService.updateProfile(this.user)
       .subscribe(() => {
-        Swal.fire('Success','Profile updated','success');
+        this.message = 'Profile Updated Successfully';
       });
+
   }
-logout() {
 
-  localStorage.removeItem('token');
+  // ================= UPDATE QUESTIONS =================
 
-  this.router.navigate(['/login']);
-}
-  // ---------------- Change Password ----------------
+  updateQuestions() {
+
+    const payload = {
+      questions: this.questions
+    };
+
+    this.profileService.updateQuestions(payload)
+      .subscribe({
+
+        next: () => alert('Questions Updated'),
+        error: (err) => console.error(err)
+
+      });
+
+  }
+
+  // ================= CHANGE PASSWORD =================
 
   changePassword() {
 
-    if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
-      Swal.fire('Error','Passwords do not match','error');
+    if (this.password.new !== this.password.confirm) {
+      alert('Passwords do not match');
       return;
     }
 
-    this.authService.changePassword(this.passwordData)
+    this.profileService.changePassword(this.password)
       .subscribe(() => {
+        this.message = 'Password Updated Successfully';
 
-        Swal.fire('Success','Password changed','success');
-
-        this.passwordData = {
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
+        this.password = {
+          current: '',
+          new: '',
+          confirm: ''
         };
-
-      });
-  }
-
-  // ---------------- Security Questions ----------------
-
-  loadSecurityQuestions() {
-
-    this.authService.getSecurityQuestions()
-      .subscribe((res: any) => {
-        this.securityQuestions = res;
       });
 
   }
 
-  updateSecurityQuestions() {
+  // ================= TOGGLE 2FA =================
 
-    this.authService.updateSecurityQuestions(this.securityQuestions)
+  toggle2FA() {
+
+    const payload = {
+      enabled: !this.user.twoFactorEnabled
+    };
+
+    this.profileService.update2FA(payload)
       .subscribe(() => {
-        Swal.fire('Success','Updated','success');
+
+        this.user.twoFactorEnabled =
+          !this.user.twoFactorEnabled;
+
+        this.message = '2FA Updated';
+
       });
 
   }
-twoFAEnabled = false;
-twoFACode = '';
-secret = '';
 
-enable2FA() {
-
-  this.authService.enable2FA()
-    .subscribe((res: any) => {
-
-      this.secret = res.secret;   // backend may send secret
-      this.twoFAEnabled = true;
-
-      Swal.fire('2FA Enabled','Enter verification code','success');
-
-    });
-
-}
-
-verify2FA() {
-
-  this.authService.verify2FA(this.twoFACode)
-    .subscribe(() => {
-
-      Swal.fire('Success','2FA Verified','success');
-
-    });
-
-}
-
-disable2FA() {
-
-  this.authService.disable2FA()
-    .subscribe(() => {
-
-      this.twoFAEnabled = false;
-
-      Swal.fire('Disabled','2FA turned off','success');
-
-    });
-
-}
 }

@@ -1,30 +1,28 @@
 package com.example.revpassword_manager.Controllers;
 
 
-import com.example.revpassword_manager.DTOs.ForgotPasswordRequest;
 import com.example.revpassword_manager.DTOs.ResetPasswordRequest;
+import com.example.revpassword_manager.DTOs.SecurityQuestionDTO;
 import com.example.revpassword_manager.DTOs.VerifySecurityAnswersRequest;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
-import com.example.revpassword_manager.Reposiotory.SecurityQuestionMasterRepository;
+import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
+import com.example.revpassword_manager.Security.CustomUserDetails;
 import com.example.revpassword_manager.Services.ForgotPasswordService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/forgot")
+
 @RequiredArgsConstructor
 public class ForgotPasswordController {
 
     private final ForgotPasswordService service;
-    private final SecurityQuestionMasterRepository masterRepo;
+    private final SecurityQuestionRepository masterRepo;
 
-    // ✅ Get all master questions (for registration page)
-    @GetMapping("/security-questions")
-    public List<SecurityQuestionMaster> getAllQuestions() {
-        return masterRepo.findAll();
-    }
 
     // ✅ Step 2 — Verify Answers
     @PostMapping("/verify")
@@ -46,4 +44,5 @@ public class ForgotPasswordController {
 
         return service.resetPassword(request);
     }
+
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,6 +16,7 @@ import { NavbarComponent } from '../core/navbar/navbar';
   imports: [CommonModule, FormsModule,NavbarComponent]
 })
 export class DashboardComponent implements OnInit {
+
 
   user: any;
   lastAccount: any;
@@ -34,17 +36,22 @@ export class DashboardComponent implements OnInit {
     favorite: false
   };
 
-  constructor(
-    private vaultService: VaultService,
-    private profileService: ProfileService,
-    private router: Router
-  ) {}
+constructor(
+  private vaultService: VaultService,
+  private profileService: ProfileService,
+  private router: Router,
+  private cd: ChangeDetectorRef
+) {}
+ngOnInit() {
 
-  ngOnInit(): void {
-    this.loadProfile();
+  this.loadProfile();
+
+  setTimeout(() => {
     this.loadVaultSummary();
     this.loadLastAccount();
-  }
+  }, 200);
+
+}
 
   // ================= PROFILE =================
 
@@ -58,29 +65,31 @@ export class DashboardComponent implements OnInit {
   }
 
   // ================= SUMMARY =================
+loadVaultSummary() {
 
-  loadVaultSummary(): void {
+  this.vaultService.getAll().subscribe({
 
-    this.vaultService.getAll().subscribe({
+    next: (res: any) => {
 
-      next: (res: any) => {
+      const list = res || [];
 
-        const list = res || [];
+      console.log("Vault List:", list);   // DEBUG
 
-        this.totalAccounts = list.length;
+      this.totalAccounts = list.length;
 
-        this.strongPasswords =
-          list.filter((v: any) => this.isStrong(v.password)).length;
+      this.strongPasswords =
+        list.filter((v: any) => this.isStrong(v.password)).length;
 
-        this.weakPasswords =
-          list.filter((v: any) => !this.isStrong(v.password)).length;
+      this.weakPasswords =
+        list.filter((v: any) => !this.isStrong(v.password)).length;
 
-      },
+    },
 
-      error: (err: any) => console.error(err)
-    });
+    error: (err: any) => console.error(err)
 
-  }
+  });
+
+}
 
   isStrong(password: string): boolean {
 
@@ -116,9 +125,8 @@ addVault() {
         favorite: false
       };
 
-      // reload dashboard data
-      this.loadVaultSummary();
-      this.loadLastAccount();
+     this.loadVaultSummary();
+           this.loadLastAccount();
 
     },
 
@@ -134,7 +142,11 @@ loadLastAccount() {
   this.vaultService.getLast().subscribe({
 
     next: (res: any) => {
-      this.lastAccount = { ...res };   // force refresh
+
+      console.log("Last Account:", res);
+
+this.lastAccount = res;
+this.cd.detectChanges();
     },
 
     error: (err: any) => console.error(err)

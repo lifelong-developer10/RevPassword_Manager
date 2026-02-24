@@ -46,5 +46,6 @@ public class OtpController {
         return twoFactorService.updateTwoFactor(
                 user.getUsername(),
                 request.isEnabled());
+
     }
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface SecurityQuestionRepository extends JpaRepository<SecurityQuestions,Long> {
     List<SecurityQuestions> findByUser(MasterUser user);
-
+    void deleteByUser(MasterUser user);
 }

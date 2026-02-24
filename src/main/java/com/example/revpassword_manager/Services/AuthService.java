@@ -6,17 +6,15 @@ import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
 import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Models.SecurityQuestions;
-import com.example.revpassword_manager.Reposiotory.SecurityQuestionMasterRepository;
 import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
 
 import com.example.revpassword_manager.Security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 @Service
 @RequiredArgsConstructor
 
@@ -29,7 +27,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;// Injected from SecurityConfig
    private final SecurityQuestionRepository userQuestionRepo;
-    private final SecurityQuestionMasterRepository masterRepo;
+    private final SecurityQuestionRepository masterRepo;
+
     public String register(RegisterRequest request) {
 
         if (request.getSecurityAnswers().size() != 3)
@@ -54,7 +53,7 @@ public class AuthService {
                             .orElseThrow(() ->
                                     new RuntimeException(
                                             "Invalid Question ID: "
-                                                    + dto.getQuestionId()));
+                                                    + dto.getQuestionId())).getQuestion();
 
             SecurityQuestions uq =
                     new SecurityQuestions();
@@ -95,6 +94,30 @@ public class AuthService {
         }
 
         return jwtUtil.generateToken(user.getUsername());
+    }
+
+    public String changePassword(
+            String username,
+            String oldPassword,
+            String newPassword) {
+
+        MasterUser user =
+                userRepository.findByUsername(username)
+                        .orElseThrow();
+
+        if (!passwordEncoder.matches(
+                oldPassword,
+                user.getPasswordEncrypted())) {
+
+            throw new RuntimeException("Old password incorrect");
+        }
+
+        user.setPasswordEncrypted(
+                passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
+
+        return "Password Updated Successfully";
     }
 
 }
