@@ -11,7 +11,9 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
         Authorization: `Bearer ${token}`
       }
     });
-console.log("TOKEN:", token);
+
+    console.log('TOKEN SENT:', token);
+
     return next(cloned);
   }
 

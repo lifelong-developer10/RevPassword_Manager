@@ -4,12 +4,16 @@ import com.example.revpassword_manager.Security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import org.springframework.web.cors.*;
 
 import java.util.List;
@@ -19,6 +23,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -28,12 +33,13 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // PUBLIC APIs
                         .requestMatchers(
-                                "/api/auth/login",
-                                "/api/auth/register",
-                                "/api/auth/security-questions",
+                                "/api/auth/**",
                                 "/api/forgot/**"
                         ).permitAll()
+
+                        // EVERYTHING ELSE NEEDS LOGIN
                         .anyRequest().authenticated()
                 )
 
@@ -47,6 +53,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     // ✅ CORS CONFIGURATION FOR ANGULAR
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -54,7 +61,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of("http://localhost:4200"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
@@ -65,6 +72,7 @@ public class SecurityConfig {
 
         return source;
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(

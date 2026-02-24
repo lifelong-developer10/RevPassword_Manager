@@ -52,7 +52,8 @@ public class SecurityQuestionService {
             questionRepo.save(entity);
         }
 
-        return Map.of("message", "Security Questions Updated");    }
+        return Map.of("message", "Security Questions Updated");
+    }
 
     public List<SecurityQuestions> getUserQuestions(String username) {
 

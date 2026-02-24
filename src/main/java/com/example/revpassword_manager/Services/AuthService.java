@@ -1,9 +1,6 @@
 package com.example.revpassword_manager.Services;
 
-import com.example.revpassword_manager.DTOs.ChangePasswordRequest;
-import com.example.revpassword_manager.DTOs.LoginRequest;
-import com.example.revpassword_manager.DTOs.RegisterRequest;
-import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
+import com.example.revpassword_manager.DTOs.*;
 import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Models.SecurityQuestions;
@@ -115,7 +112,8 @@ public class AuthService {
         return "Password Updated";
     }
     @Transactional
-    public MasterUser updateProfile(String username, MasterUser req) {
+    public MasterUser updateProfile(String username,
+                                    UpdateProfileRequest req) {
 
         MasterUser user =
                 userRepository.findByUsername(username)
@@ -123,10 +121,7 @@ public class AuthService {
 
         user.setEmail(req.getEmail());
         user.setPhone(req.getPhone());
-        user.setUsername(req.getUsername());
-        if (userRepository.existsByUsername(req.getUsername())) {
-            throw new RuntimeException("Username already exists");
-        }
+
         return userRepository.save(user);
     }
     public List<SecurityQuestionMaster> getAllQuestions() {

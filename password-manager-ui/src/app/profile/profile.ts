@@ -16,6 +16,7 @@ export class ProfileComponent implements OnInit {
   // ================= USER =================
   user: any = {};
 
+  questions: any[] = [];   // ✅ ADD THIS LINE
 
 
   // ================= PASSWORD MODEL =================
@@ -47,41 +48,52 @@ export class ProfileComponent implements OnInit {
   }
 
   // ================= LOAD QUESTIONS =================
+loadQuestions() {
 
- questions: any[] = [];
- loadQuestions() {
+  this.profileService.getQuestions()
+    .subscribe((res: any) => {
 
-   this.profileService.getQuestions()
-     .subscribe((res: any) => {
+      console.log("RAW RESPONSE:", res);
 
-       this.questions = res || [];
+      this.questions = [];
 
-     });
+      setTimeout(() => {
+        this.questions = res || [];
+        console.log("SET QUESTIONS:", this.questions);
+      });
 
- }
+    });
+
+}
  // ================= UPDATE PROFILE =================
 
- updateProfile() {
+updateProfile() {
 
-   this.profileService.updateProfile(this.user)
-     .subscribe(() => alert('Profile Updated'));
+  this.profileService.updateProfile(this.user)
+    .subscribe(() => {
+      alert('Profile Updated');
+      this.loadProfile();   // ✅ IMPORTANT
+    });
 
- }
+}
 
   // ================= UPDATE QUESTIONS =================
 
 updateQuestions() {
 
-  const payload = this.questions.map(q => ({
-    questionId: q.id,
-    answer: q.answer
-  }));
+ const payload = this.questions.map(q => ({
+   questionId: q.questionId,
+   answer: q.answer
+ }));
 
   this.profileService.updateQuestions(payload)
     .subscribe(() => alert('Questions Updated'));
 
 }
-
+ // ✅ ADD THIS METHOD HERE
+  trackById(index: number, item: any) {
+    return item.questionId;
+  }
   // ================= CHANGE PASSWORD =================
 
   changePassword() {

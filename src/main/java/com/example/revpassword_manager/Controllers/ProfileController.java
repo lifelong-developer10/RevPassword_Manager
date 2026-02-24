@@ -1,10 +1,7 @@
 package com.example.revpassword_manager.Controllers;
 
 
-import com.example.revpassword_manager.DTOs.ChangePasswordRequest;
-import com.example.revpassword_manager.DTOs.ProfileResponse;
-import com.example.revpassword_manager.DTOs.TwoFactorRequest;
-import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
+import com.example.revpassword_manager.DTOs.*;
 import com.example.revpassword_manager.Models.MasterUser;
 import com.example.revpassword_manager.Models.SecurityQuestions;
 import com.example.revpassword_manager.Reposiotory.UserRepository;
@@ -14,6 +11,7 @@ import com.example.revpassword_manager.Services.ForgotPasswordService;
 import com.example.revpassword_manager.Services.SecurityQuestionService;
 import com.example.revpassword_manager.Services.TwoFactorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,18 +19,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
 @RestController
 @RequestMapping("/api/profile")
 @RequiredArgsConstructor
 public class ProfileController {
 
     private final UserRepository userRepository;
-private final AuthService authService;
-private final PasswordEncoder encode;
+    private final AuthService authService;
     private final SecurityQuestionService security;
     private final TwoFactorService twoFactorService;
     private final ForgotPasswordService forgotPasswordService;
+
+    // ================= PROFILE =================
 
     @GetMapping
     public ProfileResponse getProfile(Authentication auth) {
@@ -49,50 +47,65 @@ private final PasswordEncoder encode;
                 user.getPhone()
         );
     }
+
     @PutMapping
-    public MasterUser updateProfile(
+    public ResponseEntity<?> updateProfile(
             Authentication auth,
-            @RequestBody MasterUser request) {
+            @RequestBody UpdateProfileRequest request) {
 
         String username = auth.getName();
 
-        return authService.updateProfile(username, request);
+        MasterUser updated =
+                authService.updateProfile(username, request);
+
+        return ResponseEntity.ok(updated);
     }
+    // ================= PASSWORD =================
+
     @PostMapping("/change-password")
-    public String changePassword(
+    public Map<String,String> changePassword(
             Authentication auth,
             @RequestBody ChangePasswordRequest req) {
 
         String username = auth.getName();
 
-        return authService.changePassword(username, req);
+        authService.changePassword(username, req);
+
+        return Map.of("message","Password Updated");
     }
+
+    // ================= SECURITY QUESTIONS =================
 
     @GetMapping("/security-questions")
     public List<UserQuestionAnswer> getUserSecurityQuestions(
-            @AuthenticationPrincipal CustomUserDetails user) {
+            Authentication auth) {
 
-        return forgotPasswordService.getUserQuestionsWithMask(
-                user.getUsername());
+        String username = auth.getName();
+
+        return forgotPasswordService.getUserQuestionsWithMask(username);
     }
 
     @PutMapping("/security-questions")
     public Map<String, String> updateQuestions(
-            @AuthenticationPrincipal CustomUserDetails user,
+            Authentication auth,
             @RequestBody List<UserQuestionAnswer> list) {
 
-        return security.updateQuestions(user.getUsername(), list);
+        String username = auth.getName();
+
+        return security.updateQuestions(username, list);
     }
+
+    // ================= 2FA =================
 
     @PostMapping("/2fa")
     public String update2FA(
-            @AuthenticationPrincipal CustomUserDetails user,
+            Authentication auth,
             @RequestBody TwoFactorRequest request) {
 
+        String username = auth.getName();
+
         return twoFactorService.updateTwoFactor(
-                user.getUsername(),
+                username,
                 request.isEnabled());
-
     }
-
 }
