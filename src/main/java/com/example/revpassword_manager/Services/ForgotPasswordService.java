@@ -69,7 +69,7 @@ public class ForgotPasswordService {
 
             if (provided != null &&
                     encoder.matches(
-                            provided,
+                            provided.toLowerCase().trim(),
                             uq.getAnswerHash())) {
 
                 correct++;

@@ -32,8 +32,6 @@ public class SecurityConfig {
                 .cors(cors -> {})
 
                 .authorizeHttpRequests(auth -> auth
-
-                        // PUBLIC APIs
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/otp/**",

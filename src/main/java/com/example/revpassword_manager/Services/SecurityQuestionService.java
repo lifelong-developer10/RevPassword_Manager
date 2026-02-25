@@ -47,8 +47,11 @@ public class SecurityQuestionService {
 
             entity.setUser(user);
             entity.setQuestion(master);
-            entity.setAnswerHash(q.getAnswer());
-
+            entity.setAnswerHash(
+                    encoder.encode(
+                            q.getAnswer().toLowerCase().trim()
+                    )
+            );
             questionRepo.save(entity);
         }
 

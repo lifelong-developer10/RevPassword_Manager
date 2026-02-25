@@ -5,6 +5,9 @@ import { VaultService } from '../core/services/vault.service';
 import { NavbarComponent } from '../core/navbar/navbar';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectorRef } from '@angular/core';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-vault',
   standalone: true,
@@ -38,16 +41,13 @@ form: any = {
 
 constructor(
   private vaultService: VaultService,
-  private route: ActivatedRoute
+  private route: ActivatedRoute,
+  private cd: ChangeDetectorRef
 ) {}
-
 ngOnInit() {
-
-  this.route.url.subscribe(() => {
-    this.loadVaults();
-  });
-
+  this.loadVaults();
 }
+
 loadVaults() {
 
   this.vaultService.getAll()
@@ -57,6 +57,7 @@ loadVaults() {
 
         this.vaults = res || [];
         this.filteredVaults = [...this.vaults];
+        this.cd.detectChanges();   // ⭐ FIX DOUBLE CLICK
 
       },
 
@@ -122,12 +123,13 @@ save() {
 
         next: () => {
 
-          alert('Account Updated Successfully');
+         Swal.fire('Account Updated Successfully');
 
           this.loadVaults();
 
           this.showForm = false;
           this.editMode = false;
+  this.cd.detectChanges();   // ⭐ ADD
 
         },
 
@@ -143,11 +145,12 @@ save() {
 
         next: () => {
 
-          alert('Account Created');
+         Swal.fire('Account Created');
 
           this.loadVaults();
 
           this.showForm = false;
+  this.cd.detectChanges();   // ⭐ ADD
 
         }
 
@@ -162,6 +165,8 @@ save() {
     if (confirm('Delete this account?')) {
       this.vaultService.delete(id)
         .subscribe(() => this.loadVaults());
+          this.cd.detectChanges();   // ⭐ ADD
+
     }
 
   }
@@ -174,6 +179,7 @@ save() {
 
     this.vaultService.search(this.keyword)
       .subscribe(res => this.vaults = res);
+    this.cd.detectChanges();   // ⭐ ADD
 
   }
 
@@ -192,6 +198,7 @@ toggleFavorites() {
       .subscribe((res: any[]) => {
 
         this.filteredVaults = res || [];
+  this.cd.detectChanges();   // ⭐ ADD
 
       });
 

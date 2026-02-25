@@ -7,7 +7,6 @@ import { HttpClient } from '@angular/common/http';
 import { VaultService } from '../core/services/vault.service';
 import { ProfileService } from '../core/services/profile.service';
 import { NavbarComponent } from '../core/navbar/navbar';
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
@@ -41,29 +40,31 @@ constructor(
   private router: Router,
   private cd: ChangeDetectorRef
 ) {}
+
 ngOnInit() {
 
   this.loadProfile();
+  this.loadVaultSummary();
+  this.loadLastAccount();
+  this.loadVaults();
 
-  setTimeout(() => {
-    this.loadVaultSummary();
-    this.loadLastAccount();
-  }, 200);
-this.loadVaults();
 }
 
   // ================= PROFILE =================
 
-  loadProfile(): void {
-
-    this.profileService.getProfile().subscribe({
-      next: (res: any) => this.user = res,
-      error: (err: any) => console.error(err)
-    });
-
-  }
 
 
+loadProfile(): void {
+
+  this.profileService.getProfile().subscribe({
+    next: (res: any) => {
+      this.user = res;
+      this.cd.detectChanges();   // ⭐ ADD
+    },
+    error: (err: any) => console.error(err)
+  });
+
+}
   // ================= SUMMARY =================
 loadVaultSummary() {
 
@@ -82,6 +83,8 @@ loadVaultSummary() {
 
       this.weakPasswords =
         list.filter((v: any) => !this.isStrong(v.password)).length;
+              this.cd.detectChanges();   // ⭐ ADD HERE
+
 
     },
 
@@ -99,6 +102,7 @@ loadVaults() {
       console.log("Dashboard Vaults:", res);
 
       this.vaults = res || [];
+      this.cd.detectChanges();   // ⭐ ADD
 
     },
 
@@ -144,6 +148,7 @@ addVault() {
 
      this.loadVaultSummary();
            this.loadLastAccount();
+      this.cd.detectChanges();   // ⭐ ADD
 
     },
 

@@ -101,7 +101,6 @@ resetPassword(data: any) {
     { responseType: 'text' as 'json' }
   );
 }
-
 checkUser(username: string) {
   return this.http.get(
     `${this.forgotBaseUrl}/forgot/user-exists/${username}`

@@ -103,10 +103,10 @@
           </span>
         </p>
 
-        <button class="btn btn-outline-primary w-100"
+        <button class="btn btn-primary"
                 (click)="toggle2FA()">
 
-          {{ user.twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA' }}
+          {{ user?.twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA' }}
 
         </button>
 

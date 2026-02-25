@@ -57,11 +57,5 @@ export const routes: Routes = [
         import('./auth/forgot-password/forgot-password')
           .then(m => m.ForgotPasswordComponent)
   }
-,
-{
-  path: 'forgot-password',
-  loadComponent: () =>
-    import('./auth/forgot-password/forgot-password')
-      .then(m => m.ForgotPasswordComponent)
-}
+
 ];

@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ProfileService } from '../core/services/profile.service';
 import { NavbarComponent } from '../core/navbar/navbar';
 import { VaultService } from '../core/services/vault.service';
-
+import { ChangeDetectorRef } from '@angular/core';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -31,7 +32,8 @@ export class ProfileComponent implements OnInit {
   message = '';
 
  constructor(
-   private profileService: ProfileService
+   private profileService: ProfileService,
+    private cd: ChangeDetectorRef
  ) {}
 
   ngOnInit() {
@@ -47,6 +49,8 @@ export class ProfileComponent implements OnInit {
     this.profileService.getProfile()
       .subscribe((res: any) => {
         this.user = res;
+              this.cd.detectChanges();   // ⭐ IMPORTANT
+
          this.loadQuestions();
       });
 
@@ -63,6 +67,7 @@ loadQuestions() {
         console.log("QUESTIONS:", res);
 
         this.questions = res || [];
+        this.cd.detectChanges();   // ⭐ FIX HERE
 
       },
 
@@ -77,7 +82,7 @@ updateProfile() {
 
   this.profileService.updateProfile(this.user)
     .subscribe(() => {
-      alert('Profile Updated');
+     Swal.fire('Profile Updated');
       this.loadProfile();   // ✅ IMPORTANT
     });
 
@@ -95,9 +100,10 @@ updateQuestions() {
   this.profileService.updateQuestions(payload)
     .subscribe(() => {
 
-      alert('Questions Updated');
+     Swal.fire('Questions Updated');
 
       this.loadQuestions(); // reload
+      this.cd.detectChanges();   // ⭐ optional but good
 
     });
 
@@ -115,7 +121,7 @@ vaults: any[] = [];
   changePassword() {
 
     if (this.password.new !== this.password.confirm) {
-      alert('Password mismatch');
+     Swal.fire('Password mismatch');
       return;
     }
 
@@ -123,26 +129,47 @@ vaults: any[] = [];
       currentPassword: this.password.current,
       newPassword: this.password.new,
       confirmPassword: this.password.confirm
-    }).subscribe(() => alert('Password Updated'));
+    }).subscribe({
+
+      next: () => {
+  Swal.fire('Success', 'Password Updated Successfully', 'success');
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+  Swal.fire('Error', 'Current password is incorrect', 'error');
+
+      }
+
+    });
 
   }
   // ================= TOGGLE 2FA =================
 
-  toggle2FA() {
+//   toggle2FA() {
+//
+//     this.profileService.update2FA(!this.user.twoFactorEnabled)
+//       .subscribe({
+//
+//         next: () => {
+//
+//           // Toggle local state
+//           this.user.twoFactorEnabled = !this.user.twoFactorEnabled;
+//
+//         },
+//
+//         error: () => {
+//           Swal.fire('Failed to update 2FA');
+//         }
+//
+//       });
+//
+//   }
+toggle2FA() {
+  this.user.twoFactorEnabled =
+    !this.user.twoFactorEnabled;
 
-    const token = localStorage.getItem('token');
-
-this.profileService.update2FA(!this.user.twoFactorEnabled)      .subscribe({
-
-        next: () => {
-
-          this.user.twoFactorEnabled =
-            !this.user.twoFactorEnabled;
-
-        }
-
-      });
-
-  }
-
+}
 }
