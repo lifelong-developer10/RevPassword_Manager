@@ -6,12 +6,15 @@ import Swal from 'sweetalert2';
 import { NavbarComponent } from '../../core/navbar/navbar';
 
 import { AuthService } from '../../core/services/auth.service';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
   templateUrl: './forgot-password.html',
   styleUrls: ['./forgot-password.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+
   imports: [CommonModule, FormsModule, RouterModule,NavbarComponent]
 })
 export class ForgotPasswordComponent {
@@ -52,35 +55,43 @@ export class ForgotPasswordComponent {
 
       },
 
-      er
-      ror: () => {
+      error: () => {
         Swal.fire('Error', 'Server error', 'error');
       }
 
     });
 
   }
-
-  // OTP METHOD
+loading = false;
   selectOtp() {
 
-    this.method = 'otp';
+    if (this.loading) return;
+
+    this.method = 'otp';   // ⭐ IMPORTANT FIX
+
+    this.loading = true;
 
     this.auth.generateOtp(this.username).subscribe({
 
       next: () => {
+
+        this.loading = false;
+
         Swal.fire('OTP Sent', 'Check console/email', 'success');
-        this.step = 3;   // ⭐ move here
+
+        this.step = 3;
       },
 
       error: () => {
+
+        this.loading = false;
+
         Swal.fire('Error', 'OTP failed', 'error');
       }
 
     });
 
   }
-
   verifyOtp() {
 
     this.auth.verifyOtp({
@@ -133,7 +144,7 @@ export class ForgotPasswordComponent {
     const answers: any = {};
 
     this.questions.forEach((q: any) => {
-      answers[q.questionId] = q.answer;   // ⭐ correct mapping
+      answers[q.questionId] = q.answer;
     });
 
     this.auth.verifySecurityAnswers({
@@ -143,15 +154,13 @@ export class ForgotPasswordComponent {
 
       next: (res: any) => {
 
-        if (res === 'VERIFIED') {
-
+if (res && res.toString().includes('VERIFIED')){
           Swal.fire('Verified', 'Answers correct', 'success');
           this.step = 4;
 
         } else {
 
           Swal.fire('Error', 'Incorrect answers', 'error');
-
         }
 
       },

@@ -70,14 +70,14 @@ generateOtp(username: string) {
   return this.http.post(
     `${this.forgotBaseUrl}/otp/generate`,
     { username },
-    { responseType: 'text' }   // ⭐ IMPORTANT
+    { responseType: 'text' as 'json' }
   );
 }
 verifyOtp(data: any) {
   return this.http.post(
     `${this.forgotBaseUrl}/otp/verify`,
     data,
-    { responseType: 'text' }
+    { responseType: 'text' as 'json' }
   );
 }
 getRecoveryQuestions(username: string) {
@@ -89,15 +89,16 @@ getRecoveryQuestions(username: string) {
 verifySecurityAnswers(data: any) {
   return this.http.post(
     `${this.forgotBaseUrl}/forgot/verify`,
-    data
+    data,
+    { responseType: 'text' as 'json' }
   );
 }
-
 
 resetPassword(data: any) {
   return this.http.post(
     `${this.forgotBaseUrl}/forgot/reset`,
-    data
+    data,
+    { responseType: 'text' as 'json' }
   );
 }
 
