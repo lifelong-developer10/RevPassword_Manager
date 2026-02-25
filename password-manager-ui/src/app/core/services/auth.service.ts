@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 export class AuthService {
 
   private baseUrl = environment.apiUrl;
-
+private forgotBaseUrl = 'http://localhost:8080/api';
 
 constructor(private http: HttpClient) {}
 
@@ -66,28 +66,42 @@ updateSecurityQuestions(data: any) {
 requestRecovery(email: string) {
   return this.http.post(`${this.baseUrl}/api/auth/forgot-password`, { email });
 }
-
-sendOtp(email: string) {
-
-  return this.http.post(`${this.baseUrl}/api/auth/send-otp`, { email });
+generateOtp(username: string) {
+  return this.http.post(
+    `${this.forgotBaseUrl}/otp/generate`,
+    { username },
+    { responseType: 'text' }   // ⭐ IMPORTANT
+  );
 }
-
 verifyOtp(data: any) {
-  return this.http.post(`${this.baseUrl}/api/auth/verify-otp`, data);
+  return this.http.post(
+    `${this.forgotBaseUrl}/otp/verify`,
+    data,
+    { responseType: 'text' }
+  );
 }
-
-getRecoveryQuestions(email: string) {
-
-  return this.http.get(`${this.baseUrl}/api/auth/security-questions/recovery?email=${email}`);
+getRecoveryQuestions(username: string) {
+  return this.http.get(
+    `${this.forgotBaseUrl}/forgot/questions/${username}`
+  );
 }
 
 verifySecurityAnswers(data: any) {
-  return this.http.post(`${this.baseUrl}/api/sauth/ecurity-questions/verify`, data);
+  return this.http.post(
+    `${this.forgotBaseUrl}/forgot/verify`,
+    data
+  );
 }
 
+
 resetPassword(data: any) {
-  return this.http.post(`${this.baseUrl}/api/auth/reset-password`, data);
+  return this.http.post(
+    `${this.forgotBaseUrl}/forgot/reset`,
+    data
+  );
 }
+
+
 enable2FA() {
   return this.http.post(`${this.baseUrl}/api/auth/2fa/enable`, {});
 }

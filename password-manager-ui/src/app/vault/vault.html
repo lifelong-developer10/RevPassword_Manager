@@ -1,0 +1,126 @@
+<app-navbar></app-navbar>
+
+<div class="container mt-4">
+
+  <h4 class="fw-bold mb-4">All Accounts</h4>
+  <!-- EDIT FORM MODAL -->
+  <div *ngIf="showForm" class="form-overlay">
+
+    <div class="form-card shadow">
+
+      <h5 class="mb-3 text-center">
+        {{ editMode ? 'Edit Account' : 'Add Account' }}
+      </h5>
+
+      <input class="form-control mb-2"
+             placeholder="Account Name"
+             [(ngModel)]="form.accountName">
+
+      <input class="form-control mb-2"
+             placeholder="Website"
+             [(ngModel)]="form.website">
+
+      <input class="form-control mb-2"
+             placeholder="Username"
+             [(ngModel)]="form.username">
+
+      <input class="form-control mb-2"
+             placeholder="Password"
+             [(ngModel)]="form.password">
+
+      <input class="form-control mb-2"
+             placeholder="Category"
+             [(ngModel)]="form.category">
+
+      <textarea class="form-control mb-2"
+                placeholder="Notes"
+                [(ngModel)]="form.notes"></textarea>
+
+      <label class="mb-3">
+        <input type="checkbox"
+               [(ngModel)]="form.favorite">
+        Favorite
+      </label>
+
+      <div class="d-flex gap-2">
+
+        <button class="btn btn-save w-50"
+                (click)="save()">
+          Save
+        </button>
+
+        <button class="btn btn-cancel w-50"
+                (click)="showForm=false">
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+  <div class="container mt-4">
+
+    <div class="mb-3">
+
+      <input type="text"
+             class="form-control"
+             placeholder="Search accounts..."
+             [(ngModel)]="searchText"
+             (input)="searchVault()">
+
+      <button class="btn btn-star"
+              (click)="toggleFavorites()">
+
+        ⭐
+
+      </button>
+    </div>
+  <div class="row">
+
+    <div class="col-lg-4 col-md-6 mb-4"
+         *ngFor="let v of filteredVaults">
+
+      <div class="vault-card h-100 p-3">
+
+        <div class="vault-header mb-2">
+          <span class="account-name">{{ v.accountName }}</span>
+
+          <span *ngIf="v.favorite" class="star">⭐</span>
+        </div>
+
+        <div class="vault-body">
+          <hr>
+          <p><b>Website:</b> {{ v.website }}</p>
+
+          <p><b>Username:</b> {{ v.username }}</p>
+          <p><b>Password:</b> {{ v.password }}</p>
+          <p><b>Category:</b> {{ v.category }}</p>
+
+          <p class="notes">
+            <b>Notes:</b> {{ v.notes || '—' }}
+          </p>
+
+        </div>
+
+        <div class="btn-row mt-auto">
+
+          <button class="btn btn-edit"
+                  (click)="openEdit(v)">
+            Edit
+          </button>
+
+          <button class="btn btn-delete"
+                  (click)="delete(v.id)">
+            Delete
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

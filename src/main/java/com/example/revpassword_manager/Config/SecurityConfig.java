@@ -36,6 +36,7 @@ public class SecurityConfig {
                         // PUBLIC APIs
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/otp/**",
                                 "/api/forgot/**"
                         ).permitAll()
 

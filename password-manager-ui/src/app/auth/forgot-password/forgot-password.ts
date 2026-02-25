@@ -1,22 +1,24 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
+import { NavbarComponent } from '../../core/navbar/navbar';
 
 import { AuthService } from '../../core/services/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
   templateUrl: './forgot-password.html',
-  imports: [CommonModule, FormsModule]
+  styleUrls: ['./forgot-password.css'],
+  imports: [CommonModule, FormsModule, RouterModule,NavbarComponent]
 })
 export class ForgotPasswordComponent {
 
   step = 1;
 
-  email = '';
+  username = '';
   method = '';
 
   otp = '';
@@ -25,54 +27,51 @@ export class ForgotPasswordComponent {
   questions: any[] = [];
 
   constructor(
-    private authService: AuthService,
+    private auth: AuthService,
     private router: Router
   ) {}
 
-  // ================= STEP 1 =================
-
+  // STEP 1
   continue() {
 
-    if (!this.email) {
-      Swal.fire('Error', 'Enter email', 'error');
+    if (!this.username) {
+      Swal.fire('Error', 'Enter username', 'error');
       return;
     }
 
     this.step = 2;
   }
 
-  // ================= OTP FLOW =================
-
-  sendOtp() {
+  // OTP METHOD
+  selectOtp() {
 
     this.method = 'otp';
 
-    this.authService.sendOtp(this.email)
-      .subscribe({
+    this.auth.generateOtp(this.username).subscribe({
 
-        next: () => {
-          Swal.fire('OTP Sent', 'Check your email', 'success');
-          this.step = 3;
-        },
+      next: () => {
+        Swal.fire('OTP Sent', 'Check console/email', 'success');
+        this.step = 3;   // ⭐ move here
+      },
 
-        error: () => {
-          Swal.fire('Error', 'Failed to send OTP', 'error');
-        }
+      error: () => {
+        Swal.fire('Error', 'OTP failed', 'error');
+      }
 
-      });
+    });
 
   }
 
   verifyOtp() {
 
-    this.authService.verifyOtp({
-      email: this.email,
-      otp: this.otp
+    this.auth.verifyOtp({
+      username: this.username,
+      code: this.otp
     }).subscribe({
 
       next: () => {
         Swal.fire('Verified', 'OTP correct', 'success');
-        this.step = 4;
+        this.step = 4;   // ⭐ show reset form
       },
 
       error: () => {
@@ -83,49 +82,61 @@ export class ForgotPasswordComponent {
 
   }
 
-  // ================= SECURITY QUESTIONS =================
+ selectQuestions() {
 
-  loadQuestions() {
+   this.method = 'questions';
 
-    this.method = 'questions';
+   this.auth.getRecoveryQuestions(this.username)
+     .subscribe({
 
-    this.authService.getRecoveryQuestions(this.email)
-      .subscribe({
+       next: (res: any) => {
+         this.questions = res;
+         this.step = 3;  // ⭐ move here
+       },
 
-        next: (res: any) => {
-          this.questions = res;
-          this.step = 3;
-        },
+       error: () => {
+         Swal.fire('Error', 'Cannot load questions', 'error');
+       }
 
-        error: () => {
-          Swal.fire('Error', 'Unable to load questions', 'error');
-        }
+     });
 
-      });
-
-  }
+ }
 
   verifyQuestions() {
 
-    this.authService.verifySecurityAnswers({
-      email: this.email,
-      questions: this.questions
+    const answers: any = {};
+
+    this.questions.forEach((q: any) => {
+      answers[q.questionId] = q.answer;   // ⭐ correct mapping
+    });
+
+    this.auth.verifySecurityAnswers({
+      username: this.username,
+      answers: answers
     }).subscribe({
 
-      next: () => {
-        Swal.fire('Verified', 'Answers correct', 'success');
-        this.step = 4;
+      next: (res: any) => {
+
+        if (res === 'VERIFIED') {
+
+          Swal.fire('Verified', 'Answers correct', 'success');
+          this.step = 4;
+
+        } else {
+
+          Swal.fire('Error', 'Incorrect answers', 'error');
+
+        }
+
       },
 
       error: () => {
-        Swal.fire('Error', 'Wrong answers', 'error');
+        Swal.fire('Error', 'Verification failed', 'error');
       }
 
     });
 
   }
-
-  // ================= RESET PASSWORD =================
 
   resetPassword() {
 
@@ -134,14 +145,14 @@ export class ForgotPasswordComponent {
       return;
     }
 
-    this.authService.resetPassword({
-      email: this.email,
+    this.auth.resetPassword({
+      username: this.username,
       newPassword: this.newPassword
     }).subscribe({
 
       next: () => {
 
-        Swal.fire('Success', 'Password reset successful', 'success');
+        Swal.fire('Success', 'Password updated', 'success');
 
         this.router.navigate(['/login']);
 
@@ -154,16 +165,4 @@ export class ForgotPasswordComponent {
     });
 
   }
-sendMethods() {
-  this.continue();
-}
-  // ================= LOGOUT =================
-
- logout() {
-
-   localStorage.removeItem('token');
-
-   this.router.navigate(['/login']);
- }
-
 }

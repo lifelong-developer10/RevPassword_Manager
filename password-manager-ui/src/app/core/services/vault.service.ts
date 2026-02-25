@@ -1,58 +1,43 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VaultService {
 
-  private baseUrl = 'http://localhost:8080/api/vault';
+  private API = 'http://localhost:8080/api/vault';
 
   constructor(private http: HttpClient) {}
 
-  // Add entry
-  add(data: any) {
-    return this.http.post(this.baseUrl, data);
+  getAll() {
+    return this.http.get<any[]>(this.API);
   }
 
-
-
-getOne(id: number) {
-  return this.http.get(`${this.baseUrl}/${id}`);
-}
-
-  // Update
-  update(id: number, data: any) {
-    return this.http.put(`${this.baseUrl}/${id}`, data);
-  }
- getAll() {
-    return this.http.get<any[]>(this.baseUrl);
+  create(data: any) {
+    return this.http.post(this.API, data);
   }
 
-  // Delete
+ update(id: number, data: any) {
+   return this.http.put(`http://localhost:8080/api/vault/${id}`, data);
+ }
+
   delete(id: number) {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    return this.http.delete(`${this.API}/${id}`);
   }
 
-  // Search
   search(keyword: string) {
-    return this.http.get(`${this.baseUrl}/search?keyword=${keyword}`);
-  }
- create(data: any) {
-    return this.http.post(this.baseUrl, data);
+    return this.http.get<any[]>(`${this.API}/search?keyword=${keyword}`);
   }
 
-  // Favorites
   favorites() {
-    return this.http.get(`${this.baseUrl}/favorites`);
+    return this.http.get<any[]>(`${this.API}/favorites`);
   }
 
-  // Filter by category
-  filter(category: string) {
-    return this.http.get(`${this.baseUrl}/category?category=${category}`);
+  category(category: string) {
+    return this.http.get<any[]>(`${this.API}/category?category=${category}`);
   }
- getLast() {
-    return this.http.get<any>(`${this.baseUrl}/last`);
-  }
+getLast() {
+  return this.http.get<any>('http://localhost:8080/api/vault/last');
+}
 }

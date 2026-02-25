@@ -1,11 +1,13 @@
 package com.example.revpassword_manager.Controllers;
 
+import com.example.revpassword_manager.DTOs.OtpRequest;
 import com.example.revpassword_manager.DTOs.OtpVerifyRequest;
 import com.example.revpassword_manager.DTOs.TwoFactorRequest;
 import com.example.revpassword_manager.Security.CustomUserDetails;
 import com.example.revpassword_manager.Services.OtpService;
 import com.example.revpassword_manager.Services.TwoFactorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,21 +23,22 @@ public class OtpController {
     private final TwoFactorService twoFactorService;
 
     @PostMapping("/generate")
-    public String generate(
-            @AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<String> generate(@RequestBody OtpRequest request) {
 
-        return otpService.generateOtp(user.getUsername());
+        String msg = otpService.generateOtp(request.getUsername());
+
+        return ResponseEntity.ok(msg);
     }
-
     @PostMapping("/verify")
-    public String verify(@RequestBody OtpVerifyRequest request) {
+    public ResponseEntity<String> verify(@RequestBody OtpVerifyRequest request) {
 
         boolean result =
                 otpService.verifyOtp(
                         request.getUsername(),
                         request.getCode());
 
-        return result ? "OTP Verified" : "Invalid OTP";
+        return ResponseEntity.ok(
+                result ? "OTP Verified" : "Invalid OTP");
     }
 
 

@@ -13,18 +13,16 @@ export class NavbarComponent {
 
   constructor(private router: Router) {}
 
-  goDashboard() {
-    this.router.navigate(['/dashboard']);
-  }
-
+ goDashboard() {
+   this.router.navigateByUrl('/dashboard');
+ }
   goProfile() {
     this.router.navigate(['/profile']);
   }
 
-  goVault() {
-    this.router.navigate(['/vault']);
-  }
-
+ goVault() {
+   this.router.navigateByUrl('/vault');
+ }
   logout() {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);

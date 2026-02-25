@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit {
   totalAccounts = 0;
   strongPasswords = 0;
   weakPasswords = 0;
-
+vaults: any[] = [];
   // ✅ vault object
   vault: any = {
     accountName: '',
@@ -35,7 +35,6 @@ export class DashboardComponent implements OnInit {
     notes: '',
     favorite: false
   };
-
 constructor(
   private vaultService: VaultService,
   private profileService: ProfileService,
@@ -50,7 +49,7 @@ ngOnInit() {
     this.loadVaultSummary();
     this.loadLastAccount();
   }, 200);
-
+this.loadVaults();
 }
 
   // ================= PROFILE =================
@@ -63,6 +62,7 @@ ngOnInit() {
     });
 
   }
+
 
   // ================= SUMMARY =================
 loadVaultSummary() {
@@ -82,6 +82,23 @@ loadVaultSummary() {
 
       this.weakPasswords =
         list.filter((v: any) => !this.isStrong(v.password)).length;
+
+    },
+
+    error: (err: any) => console.error(err)
+
+  });
+
+}
+loadVaults() {
+
+  this.vaultService.getAll().subscribe({
+
+    next: (res: any[]) => {
+
+      console.log("Dashboard Vaults:", res);
+
+      this.vaults = res || [];
 
     },
 

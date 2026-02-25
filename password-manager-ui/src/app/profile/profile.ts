@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfileService } from '../core/services/profile.service';
 import { NavbarComponent } from '../core/navbar/navbar';
+import { VaultService } from '../core/services/vault.service';
 
 @Component({
   selector: 'app-profile',
@@ -29,11 +30,14 @@ export class ProfileComponent implements OnInit {
   // ================= MESSAGE =================
   message = '';
 
-  constructor(private profileService: ProfileService) {}
+ constructor(
+   private profileService: ProfileService
+ ) {}
 
   ngOnInit() {
     this.loadProfile();
-    this.loadQuestions();
+
+
   }
 
   // ================= LOAD PROFILE =================
@@ -43,6 +47,7 @@ export class ProfileComponent implements OnInit {
     this.profileService.getProfile()
       .subscribe((res: any) => {
         this.user = res;
+         this.loadQuestions();
       });
 
   }
@@ -51,16 +56,17 @@ export class ProfileComponent implements OnInit {
 loadQuestions() {
 
   this.profileService.getQuestions()
-    .subscribe((res: any) => {
+    .subscribe({
 
-      console.log("RAW RESPONSE:", res);
+      next: (res: any) => {
 
-      this.questions = [];
+        console.log("QUESTIONS:", res);
 
-      setTimeout(() => {
         this.questions = res || [];
-        console.log("SET QUESTIONS:", this.questions);
-      });
+
+      },
+
+      error: err => console.error(err)
 
     });
 
@@ -81,19 +87,29 @@ updateProfile() {
 
 updateQuestions() {
 
- const payload = this.questions.map(q => ({
-   questionId: q.questionId,
-   answer: q.answer
- }));
+  const payload = this.questions.map(q => ({
+    questionId: q.questionId,
+    answer: q.answer
+  }));
 
   this.profileService.updateQuestions(payload)
-    .subscribe(() => alert('Questions Updated'));
+    .subscribe(() => {
+
+      alert('Questions Updated');
+
+      this.loadQuestions(); // reload
+
+    });
 
 }
  // ✅ ADD THIS METHOD HERE
   trackById(index: number, item: any) {
     return item.questionId;
   }
+vaults: any[] = [];
+
+
+
   // ================= CHANGE PASSWORD =================
 
   changePassword() {

@@ -3,6 +3,7 @@ package com.example.revpassword_manager.Controllers;
 
 import com.example.revpassword_manager.DTOs.ResetPasswordRequest;
 import com.example.revpassword_manager.DTOs.SecurityQuestionDTO;
+import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
 import com.example.revpassword_manager.DTOs.VerifySecurityAnswersRequest;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
@@ -23,6 +24,12 @@ public class ForgotPasswordController {
     private final ForgotPasswordService service;
     private final SecurityQuestionRepository masterRepo;
 
+    @GetMapping("/questions/{username}")
+    public List<UserQuestionAnswer> getQuestions(
+            @PathVariable String username) {
+
+        return service.getUserQuestionsWithMask(username);
+    }
 
     // ✅ Step 2 — Verify Answers
     @PostMapping("/verify")

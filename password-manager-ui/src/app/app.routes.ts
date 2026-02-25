@@ -1,43 +1,67 @@
 import { Routes } from '@angular/router';
-
-import { LoginComponent } from './auth/login/login';
-import { RegisterComponent } from './auth/register/register';
-import { DashboardComponent } from './dashboard/dashboard';
-import { VaultListComponent } from './vault/vault-list/vault-list';
-import { AddEditVaultComponent } from './vault/add-edit-vault/add-edit-vault';
-import { GeneratorComponent } from './generator/generator';
-import { ProfileComponent } from './profile/profile';
-
 import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
-  { path: 'login', component: LoginComponent },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./auth/login/login')
+        .then(m => m.LoginComponent)
+  },
 
-  { path: 'register', component: RegisterComponent },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./auth/register/register')
+        .then(m => m.RegisterComponent)
+  },
 
   {
     path: 'dashboard',
-    component: DashboardComponent,
-canActivate: [authGuard]
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./dashboard/dashboard')
+        .then(m => m.DashboardComponent)
   },
 
-  { path: 'vault', component: VaultListComponent,
-    canActivate: [authGuard] },
+  {
+    path: 'vault',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./vault/vault')
+        .then(m => m.VaultComponent)
+  },
 
-  { path: 'vault/add',
-    component: AddEditVaultComponent,
-     canActivate: [authGuard]},
+  {
+    path: 'generator',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./generator/generator')
+        .then(m => m.GeneratorComponent)
+  },
 
-  { path: 'vault/edit/:id', component: AddEditVaultComponent,
-    canActivate: [authGuard]
-    },
-
-  { path: 'generator', component: GeneratorComponent },
-
-  { path: 'profile', component: ProfileComponent,
-    canActivate: [authGuard]}
-
+  {
+    path: 'profile',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./profile/profile')
+        .then(m => m.ProfileComponent)
+  }
+,
+  {
+    path: 'forgot-password',
+      loadComponent: () =>
+        import('./auth/forgot-password/forgot-password')
+          .then(m => m.ForgotPasswordComponent)
+  }
+,
+{
+  path: 'forgot-password',
+  loadComponent: () =>
+    import('./auth/forgot-password/forgot-password')
+      .then(m => m.ForgotPasswordComponent)
+}
 ];
