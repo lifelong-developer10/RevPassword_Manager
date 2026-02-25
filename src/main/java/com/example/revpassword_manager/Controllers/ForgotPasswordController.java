@@ -7,6 +7,7 @@ import com.example.revpassword_manager.DTOs.UserQuestionAnswer;
 import com.example.revpassword_manager.DTOs.VerifySecurityAnswersRequest;
 import com.example.revpassword_manager.Models.SecurityQuestionMaster;
 import com.example.revpassword_manager.Reposiotory.SecurityQuestionRepository;
+import com.example.revpassword_manager.Reposiotory.UserRepository;
 import com.example.revpassword_manager.Security.CustomUserDetails;
 import com.example.revpassword_manager.Services.ForgotPasswordService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,13 @@ public class ForgotPasswordController {
 
     private final ForgotPasswordService service;
     private final SecurityQuestionRepository masterRepo;
+ private final UserRepository userRepo;
+
+    @GetMapping("/user-exists/{username}")
+    public boolean userExists(@PathVariable String username) {
+
+        return userRepo.findByUsername(username).isPresent();
+    }
 
     @GetMapping("/questions/{username}")
     public List<UserQuestionAnswer> getQuestions(

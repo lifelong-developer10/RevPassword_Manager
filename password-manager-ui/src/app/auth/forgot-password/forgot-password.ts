@@ -39,7 +39,26 @@ export class ForgotPasswordComponent {
       return;
     }
 
-    this.step = 2;
+    this.auth.checkUser(this.username).subscribe({
+
+      next: (exists: any) => {
+
+        if (!exists) {
+          Swal.fire('Error', 'User not found', 'error');
+          return;
+        }
+
+        this.step = 2;
+
+      },
+
+      er
+      ror: () => {
+        Swal.fire('Error', 'Server error', 'error');
+      }
+
+    });
+
   }
 
   // OTP METHOD
@@ -69,19 +88,26 @@ export class ForgotPasswordComponent {
       code: this.otp
     }).subscribe({
 
-      next: () => {
+      next: (res: any) => {
+
+        console.log("OTP VERIFIED:", res);
+
         Swal.fire('Verified', 'OTP correct', 'success');
-        this.step = 4;   // ⭐ show reset form
+
+        this.step = 4;   // ⭐ move here only
+
       },
 
-      error: () => {
+      error: (err) => {
+
+        console.error("VERIFY ERROR:", err);
+
         Swal.fire('Error', 'Invalid OTP', 'error');
       }
 
     });
 
   }
-
  selectQuestions() {
 
    this.method = 'questions';

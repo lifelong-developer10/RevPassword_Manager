@@ -101,7 +101,11 @@ resetPassword(data: any) {
   );
 }
 
-
+checkUser(username: string) {
+  return this.http.get(
+    `${this.forgotBaseUrl}/forgot/user-exists/${username}`
+  );
+}
 enable2FA() {
   return this.http.post(`${this.baseUrl}/api/auth/2fa/enable`, {});
 }
