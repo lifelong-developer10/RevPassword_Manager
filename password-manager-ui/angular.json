@@ -14,6 +14,17 @@
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js"
+          }
+        },
         "build": {
           "builder": "@angular/build:application",
           "options": {

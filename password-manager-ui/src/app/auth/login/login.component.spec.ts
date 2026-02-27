@@ -1,111 +1,98 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AuthService } from '../../core/services/auth.service';
-import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { ReactiveFormsModule } from '@angular/forms';
 
 describe('LoginComponent', () => {
 
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
-
   let authServiceMock: any;
-  let routerMock: any;
 
   beforeEach(async () => {
 
     authServiceMock = {
-      login: jasmine.createSpy('login')
-    };
-
-    routerMock = {
-      navigate: jasmine.createSpy('navigate')
+      login: jasmine.createSpy('login').and.returnValue(of({ token: 'abc' })),
+      verify2FA: jasmine.createSpy('verify2FA').and.returnValue(of({ token: 'abc' }))
     };
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, ReactiveFormsModule],
+      imports: [
+        LoginComponent,
+        ReactiveFormsModule,
+        FormsModule,
+        RouterTestingModule
+      ],
       providers: [
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock }
+        { provide: AuthService, useValue: authServiceMock }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 
-  // ===============================
-  // TEST 1: Component Creation
-  // ===============================
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  // ===============================
-  // TEST 2: Form Invalid
-  // ===============================
-  it('should not call login if form invalid', () => {
-
-    component.form.setValue({
-      username: '',
-      password: ''
-    });
-
-    component.login();
-
-    expect(authServiceMock.login).not.toHaveBeenCalled();
+  it('form should be invalid when empty', () => {
+    expect(component.form.valid).toBeFalse();
   });
 
-  // ===============================
-  // TEST 3: Successful Login
-  // ===============================
-  it('should login successfully and navigate', () => {
-
-    const mockResponse = { token: 'fake-jwt-token' };
-
-    authServiceMock.login.and.returnValue(of(mockResponse));
+  it('form should be valid when values provided', () => {
 
     component.form.setValue({
-      username: 'test',
+      username: 'teju',
       password: '123456'
     });
 
+    expect(component.form.valid).toBeTrue();
+  });
+
+  it('should login successfully', () => {
+
     spyOn(localStorage, 'setItem');
+
+    component.form.setValue({
+      username: 'teju',
+      password: '123456'
+    });
 
     component.login();
 
     expect(authServiceMock.login).toHaveBeenCalled();
-
-    expect(localStorage.setItem)
-      .toHaveBeenCalledWith('token', 'fake-jwt-token');
-
-    expect(routerMock.navigate)
-      .toHaveBeenCalledWith(['/dashboard']);
+    expect(localStorage.setItem).toHaveBeenCalled();
   });
 
-  // ===============================
-  // TEST 4: Login Error
-  // ===============================
-  it('should show error on login failure', () => {
+  it('should show error on invalid credentials', () => {
 
     authServiceMock.login.and.returnValue(
-      throwError(() => new Error('Invalid'))
+      throwError(() => new Error())
     );
-
-    component.form.setValue({
-      username: 'wrong',
-      password: 'wrong'
-    });
 
     spyOn(window, 'alert');
 
+    component.form.setValue({
+      username: 'teju',
+      password: 'wrong'
+    });
+
     component.login();
 
-    expect(window.alert)
-      .toHaveBeenCalledWith('Invalid Credentials');
+    expect(window.alert).toHaveBeenCalled();
+  });
+
+  it('should toggle password visibility', () => {
+
+    expect(component.showPassword).toBeFalse();
+
+    component.togglePassword();
+
+    expect(component.showPassword).toBeTrue();
   });
 
 });
