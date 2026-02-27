@@ -65,7 +65,3 @@ App URL: `http://localhost:4200`
 
 ---
 
-## 👨‍💻 Author
-
-**Tejasvi Ankush Khote**
-Computer Engineer
