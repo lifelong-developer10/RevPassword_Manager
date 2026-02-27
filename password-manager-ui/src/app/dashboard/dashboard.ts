@@ -6,14 +6,14 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { VaultService } from '../core/services/vault.service';
 import { ProfileService } from '../core/services/profile.service';
-import { NavbarComponent } from '../core/navbar/navbar';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
   standalone: true,
    styleUrls: ['./dashboard.css'],
-  imports: [CommonModule, FormsModule,NavbarComponent]
+  imports: [CommonModule, FormsModule]
 })
+
 export class DashboardComponent implements OnInit {
 
 
@@ -24,7 +24,6 @@ export class DashboardComponent implements OnInit {
   strongPasswords = 0;
   weakPasswords = 0;
 vaults: any[] = [];
-  // ✅ vault object
   vault: any = {
     accountName: '',
     website: '',
@@ -47,6 +46,7 @@ ngOnInit() {
   this.loadVaultSummary();
   this.loadLastAccount();
   this.loadVaults();
+
 
 }
 
@@ -111,6 +111,7 @@ loadVaults() {
   });
 
 }
+
 
   isStrong(password: string): boolean {
 
@@ -192,7 +193,15 @@ this.cd.detectChanges();
 
     this.vault.password = pass;
   }
+get securityScore(): number {
 
+     const total = Number(this.totalAccounts) || 0;
+     const strong = Number(this.strongPasswords) || 0;
+
+     if (total === 0) return 0;
+
+     return Math.round((strong / total) * 100);
+   }
   // ================= NAVIGATION =================
 
   goVault(): void {

@@ -13,5 +13,5 @@ public class PasswordGenerateRequest {
 
     private boolean excludeSimilar = false;
 
-    private int count = 1; // generate multiple passwords
+    private int count = 1;
 }

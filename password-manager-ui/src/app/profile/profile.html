@@ -1,127 +1,134 @@
-<app-navbar></app-navbar>
+
+
+
+  <div class="container">
+
 <div class="container mt-4">
 
-  <!-- ROW 1 — 4 CARDS -->
-  <div class="row g-4">
+  <div class="glass p-4">
 
-    <!-- ================= PROFILE CARD ================= -->
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 h-100">
+    <h3 class="mb-4">Profile Settings</h3>
 
-        <h5 class="mb-3">Profile Info</h5>
+    <div class="row g-4">
 
-        <label>Username</label>
-        <input class="form-control mb-2"
-               [(ngModel)]="user.username">
+      <!-- Profile Info -->
+      <div class="col-lg-6">
 
-        <label>Email</label>
-        <input class="form-control mb-2"
-               [(ngModel)]="user.email">
+        <div class="glass-card">
 
-        <label>Phone</label>
-        <input class="form-control mb-3"
-               [(ngModel)]="user.phone">
+          <h5 class="mb-3">Profile Info</h5>
 
-        <button class="btn btn-primary w-100"
-                (click)="updateProfile()">
-          Update Profile
-        </button>
+          <input class="form-control"
+                 placeholder="Username"
+                 [(ngModel)]="user.username">
 
-      </div>
-    </div>
+          <input class="form-control"
+                 placeholder="Email"
+                 [(ngModel)]="user.email">
 
+          <input class="form-control"
+                 placeholder="Phone"
+                 [(ngModel)]="user.phone">
 
-    <!-- ================= SECURITY QUESTIONS CARD ================= -->
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 h-100">
-
-        <h5 class="mb-3">Security Questions</h5>
-
-        <div *ngFor="let q of questions; trackBy: trackById">
-
-          <label>{{ q.question }}</label>
-
-          <input
-            type="text"
-            [(ngModel)]="q.answer"
-            class="form-control mb-2">
+          <button class="btn btn-gradient w-100 mt-3 btn-primary"
+                  (click)="updateProfile()">
+            Update Profile
+          </button>
 
         </div>
-        <button class="btn btn-primary w-100 mt-2"
-                (click)="updateQuestions()">
-          Update Questions
-        </button>
 
       </div>
-    </div>
 
+      <!-- Security Questions -->
+      <div class="col-lg-6">
 
-    <!-- ================= CHANGE PASSWORD CARD ================= -->
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 h-100">
+        <div class="glass-card">
 
-        <h5 class="mb-3">Change Master Password</h5>
+          <h5 class="mb-3">Security Questions</h5>
 
-        <label>Current Password</label>
-        <input type="password"
-               class="form-control mb-2"
-               [(ngModel)]="password.current">
+          <div *ngFor="let q of questions">
 
-        <label>New Password</label>
-        <input type="password"
-               class="form-control mb-2"
-               [(ngModel)]="password.new">
+            <label>{{q.question}}</label>
 
-        <label>Confirm Password</label>
-        <input type="password"
-               class="form-control mb-3"
-               [(ngModel)]="password.confirm">
+            <input class="form-control"
+                   [(ngModel)]="q.answer">
 
-        <button class="btn btn-primary w-100"
-                (click)="changePassword()">
-          Update Password
-        </button>
+          </div>
+
+          <button class="btn btn-gradient w-100 mt-3 btn-primary"
+                  (click)="updateQuestions()">
+            Update Questions
+          </button>
+
+        </div>
 
       </div>
-    </div>
 
+      <!-- Change Password -->
+      <div class="col-lg-6">
 
-    <!-- ================= 2FA CARD ================= -->
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 h-100 text-center">
+        <div class="glass-card">
 
-        <h5 class="mb-3">Two Factor Authentication</h5>
+          <h5 class="mb-3">Change Master Password</h5>
 
-        <p>
-          Status:
-          <span class="fw-bold"
-                [class.text-success]="user.twoFactorEnabled"
-                [class.text-danger]="!user.twoFactorEnabled">
+          <input type="password"
+                 class="form-control"
+                 placeholder="Current Password"
+                 [(ngModel)]="password.current">
 
-            {{ user.twoFactorEnabled ? 'Enabled' : 'Disabled' }}
+          <input type="password"
+                 class="form-control"
+                 placeholder="New Password"
+                 [(ngModel)]="password.new">
 
-          </span>
-        </p>
+          <input type="password"
+                 class="form-control"
+                 placeholder="Confirm Password"
+                 [(ngModel)]="password.confirm">
 
-        <button class="btn btn-primary"
-                (click)="toggle2FA()">
+          <button class="btn btn-gradient w-100 mt-3 btn-primary"
+                  (click)="changePassword()">
+            Update Password
+          </button>
 
-          {{ user?.twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA' }}
-
-        </button>
+        </div>
 
       </div>
+
+      <!-- Two Factor -->
+      <div class="col-lg-6">
+
+        <div class="glass-card text-center">
+
+          <h5 class="mb-3">Two Factor Authentication</h5>
+
+          <p>
+            Status:
+            <span
+              [class.text-success]="user.twoFactorEnabled"
+              [class.text-danger]="!user.twoFactorEnabled">
+
+              {{ user.twoFactorEnabled ? 'Enabled' : 'Disabled' }}
+
+            </span>
+          </p>
+
+          <button class="btn btn-gradient btn-primary"
+                  (click)="toggle2FA()">
+
+            {{ user.twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA' }}
+
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
-
-  </div>
-
-
-  <!-- ================= SUCCESS MESSAGE ================= -->
-  <div class="mt-3 text-center text-success fw-bold"
-       *ngIf="message">
-
-    {{message}}
 
   </div>
 
 </div>
+  </div>
+
+

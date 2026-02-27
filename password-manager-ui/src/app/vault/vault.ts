@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VaultService } from '../core/services/vault.service';
-import { NavbarComponent } from '../core/navbar/navbar';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core';
 import Swal from 'sweetalert2';
+import { ProfileService } from '../core/services/profile.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-vault',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './vault.html',
   styleUrls: ['./vault.css']
 })
@@ -42,7 +42,9 @@ form: any = {
 constructor(
   private vaultService: VaultService,
   private route: ActivatedRoute,
-  private cd: ChangeDetectorRef
+  private cd: ChangeDetectorRef,
+    private profileService: ProfileService,
+
 ) {}
 ngOnInit() {
   this.loadVaults();
@@ -57,7 +59,7 @@ loadVaults() {
 
         this.vaults = res || [];
         this.filteredVaults = [...this.vaults];
-        this.cd.detectChanges();   // ⭐ FIX DOUBLE CLICK
+        this.cd.detectChanges();
 
       },
 
@@ -79,8 +81,8 @@ searchVault() {
 
     v.accountName?.toLowerCase().includes(text) ||
     v.website?.toLowerCase().includes(text) ||
-    v.category?.toLowerCase().includes(text)
-
+    v.category?.toLowerCase().includes(text) ||
+(v.favorite && (text.includes('favorite') || text.includes('favourite')))
   );
 
 }
@@ -123,8 +125,11 @@ save() {
 
         next: () => {
 
-         Swal.fire('Account Updated Successfully');
-
+Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: 'Account created successfully'
+});
           this.loadVaults();
 
           this.showForm = false;
@@ -145,8 +150,11 @@ save() {
 
         next: () => {
 
-         Swal.fire('Account Created');
-
+Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: 'Account created successfully'
+});
           this.loadVaults();
 
           this.showForm = false;
@@ -221,5 +229,46 @@ toggleFavorites() {
       favorite: false
     };
   }
+togglePassword(v: any) {
+
+  if (!v.show) {
+
+    const master = prompt("Enter Master Password");
+
+    if (!master) return;
+
+    this.profileService.changePassword({
+      currentPassword: master,
+      newPassword: master,
+      confirmPassword: master
+    }).subscribe({
+
+      next: () => {
+
+        v.show = true;
+
+        this.cd.detectChanges();   // ⭐ IMPORTANT
+
+      },
+
+      error: () => {
+
+Swal.fire({
+  icon: 'error',
+  title: 'Error',
+  text: 'Incorrect Password'
+});
+      }
+
+    });
+
+  } else {
+
+    v.show = false;
+    this.cd.detectChanges();   // ⭐ IMPORTANT
+
+  }
+
+}
 
 }

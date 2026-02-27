@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 "/api/forgot/**"
                         ).permitAll()
 
-                        // EVERYTHING ELSE NEEDS LOGIN
+
                         .anyRequest().authenticated()
                 )
 

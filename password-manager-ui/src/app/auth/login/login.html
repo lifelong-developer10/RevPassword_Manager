@@ -1,65 +1,46 @@
-<app-navbar> </app-navbar>
-<div class="container mt-5">
+<div class="login-wrapper">
 
-  <div class="card p-4 shadow col-md-6 mx-auto">
-    <h3 class="text-center">Login</h3>
+  <div class="login-card">
+
+    <div class="avatar">
+      <i class="fa fa-user"></i>
+    </div>
+
+    <h2>Login</h2>
 
     <form [formGroup]="form" (ngSubmit)="login()">
 
-      <input class="form-control mb-3"
-             placeholder="Username"
-             formControlName="username">
-
-      <div class="input-group mb-3">
-
-        <input class="form-control"
-               [type]="showPassword ? 'text':'password'"
-               placeholder="Password"
-               formControlName="password">
-
-        <button type="button"
-                class="btn btn-outline-secondary"
-                (click)="togglePassword()">
-          <i class="fa"
-             [ngClass]="showPassword ? 'fa-eye-slash':'fa-eye'"></i>
-        </button>
-
-      </div>
-      <div class="text-center mb-3">
-
-        <span>New User?</span>
-        <a routerLink="/register" class="text-decoration-none fw-bold">
-          Register
-        </a>
-
-        <span class="mx-2">|</span>
-
-        <a routerLink="/forgot-password" class="text-decoration-none fw-bold">
-          Forgot Password?
-        </a>
-
+      <div class="field">
+        <i class="fa fa-user"></i>
+        <input
+          type="text"
+          placeholder="Username"
+          formControlName="username">
       </div>
 
-      <button class="btn btn-primary w-100">
-        Login
+      <div class="field">
+        <i class="fa fa-lock"></i>
+        <input
+          [type]="showPassword ? 'text':'password'"
+          placeholder="Password"
+          formControlName="password">
+
+        <i class="fa eye"
+           [ngClass]="showPassword ? 'fa-eye-slash':'fa-eye'"
+           (click)="togglePassword()"></i>
+      </div>
+
+      <div class="links">
+        <a routerLink="/register">Register</a>
+        <a routerLink="/forgot-password">Forgot Password?</a>
+      </div>
+
+      <button class="login-btn">
+        LOGIN
       </button>
-
-
 
     </form>
-    <div *ngIf="show2FAScreen">
 
-      <h4>Enter 2FA Code</h4>
-
-      <input class="form-control mb-2"
-             [(ngModel)]="twoFACode">
-
-      <button class="btn btn-primary"
-              (click)="verifyLogin2FA()">
-        Verify
-      </button>
-
-    </div>
   </div>
 
 </div>

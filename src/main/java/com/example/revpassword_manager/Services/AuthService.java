@@ -86,7 +86,6 @@ public class AuthService {
             throw new RuntimeException("Invalid password");
         }
 
-        // 🔥 NO OTP HERE — Direct JWT
         return jwtUtil.generateToken(user.getUsername());
     }
 
@@ -111,6 +110,7 @@ public class AuthService {
 
         return "Password Updated";
     }
+
     @Transactional
     public MasterUser updateProfile(String username,
                                     UpdateProfileRequest req) {
@@ -124,6 +124,7 @@ public class AuthService {
 
         return userRepository.save(user);
     }
+
     public List<SecurityQuestionMaster> getAllQuestions() {
         return masterRepo.findAll();
     }

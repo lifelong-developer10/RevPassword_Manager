@@ -66,8 +66,7 @@ public class ProfileController {
     public Map<String,String> changePassword(
             Authentication auth,
             @RequestBody ChangePasswordRequest req) {
-
-        String username = auth.getName();
+                String username = auth.getName();
 
         authService.changePassword(username, req);
 

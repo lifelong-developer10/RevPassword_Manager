@@ -8,7 +8,6 @@ import java.util.Map;
 public class VerifySecurityAnswersRequest {
 
     private String username;
-
     // questionId -> answer
     private Map<Long, String> answers;
 }

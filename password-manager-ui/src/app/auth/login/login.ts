@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { NavbarComponent } from '../../core/navbar/navbar';
 import { RouterModule } from '@angular/router';
+import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.html',
-
-  imports: [CommonModule, FormsModule, ReactiveFormsModule,NavbarComponent,RouterModule]
+   styleUrls: ['./login.css'],
+encapsulation: ViewEncapsulation.None,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,RouterModule]
 })
 export class LoginComponent {
 

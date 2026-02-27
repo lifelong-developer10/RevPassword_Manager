@@ -34,7 +34,7 @@ public class OtpService {
 
         otpRepo.save(otp);
 
-        // Email simulation
+
         System.out.println("OTP for " + username + " = " + code);
 
         return "OTP sent successfully";

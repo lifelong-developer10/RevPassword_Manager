@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfileService } from '../core/services/profile.service';
-import { NavbarComponent } from '../core/navbar/navbar';
 import { VaultService } from '../core/services/vault.service';
 import { ChangeDetectorRef } from '@angular/core';
 import Swal from 'sweetalert2';
@@ -11,7 +10,7 @@ import Swal from 'sweetalert2';
   standalone: true,
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
-  imports: [CommonModule, FormsModule,NavbarComponent]
+  imports: [CommonModule, FormsModule]
 })
 export class ProfileComponent implements OnInit {
 
@@ -82,8 +81,11 @@ updateProfile() {
 
   this.profileService.updateProfile(this.user)
     .subscribe(() => {
-     Swal.fire('Profile Updated');
-      this.loadProfile();   // ✅ IMPORTANT
+Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: 'Profile Updated successfully'
+});      this.loadProfile();   // ✅ IMPORTANT
     });
 
 }
@@ -100,8 +102,11 @@ updateQuestions() {
   this.profileService.updateQuestions(payload)
     .subscribe(() => {
 
-     Swal.fire('Questions Updated');
-
+Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: 'Question Updated successfully'
+});
       this.loadQuestions(); // reload
       this.cd.detectChanges();   // ⭐ optional but good
 
@@ -132,8 +137,11 @@ vaults: any[] = [];
     }).subscribe({
 
       next: () => {
-  Swal.fire('Success', 'Password Updated Successfully', 'success');
-      },
+Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: 'Password Updated successfully'
+});      },
 
       error: (err) => {
 

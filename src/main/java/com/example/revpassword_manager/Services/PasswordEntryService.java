@@ -71,7 +71,6 @@ public class PasswordEntryService {
         res.setWebsite(entry.getWebsite());
         res.setUsername(entry.getUsername());
 
-        // IMPORTANT — decrypt password
         res.setPassword(
                 encryptionUtil.decrypt(entry.getPasswordEncrypted())
         );
@@ -82,6 +81,7 @@ public class PasswordEntryService {
 
         return res;
     }
+
     public List<PasswordEntryResponse> getAllEntries(String username)
             throws Exception {
 

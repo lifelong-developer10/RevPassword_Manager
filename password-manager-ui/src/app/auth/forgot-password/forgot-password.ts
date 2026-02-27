@@ -6,12 +6,11 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../core/services/auth.service';
 import { NgZone } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
-import { NavbarComponent } from '../../core/navbar/navbar';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, FormsModule,NavbarComponent],
+  imports: [CommonModule, FormsModule],
 
   templateUrl: './forgot-password.html',
   styleUrls: ['./forgot-password.css']
