@@ -57,7 +57,6 @@ App URL: `http://localhost:4200`
 
 Below are some screenshots of the application interface.
 
-![img_5.png](img_5.png)
 
 ![img.png](img.png)
 
