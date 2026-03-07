@@ -1,4 +1,4 @@
-🔐 Password Manager Web Application
+# 🔐 Password Manager Web Application
 
 ## 📌 Overview
 
@@ -48,22 +48,59 @@ The **Password Manager** is a full-stack web application that allows users to se
 
 ---
 
-## ▶️ Run the Project
-
-### Backend
-
-```bash
-mvn spring-boot:run
-```
-
-### Frontend
-
-```bash
-npm install
-ng serve
-```
 
 App URL: `http://localhost:4200`
 
 ---
 
+## 📸 Application Screenshots
+
+Below are some screenshots of the application interface.
+
+```
+screenshots/
+├── login.png
+├── dashboard.png
+├── password-vault.png
+├── password-generator.png
+```
+
+Example:
+
+![Login Page](screenshots/login.png)
+
+![Dashboard](screenshots/dashboard.png)
+
+![Password Vault](screenshots/password-vault.png)
+
+![Password Generator](screenshots/password-generator.png)
+
+---
+
+## 🗂 ERD (Entity Relationship Diagram)
+
+The ERD diagram represents the database structure and relationships between entities such as Users, Password Vault Entries, and Security Questions.
+
+Example:
+
+![ERD Diagram](diagrams/erd.png)
+
+---
+
+---
+
+## 🧪 Testing
+
+Testing was implemented for both backend and frontend to ensure reliability and security.
+
+### Backend Testing
+
+* **JUnit**
+* Unit tests for controllers and service layers
+
+### Frontend Testing
+
+* **Jasmine**
+* **Karma**
+
+---
