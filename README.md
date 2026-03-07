@@ -41,7 +41,9 @@ The **Password Manager** is a full-stack web application that allows users to se
 ## 🏗️ Tech Stack
 
 **Frontend:** Angular, TypeScript, HTML, CSS, Bootstrap
+
 **Backend:** Spring Boot, Java, REST APIs, Spring Security, JWT
+
 **Database:** MySQL
 
 ---
