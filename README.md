@@ -27,14 +27,14 @@ The **Password Manager** is a full-stack web application that allows users to se
 
 * Generate strong random passwords
 * Customizable length and character options
-* Strength indicator and clipboard copy
+* Strength indicator 
 
 ### Security
 
 * Encrypted password storage
 * Verification codes for sensitive actions
 * Security audit (weak/reused passwords)
-* Encrypted export/import backup
+
 
 ---
 
@@ -46,10 +46,7 @@ The **Password Manager** is a full-stack web application that allows users to se
 
 **Database:** MySQL
 
----
 
-
-App URL: `http://localhost:4200`
 
 ---
 
