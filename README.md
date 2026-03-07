@@ -1,4 +1,4 @@
-# 🔐 Password Manager Web Application
+# 🔐 Password Manager
 
 ## 📌 Overview
 
