@@ -50,13 +50,13 @@ it('should register successfully and navigate to login', () => {
   authServiceMock.register.and.returnValue(of({}));
 
   component.form.patchValue({
-    username: 'teju',
+    username: 'shubhu',
     email: 'test@test.com',
     phone: '9999999999',
     password: '12345678'
   });
 
-  // ✅ FORCE FORM VALID
+
   spyOnProperty(component.form, 'invalid', 'get').and.returnValue(false);
 
   component.register();
@@ -72,7 +72,7 @@ it('should register successfully and navigate to login', () => {
     spyOn(window, 'alert');
 
     component.form.setValue({
-      username: 'teju',
+      username: 'shubhu',
       email: 'test@test.com',
       phone: '9999999999',
       password: '123456'

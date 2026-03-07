@@ -57,23 +57,16 @@ App URL: `http://localhost:4200`
 
 Below are some screenshots of the application interface.
 
-```
-screenshots/
-├── login.png
-├── dashboard.png
-├── password-vault.png
-├── password-generator.png
-```
+![img_5.png](img_5.png)
 
-Example:
+![img.png](img.png)
 
-![Login Page](screenshots/login.png)
+![img_1.png](img_1.png)
 
-![Dashboard](screenshots/dashboard.png)
+![img_2.png](img_2.png)
 
-![Password Vault](screenshots/password-vault.png)
+![img_3.png](img_3.png)
 
-![Password Generator](screenshots/password-generator.png)
 
 ---
 
@@ -83,8 +76,7 @@ The ERD diagram represents the database structure and relationships between enti
 
 Example:
 
-![ERD Diagram](diagrams/erd.png)
-
+![img_6.png](img_6.png)
 ---
 
 ---
